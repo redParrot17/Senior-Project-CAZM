@@ -1,7 +1,10 @@
 Here are some instructions on setting up Flask ~ Zack
 -----------------------------------------------------
 
-1. In the Command Line, navigate to the project directory
+1. In the Command Line, navigate to the project directory and create a virtual environment with
+
+   python -m venv env
+
 2. If on a Unix System, run the following code:
 
 	source env/bin/activate
@@ -14,7 +17,7 @@ Here are some instructions on setting up Flask ~ Zack
 
 3.  UNIX
 
-	export FLASK_APP=server.py
+	   export FLASK_APP=server.py
 
     Windows
 
@@ -22,6 +25,10 @@ Here are some instructions on setting up Flask ~ Zack
 
     This tells the server the arbitrary name of the main Flask server file (server.py in this case)
 
-4.	flask run
+4. Install required python packages with 
+
+   pip install -r flask_requirements.txt
+
+5.	flask run
 
     This will start the flask server! It can be accessed by going to http://127.0.0.1:5000/ in your web browser. Feel Free to message me with your flask questions! :)
