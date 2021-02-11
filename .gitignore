@@ -38,6 +38,12 @@ local.properties
 # sbteclipse plugin
 .target
 
+# environment directories
+.env/
+.venv/
+env/
+venv/
+
 # Tern plugin
 .tern-project
 
