@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+  <!-- font/icons -->
+  <script src="https://kit.fontawesome.com/77ddb78ecd.js" crossorigin="anonymous"></script>
+
+  <!-- css -->
+  <link href="/static/css/advisorStudentSchedule.css" rel="stylesheet">
+  <link href="/static/css/drag-drop.css" rel="stylesheet">
+
+</head>
+<body>
+
+  <div class="row" id="wrap">
+    <div class="col-4 " id="left">
+      <!-- <div class="row-1"> -->
+        <button class="backbtn rounded" >Back</button>
+      <!-- </div>
+      <div class="row-2"> -->
+        <div class="container outsideContainer mt-3 p-2 mb-3 rounded overflow-auto" id="Scrollstyle">
+          <div class="SSheaderText rounded p-2">
+            <h4> Status Sheet </h4>
+          </div>
+          <div class="statusSheetSectionContainer container rounded">
+            <p><b>Humanities Core</b></p>
+            <p>HUMA 102 OR RELI 221 & RELI 212
+              <br /> HUMA 200
+              <br /> HUMA 202
+              <br /> HUMA 300
+              <br /> HUMA 303
+            </p>
+          </div>
+
+          <div class="statusSheetSectionContainer container rounded">
+            <p><b>SSFT Requirement</b></p>
+            <p>COMP 205/SSFT 205  OR
+              <br /> PHIL 243  OR
+              <br /> SSFT 210  OR
+              <br /> SSFT 212
+            </p>
+          </div>
+
+          <div class="statusSheetSectionContainer container rounded">
+            <p><b>Writing Requirement</b></p>
+            <p>WRIT 101
+            </p>
+          </div>
+          <div class="statusSheetSectionContainer container rounded">
+            <p><b>Foundations of Social Sciences</b></p>
+            <p>Foundations Course
+            </p>
+          </div>
+          <div class="statusSheetSectionContainer container rounded">
+            <p><b>Physical Education</b></p>
+            <p>PHYE 101 / PHYE 111
+              <br /> PHYE 102 / PHYE 112
+            </p>
+          </div>
+        </div>
+      <!-- </div> -->
+
+
+    </div>
+
+    <div class="col" id="middle">
+      <div class="row">
+        <div class="col-6">
+          <button class="button openbtn rounded" type="button">Approve Schedule</button>
+        </div>
+        <div class="col-2 ml-auto">
+
+          <!-- Sometime the arrow duplicates-->
+
+          <button class="openbtn rounded" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button>
+        </div>
+      </div>
+      <div class="container outsideContainer mt-3 p-2 mb-3 rounded overflow-auto" id="Scrollstyle">
+        <div class = "container scheduleContainer rounded">
+          <h4> Fall 2021 </h4>
+          <div class="row bg-dark rounded mb-2 drag_box_container mt-0" id="btn_cont">
+              <div class="col-6 drag_box">
+                  <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+              </div>
+          </div>
+        </div>
+        <h2> Spring 2022 </h2>
+        <div class="row bg-dark rounded m-2 drag_box_container" id="btn_cont">
+            <div class="col-6 drag_box">
+                <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+        </div>
+
+        <h2> Fall 2022 </h2>
+        <div class="row bg-dark rounded m-2 drag_box_container" id="btn_cont">
+            <div class="col-6 drag_box">
+                <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+        </div>
+
+        <h2> Spring 2023 </h2>
+        <div class="row bg-dark rounded m-2 drag_box_container" id="btn_cont">
+            <div class="col-6 drag_box">
+                <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<div id="mySidebar" class="sidebar">
+  <div class="search">
+     <input type="text" class="searchTerm" placeholder="Search">
+     <button type="submit" class="searchButton">
+       <i class="fa fa-search"></i>
+    </button>
+  </div>
+  <div class="container filterContainer mt-3 mb-3 rounded">
+    <div class="headerText rounded">
+      Filters
+    </div>
+    <label class="Checkcontainer">Pre-requisites Met
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="Checkcontainer">Major requirement
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="Checkcontainer">Hide Previous Courses
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="Checkcontainer">Show Intersessions
+      <input type="checkbox">
+      <span class="checkmark"></span>
+    </label>
+  </div>
+  <div class="container searchContainer mt-3 p-0 mb-3 rounded overflow-auto" id="Scrollstyle">
+    <div class="row">
+      <div class="form-group col-7 p-0">
+        <select class="form-control dropdown">
+          <option value="Semester">Semester:</option>
+          <option value="Fall">Fall</option>
+          <option value="Spring">Spring</option>
+          <option value="Winter">Winter</option>
+          <option value="January">January</option>
+          <option value="May">May</option>
+          <option value="Summer">Summer</option>
+        </select>
+      </div>
+      <div class="form-group col-5 p-0">
+        <select class="form-control dropdown">
+          <option value="Year">Year:</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </select>
+      </div>
+    </div>
+    <div id="COMP_141" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+      <i class="fas fa-arrows-alt"></i>
+      <span class="drag_item_text">COMP 141</span>
+    </div>
+    <div id="COMP_155" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+      <i class="fas fa-arrows-alt"></i>
+      <span class="drag_item_text">COMP 155</span>
+    </div>
+    <div id="COMP_205" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+      <i class="fas fa-arrows-alt"></i>
+      <span class="drag_item_text">COMP 205</span>
+    </div>
+    <div id="COMP_220" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+      <i class="fas fa-arrows-alt"></i>
+      <span class="drag_item_text">COMP 220</span>
+    </div>
+    <div id="myItem" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+      <i class="fas fa-arrows-alt"></i>
+      <span class="drag_item_text">COMP 222</span>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Javascript -->
+<script src="/static/js/drag-drop.js" charset="utf-8"></script>
+<script src="/static/js/side-bar.js" charset="utf-8"></script>
+
+
+</body>
+</html>
