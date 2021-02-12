@@ -30,41 +30,16 @@
           <div class="SSheaderText rounded p-2">
             <h4> Status Sheet </h4>
           </div>
-          <div class="statusSheetSectionContainer container rounded">
-            <p><b>Humanities Core</b></p>
-            <p>HUMA 102 OR RELI 221 & RELI 212
-              <br /> HUMA 200
-              <br /> HUMA 202
-              <br /> HUMA 300
-              <br /> HUMA 303
-            </p>
-          </div>
 
-          <div class="statusSheetSectionContainer container rounded">
-            <p><b>SSFT Requirement</b></p>
-            <p>COMP 205/SSFT 205  OR
-              <br /> PHIL 243  OR
-              <br /> SSFT 210  OR
-              <br /> SSFT 212
-            </p>
-          </div>
+          {% for item in statusSheet %}
 
-          <div class="statusSheetSectionContainer container rounded">
-            <p><b>Writing Requirement</b></p>
-            <p>WRIT 101
-            </p>
-          </div>
-          <div class="statusSheetSectionContainer container rounded">
-            <p><b>Foundations of Social Sciences</b></p>
-            <p>Foundations Course
-            </p>
-          </div>
-          <div class="statusSheetSectionContainer container rounded">
-            <p><b>Physical Education</b></p>
-            <p>PHYE 101 / PHYE 111
-              <br /> PHYE 102 / PHYE 112
-            </p>
-          </div>
+          <fieldset class="statusSheetSectionContainer container rounded">
+            <legend class="StatusSheetTitles"> {{item.get("title")}}</legend>
+            {%for class in item.get("classes")%}
+                {{class}} <br />
+            {% endfor %}
+          </fieldset>
+          {%endfor%}
         </div>
       <!-- </div> -->
 
@@ -73,45 +48,32 @@
 
     <div class="col" id="middle">
       <div class="row">
-        <div class="col-6">
-          <button class="button openbtn rounded" type="button">Approve Schedule</button>
+        <div class="col-8">
+          <button class="button approvebtn rounded" type="button">Approve Schedule</button>
         </div>
-        <div class="col-2 ml-auto">
+        <div class="ml-auto" onclick="toggleSideBar(event)">
 
           <!-- Sometime the arrow duplicates-->
+        <i class=" openbtn fas fa-arrow-circle-left rounded-circle" ></i>
 
-          <button class="openbtn rounded" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button>
+          <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
         </div>
       </div>
       <div class="container outsideContainer mt-3 p-2 mb-3 rounded overflow-auto" id="Scrollstyle">
-        <div class = "container scheduleContainer rounded">
-          <h4> Fall 2021 </h4>
-          <div class="row bg-dark rounded mb-2 drag_box_container mt-0" id="btn_cont">
+        <div class="SSheaderText rounded p-2">
+          <h4> Student Schedule </h4>
+        </div>
+
+        {% for class in classes %}
+        <fieldset class="container scheduleContainer rounded">
+          <legend> {{class}} </legend>
+          <div class="row rounded mb-2 drag_box_container mt-0" id="btn_cont">
               <div class="col-6 drag_box">
                   <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
               </div>
           </div>
-        </div>
-        <h2> Spring 2022 </h2>
-        <div class="row bg-dark rounded m-2 drag_box_container" id="btn_cont">
-            <div class="col-6 drag_box">
-                <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            </div>
-        </div>
-
-        <h2> Fall 2022 </h2>
-        <div class="row bg-dark rounded m-2 drag_box_container" id="btn_cont">
-            <div class="col-6 drag_box">
-                <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            </div>
-        </div>
-
-        <h2> Spring 2023 </h2>
-        <div class="row bg-dark rounded m-2 drag_box_container" id="btn_cont">
-            <div class="col-6 drag_box">
-                <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            </div>
-        </div>
+        </fieldset>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -128,7 +90,7 @@
     </button>
   </div>
   <div class="container filterContainer mt-3 mb-3 rounded">
-    <div class="headerText rounded">
+    <div class="headerText rounded-top">
       Filters
     </div>
     <label class="Checkcontainer">Pre-requisites Met
@@ -153,8 +115,8 @@
   </div>
   <div class="container searchContainer mt-3 p-0 mb-3 rounded overflow-auto" id="Scrollstyle">
     <div class="row">
-      <div class="form-group col-7 p-0">
-        <select class="form-control dropdown">
+      <div class="form-group  col-7 p-0">
+        <select class="form-control dropdown topLeftRounded">
           <option value="Semester">Semester:</option>
           <option value="Fall">Fall</option>
           <option value="Spring">Spring</option>
@@ -164,8 +126,8 @@
           <option value="Summer">Summer</option>
         </select>
       </div>
-      <div class="form-group col-5 p-0">
-        <select class="form-control dropdown">
+      <div class="form-group  col-5 p-0">
+        <select class="form-control dropdown topRightRounded">
           <option value="Year">Year:</option>
           <option value="2021">2021</option>
           <option value="2022">2022</option>
@@ -175,27 +137,65 @@
         </select>
       </div>
     </div>
-    <div id="COMP_141" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-      <i class="fas fa-arrows-alt"></i>
-      <span class="drag_item_text">COMP 141</span>
+    <div class="border rounded-bottom">
+      <div id="COMP_100" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 100</span>
+      </div>
+      <div id="COMP_102" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 102</span>
+      </div>
+      <div id="COMP_103" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 103</span>
+      </div>
+      <div id="COMP_104" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 104</span>
+      </div>
+      <div id="COMP_105" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 105</span>
+      </div>
+      <div id="COMP_106" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 106</span>
+      </div>
+      <div id="COMP_107" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 107</span>
+      </div>
+      <div id="COMP_108" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 108</span>
+      </div>
+      <div id="COMP_109" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 109</span>
+      </div>
+      <div id="COMP_110" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 110</span>
+      </div>
+      <div id="COMP_141" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 141</span>
+      </div>
+      <div id="COMP_205" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 205</span>
+      </div>
+      <div id="COMP_220" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 220</span>
+      </div>
+      <div id="COMP_222" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text">COMP 222</span>
+      </div>
     </div>
-    <div id="COMP_155" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-      <i class="fas fa-arrows-alt"></i>
-      <span class="drag_item_text">COMP 155</span>
     </div>
-    <div id="COMP_205" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-      <i class="fas fa-arrows-alt"></i>
-      <span class="drag_item_text">COMP 205</span>
-    </div>
-    <div id="COMP_220" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-      <i class="fas fa-arrows-alt"></i>
-      <span class="drag_item_text">COMP 220</span>
-    </div>
-    <div id="myItem" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-      <i class="fas fa-arrows-alt"></i>
-      <span class="drag_item_text">COMP 222</span>
-    </div>
-  </div>
 </div>
 
 
