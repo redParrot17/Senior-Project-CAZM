@@ -11,12 +11,12 @@ def index():
 
 
 ## LOGIN ##
-@app.route('/login/' methods=['GET'])
-def login():
+@app.route('/login/', methods=['GET'])
+def login_get():
     return render_template('loginPage.html')
 
-@app.route('/login/' methods=['POST'])
-def login():
+@app.route('/login/', methods=['POST'])
+def login_post():
 
 	#TODO Replace this route handler with proper login credential handling
     return render_template('loginPage.html')
