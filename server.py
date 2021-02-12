@@ -9,10 +9,19 @@ app.config["SECRET_KEY"] = "!kn4fs%dkl#JED*BKS89" # Secret Key for Sessions
 def index():
     return render_template('index.html', sample_value='Purple Unicorns!')
 
-@app.route('/login/')
+
+## LOGIN ##
+@app.route('/login/' methods=['GET'])
 def login():
     return render_template('loginPage.html')
 
+@app.route('/login/' methods=['POST'])
+def login():
+
+	#TODO Replace this route handler with proper login credential handling
+    return render_template('loginPage.html')
+
+## ADVISOR SCHEDULE REVIEW ##
 @app.route('/advisorSchReview/')
 def advisorSchReview():
     classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
