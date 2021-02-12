@@ -12,3 +12,7 @@ def login():
 @app.route('/advisorSchReview/')
 def advisorSchReview():
     return render_template('advisorStudentScheduleReview.html')
+
+@app.route('/advisorHomePreview')
+def advisorHomePreview():
+    return render_template('advisorLandingPage.html')
