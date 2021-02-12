@@ -57,7 +57,13 @@ def advisorSchReview():
 
 @app.route('/advisorHomePreview')
 def advisorHomePreview():
-    return render_template('advisorLandingPage.html')
+    advisees = [
+        {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'email': 'example@gcc.edu', 'status': 1, 'year': 'Senior'},
+        {'id': 207458, 'name': 'Steve Stevenson', 'credits': 50, 'email': 'example@gcc.edu', 'status': 2, 'year': 'Junior'},
+        {'id': 206832, 'name': 'Linus Tech Tips', 'credits': 55, 'email': 'example@gcc.edu', 'status': 3, 'year': 'Sophomore'},
+        {'id': 208776, 'name': 'Shel Silverstein', 'credits': 47, 'email': 'example@gcc.edu', 'status': 4, 'year': 'Freshman'},
+    ]
+    return render_template('advisorLandingPage.html', advisees=advisees)
 
 
 if __name__ == "__main__":
