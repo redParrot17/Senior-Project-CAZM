@@ -44,6 +44,9 @@ local.properties
 env/
 venv/
 
+# mysql config files
+*.cnf
+
 # Tern plugin
 .tern-project
 
