@@ -14,7 +14,7 @@
 .drag_container {
     width: 90%;
     height: 60px;
-    margin: 10px;
+    margin-bottom: 10px;
     border: 1px dashed black;
     display: flex;
     align-items: center;
@@ -26,5 +26,5 @@
     justify-content: center;
 }
 .drag_box_container {
-      /* min-width: 500px; */
+      background-color: white;
 }
