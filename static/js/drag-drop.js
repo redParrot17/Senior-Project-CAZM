@@ -34,8 +34,7 @@ function dragEnd(ev) {
         let dropType = ev.dataTransfer.dropEffect;
 
         // if sourceParent.id = CurrentDrag remove it
-        let sourceParentContainer = ev.srcElement.parentElement.parentElement
-
+        let sourceParentContainer = ev.srcElement.parentElement.parentElement;
         if(dropType === "none" || sourceParentContainer.id === "CurrentDrag") {
             // get data
             let targetNode = ev.target;                              // get the target node (drag_container)
@@ -47,6 +46,9 @@ function dragEnd(ev) {
                 targetNodeContainer.id = ""; // remove the "CurrentDrag" id
                 console.log("tag removed");
             }
+        }
+        else{
+          ev.target.childNodes[5].classList.remove("itemInvisible");
         }
     }
 
