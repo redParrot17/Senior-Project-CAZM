@@ -8,7 +8,7 @@ from mygcc import MyGcc
 ''' set app, cache time, and session secret key '''
 
 #users dictionary
-user = {}
+users = {}
 
 
 app = Flask(__name__)
@@ -39,8 +39,8 @@ def login_get():
 
 @app.route('/login/', methods=['POST'])
 def login_post():
-    username=flask.request.form['username']
-    password=flask.request.form['password']
+    username = flask.request.form['username']
+    password = flask.request.form['password']
     mygcc = MyGcc(username, password)
     try:
         mygcc.login()
@@ -48,7 +48,7 @@ def login_post():
         is_advisor = mygcc.advising.is_advisor
         if user_id is not None:
             user = User(user_id, is_advisor, username, password)
-            users[user.get_id()] = users
+            users[user.get_id()] = user
             flask_login.login_user(user)
             if is_advisor:
                 return flask.redirect(flask.url_for("advisorHomePreview"))
@@ -56,8 +56,8 @@ def login_post():
                 return flask.redirect(flask.url_for("advisorHomePreview"))
         else:
             print('Bad Login')
-    except Exception:
-        print('Bad Login')
+    except Exception as exception:
+        print('Bad Login', exception)
 	#TODO Replace this route handler with proper login credential handling
     return render_template('loginPage.html')
 
@@ -95,7 +95,7 @@ def advisorSchReview():
     return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet)
 
 
-@app.route('/advisorHomePreview')
+@app.route('/advisorHomePreview/')
 def advisorHomePreview():
     advisees = [
         {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'email': 'example@gcc.edu', 'status': 1, 'year': 'Senior'},

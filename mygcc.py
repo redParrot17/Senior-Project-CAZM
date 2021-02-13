@@ -376,10 +376,6 @@ class MyGcc:
     def login(self):
         dc = self._dc
         dc.http_get(dc.to_url('/ICS/'))
-
-        with open('output.html', 'w+') as f:
-            f.write(dc.response.text)
-
         soup = dc.make_soup()
 
         # check for invalid login
