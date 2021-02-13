@@ -6,6 +6,7 @@
     text-align: center;
     color: white;
     margin: 10% 0;
+    min-width: 100%;
 }
 
 .student-info h1 {
