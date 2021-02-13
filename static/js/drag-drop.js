@@ -45,10 +45,13 @@ function dragEnd(ev) {
             if( targetNodeContainer.classList.contains("drag_box") ) {
                 targetNodeContainer.id = ""; // remove the "CurrentDrag" id
                 console.log("tag removed");
+                //ev.target.childNodes[5].classList.add("itemInvisible");
+                //ev.target.classList.add("drag_item_fill");
             }
         }
         else{
-          ev.target.childNodes[5].classList.remove("itemInvisible");
+
+
         }
     }
 
@@ -63,12 +66,15 @@ function drop(ev) {
 
     // check if (drag_box > drag_container) div already has an item
     if (!targetNode.classList.contains("drag_container")) {
+      //console.log(ev)
         return;
     }
 
     // add dragged item to drag_container
     targetNode.appendChild(document.getElementById(id));     // add the item transfered to the target element
     targetNode.classList.add("bg-light");                    // makes spot white bg
+    document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
+    document.getElementById(id).classList.add("drag_item_fill");
 
     // create a new (drag_box > drag_container) div
     createDiv(targetNodeContainer);                          // create a new div for elements to be dragged to
@@ -80,4 +86,23 @@ function drop(ev) {
         removeDiv(parentNode);                               // if a valid item to remove remove the item
         console.log("div removed")
     }
+}
+
+
+function removeDragItem(ev) {
+  console.log(ev.target);
+  ev.target.remove("itemInvisible");
+
+  // get data
+  //let targetNode = ev.target;                              // get the target node (drag_container)
+  //let targetNodeParent = targetNode.parentElement;         // get the target node (drag_box)
+  //let targetNodeContainer = targetNodeParent.parentElement;// get the target node (drag_box_container)
+
+  // if the place dragged from was a (drag_box > drag_container) div, add
+  //if( targetNodeContainer.classList.contains("drag_box") ) {
+      //targetNodeContainer.id = ""; // remove the "CurrentDrag" id
+      //console.log("tag removed");
+      //ev.target.childNodes[5].classList.add("itemInvisible");
+      //ev.target.classList.add("drag_item_fill");
+  //}
 }
