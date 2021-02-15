@@ -17,7 +17,9 @@
             <div class="row">
                 <button type="button" class="hb-btn rounded">Print Schedule</button>
                 <button type="button" class="hb-btn rounded" id="editScheduleBtn">Edit Schedule</button>
-                <button class="hb-btn rounded" id="logoutbtn">Log Out</button>
+                <form class="form-inline" action="/logout" method="post">
+                    <button class="hb-btn rounded" id="logoutbtn" type="submit">Logout</button>
+                </form>
             </div>
             <div class="row">
                 <div id="studentInfo">
@@ -53,11 +55,11 @@
             setStudentInfo(JSON.parse('{{student|tojson}}'))
         </script>
 
-        <script>
+        <!-- <script>
             document.getElementById("logoutbtn").onclick = function () {
                 location.href = "/login/"
             };
-        </script>
+        </script> -->
 
         <script>
             document.getElementById("editScheduleBtn").onclick = function () {

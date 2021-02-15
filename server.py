@@ -4,8 +4,10 @@ import flask_login
 from flask_login import login_required
 from os import urandom
 from user import User
-from mygcc import MyGcc
 from database import Database
+
+from webscraping.mygcc import MyGcc
+import webscraping.errors as errors
 ''' set app, cache time, and session secret key '''
 
 #users dictionary
@@ -37,15 +39,23 @@ def load_user(user_id):
 def login_get():
     return render_template('loginPage.html')
 
+@app.route('/', methods=['POST'])
 @app.route('/login/', methods=['POST'])
 def login_post():
+
+    # fetch the username and password
     username = flask.request.form['username']
     password = flask.request.form['password']
     mygcc = MyGcc(username, password)
+
     try:
+        # try to login to mygcc via the supplied credentials
         mygcc.login()
+
+        # fetch the user's id and if they are an advisor
         user_id = mygcc.profile.user_id
         is_advisor = mygcc.advising.is_advisor
+
         if user_id is not None:
             user = User(user_id, is_advisor, username, password)
             users[user.get_id()] = user
@@ -53,13 +63,30 @@ def login_post():
             if is_advisor:
                 return flask.redirect(flask.url_for("advisorHomePreview"))
             else:
-                return flask.redirect(flask.url_for("advisorHomePreview"))
+                return flask.redirect(flask.url_for("studentLanding"))
         else:
-            print('Bad Login')
-    except Exception as exception:
-        print('Bad Login', exception)
+            # return to login if no user id was found
+            return flask.redirect(flask.url_for('login_get'))
+
+    except errors.LoginError:
+        # return to login if the credentials were invalid
+        return flask.redirect(flask.url_for('login_get'))
+
 	#TODO Replace this route handler with proper login credential handling
     return render_template('loginPage.html')
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    # removes the user from the cache
+    user = flask_login.current_user
+    if user.get_id() in users:
+        del users[user.get_id()]
+    
+    # logs out the user
+    flask_login.logout_user()
+
+    return flask.redirect(flask.url_for('login_get'))
 
 ## ADVISOR SCHEDULE REVIEW ##
 @app.route('/advisorSchReview/')

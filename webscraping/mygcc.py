@@ -1,124 +1,12 @@
-from bs4 import BeautifulSoup
-import requests
-
-
-class DataCollection:
-    BASEURL = 'https://my.gcc.edu'
-
-    def __init__(self, username, password):
-        self.__username = username
-        self.__password = password
-        self.__session = None
-        self.response = None
-
-    def http_get(self, url, **kwargs):
-        if self.__session is None:
-            self._create_session()
-        self.response = self.__session.get(url, **kwargs)
-        return self.response
-
-    def http_post(self, url, **kwargs):
-        if self.__session is None:
-            self._create_session()
-        self.response = self.__session.post(url, **kwargs)
-        return self.response
-
-    def ensure_screen(self, url):
-        if self.response is None or self.response.url != url:
-            self.http_get(url)
-
-    def to_url(self, path):
-        if path.startswith(self.BASEURL):
-            return path
-        path = '/' + path.lstrip('/')
-        return self.BASEURL + path
-
-    def make_soup(self, features='html.parser'):
-        """Makes a BeautifulSoup object for the last GET or POST response.
-
-        :param features: - Desirable features of the parser to be
-         used. This may be the name of a specific parser ("lxml",
-         "lxml-xml", "html.parser", or "html5lib") or it may be the
-         type of markup to be used ("html", "html5", "xml"). It's
-         recommended that you name a specific parser, so that
-         Beautiful Soup gives you the same results across platforms
-         and virtual environments. (defaults to html.parser)
-
-        :return: the BeautifulSoup object or None if no response exists
-        """
-        if self.response is not None:
-            return BeautifulSoup(self.response.text, features=features)
-        return None
-
-    def prepare_payload(self, payload=None, postback: str=None, search=''):
-        """This formats a payload dictionary to include within POST and GET requests.
-
-        https://my.gcc.edu/ uses the values of hidden html input tags to keep track
-        of the context of actions. It requires the values of those tags to be attached
-        to the payload, so this method automatically takes care of adding in those values.
-
-        :param payload: - the dictionary to prepare (defaults to making a new dictionary)
-        :param postback: - an optional postback string "javascript:__doPostBack('eventTargetValue','eventArgumentValue')"
-        :param search: - the default search parameter (set to None to exclude search)
-        :return: the newly prepared payload dictionary
-        """
-
-        # default to a new empty dictionary if none was provided
-        if payload is None:
-            payload = {}
-
-        # mygcc uses the values of several hidden html tags to track the
-        # current viewstate of the user in order to determine context.
-        # This fetches and includes those tags within the payload.
-        soup = self.make_soup()
-        if soup is not None:
-            for hidden_input in soup.find_all('input', {'type': 'hidden'}):
-                input_name = hidden_input.get('name')
-                input_value = hidden_input.get('value')
-                if input_name is not None and input_value is not None:
-                    payload[input_name] = input_value
-
-        # If a formatted postback string was included, we need to parse it
-        # this string tells mygcc what action the user is attempting to do.
-        if postback is not None:
-            # javascript:__doPostBack('eventTargetValue','eventArgumentValue')
-            postback = postback.replace('javascript:__doPostBack(', '')
-            postback = postback.replace(')', '')
-            postback = postback.replace("'", '')
-            postback_elements = postback.split(',', 1)
-            if len(postback_elements) == 2:
-                payload['__EVENTTARGET'] = postback_elements[0]
-                payload['__EVENTARGUMENT'] = postback_elements[1]
-
-        # This empty search tag is included in most requests, so we
-        # automatically include it unless told otherwise.
-        if search is not None:
-            payload['siteNavBar$ctl00$tbSearch'] = search
-
-        return payload
-
-    def _create_session(self):
-        """Creates a new Session and performs login"""
-        url = self.to_url('/ICS/')
-        payload = {
-            '_scriptManager_HiddenField': '',
-            '__EVENTTARGET': '',
-            '__EVENTARGUMENT': '',
-            '__VIEWSTATE': '',
-            '__VIEWSTATEGENERATOR': '',
-            '___BrowserRefresh': '',
-            'siteNavBar$ctl00$tbSearch': '',
-            'userName': self.__username,
-            'password': self.__password,
-            'siteNavBar$btnLogin': 'Login'}
-        self.__session = requests.Session()
-        self.response = self.__session.post(url, data=payload)
+from webscraping.scraperutils import ScraperUtils
+from webscraping.adviseescraper import AsyncAdviseeScraper
+import webscraping.errors as errors
 
 
 class ProfileInformation:
     PROFILEURL = 'https://my.gcc.edu/ICS/'
 
-    def __init__(self, data_collection: DataCollection):
+    def __init__(self, data_collection: ScraperUtils):
         self.dc = data_collection
         self._screen = None
 
@@ -163,8 +51,7 @@ class ProfileInformation:
     def photo(self):
         if self.__photo is None:
             self._ensure_screen('AboutMeView')
-            soup = self.dc.make_soup()
-            element = soup.find('span', dict(id='UploadedImage'))
+            element = self.dc.html.find('span', dict(id='UploadedImage'))
             img_text = element.get('style') if element else ''
             self.__photo = self.dc.to_url(img_text.split("'")[1]) if img_text else ''
         return self.__photo
@@ -173,10 +60,10 @@ class ProfileInformation:
     def name(self):
         if self.__name is None:
             self._ensure_screen('AboutMeView')
-            soup = self.dc.make_soup()
+            html = self.dc.html
 
             # get prefix
-            prefix_elem = soup.find('select', dict(id='CP_V_LegalPrefix'))
+            prefix_elem = html.find('select', dict(id='CP_V_LegalPrefix'))
             if prefix_elem is not None:
                 prefix_option = prefix_elem.find('option', dict(selected='selected'))
                 prefix = prefix_option.text if prefix_option else ''
@@ -184,19 +71,19 @@ class ProfileInformation:
                 prefix = ''
 
             # get first name
-            fname_elem = soup.find('input', dict(id='CP_V_LegalFirstName'))
+            fname_elem = html.find('input', dict(id='CP_V_LegalFirstName'))
             fname = fname_elem.get('value') if fname_elem else ''
 
             # get middle name
-            mname_elem = soup.find('input', dict(id='CP_V_LegalMiddleName'))
+            mname_elem = html.find('input', dict(id='CP_V_LegalMiddleName'))
             mname = mname_elem.get('value') if mname_elem else ''
 
             # get last name
-            lname_elem = soup.find('input', dict(id='CP_V_LegalLastName'))
+            lname_elem = html.find('input', dict(id='CP_V_LegalLastName'))
             lname = lname_elem.get('value') if lname_elem else ''
 
             # get suffix
-            suffix_elem = soup.find('select', dict(id='CP_V_LegalSuffix'))
+            suffix_elem = html.find('select', dict(id='CP_V_LegalSuffix'))
             if suffix_elem is not None:
                 suffix_option = suffix_elem.find('option', dict(selected='selected'))
                 suffix = suffix_option.text if suffix_option else ''
@@ -335,8 +222,7 @@ class ProfileInformation:
 
     def _span_template(self, screen, elem_id):
         self._ensure_screen(screen)
-        soup = self.dc.make_soup()
-        element = soup.find('span', dict(id=elem_id))
+        element = self.dc.html.find('span', dict(id=elem_id))
         return element.text if element else ''
 
     @staticmethod
@@ -350,50 +236,52 @@ class ProfileInformation:
 class AdvisingInformation:
     ADVISINGURL = 'https://my.gcc.edu/ICS/Advising/'
 
-    def __init__(self, data_collection: DataCollection):
+    def __init__(self, data_collection: ScraperUtils, username, password):
         self.dc = data_collection
+        self.__username = username
+        self.__password = password
         self.__is_advisor = None
 
     @property
     def is_advisor(self):
         if self.__is_advisor is None:
-            self.dc.ensure_screen(self.ADVISINGURL)
-            error = "The page you are requesting may require you to be " \
-                    "logged in or you do not have permission to see it."
-            self.__is_advisor = error not in self.dc.response.text
+            try:
+                self.dc.http_get(self.ADVISINGURL)
+                self.__is_advisor = True
+            except errors.UnauthorizedError:
+                self.__is_advisor = False
         return self.__is_advisor
+
+    def get_advisee_scraper(self, callback):
+        return AsyncAdviseeScraper(self.__username, self.__password, callback)
 
 
 class MyGcc:
 
     def __init__(self, username, password):
-        self._dc = DataCollection(username, password)
+        self._dc = ScraperUtils()
+        self.__username = username
+        self.__password = password
         self._logged_in = False
         self.__profile = None
-        self.__student = None
         self.__advising = None
 
     def login(self):
         dc = self._dc
-        dc.http_get(dc.to_url('/ICS/'))
-        soup = dc.make_soup()
-
-        # check for invalid login
-        error_elem = soup.find('div', dict(id='CP_V_Summary'))
-        if error_elem is not None:
-            raise Exception(error_elem.text.strip('"') or 'Invalid login')
-
-        # check for not being logged in
-        login_btn = soup.find('input', dict(id='siteNavBar_btnLogin'))
-        if login_btn is not None:
-            raise Exception('Invalid login')
-
+        dc.perform_login(self.__username, self.__password)
+        dc.check_for_error_message()
         self._logged_in = True
         return True
 
-
     def logout(self):
-        pass
+        dc = self._dc
+        if self._logged_in:
+            logout_btn = dc.html.find('a', {'id': 'logout'})
+            if logout_btn is not None:
+                action, payload = dc.prepare_payload(nav_element=logout_btn)
+                post_url = dc.BASE_URL + action
+                dc.http_post(post_url, data=payload)
+            self._logged_in = False
 
     @property
     def profile(self):
@@ -406,7 +294,7 @@ class MyGcc:
     def advising(self):
         if self.__advising is None:
             self._ensure_login()
-            self.__advising = AdvisingInformation(self._dc)
+            self.__advising = AdvisingInformation(self._dc, self.__username, self.__password)
         return self.__advising
 
     def _ensure_login(self):
