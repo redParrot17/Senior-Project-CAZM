@@ -26,7 +26,7 @@
                 <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
                     {% for schedule in studentSchedule %}
                         <div class="schedule-semester">
-                            <h4>{{schedule.get("semester")}}</h4>
+                            <h4>{{schedule.get("semester")}} {{schedule.get("year")}}</h4>
 
                             {% for class in schedule.get("classes") %}
                                 {% if loop.index % 2 == 1 %}
