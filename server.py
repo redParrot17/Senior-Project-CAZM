@@ -76,7 +76,6 @@ def login_post():
     return render_template('loginPage.html')
 
 @app.route('/logout', methods=['POST'])
-@login_required
 def logout():
     # removes the user from the cache
     user = flask_login.current_user
