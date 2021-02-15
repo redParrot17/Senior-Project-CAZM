@@ -209,7 +209,7 @@ class ScraperUtils:
                 raise errors.PageRedirectError('Page was redirected due to improper navigation.')
             else:
                 raise errors.PageError(f'An unknown page error occurred: {alert_text}')
-                else:
+        else:
             element = html.find('span', {'id': 'CP_V_lblLoginError'})
             if element is not None:
                 raise errors.LoginError(element.get_text())
