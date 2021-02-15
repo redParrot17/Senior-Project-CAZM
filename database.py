@@ -47,5 +47,5 @@ class Database:
 
          course_info = []
          for course_code, year, semester in results:
-             course_info.append([course_code, year, semester, argument1])
+             course_info.append([course_code, year, semester])
          return course_info
