@@ -95,15 +95,23 @@ def advisorSchReview():
     return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet)
 
 
-@app.route('/advisorHomePreview/')
+@app.route('/advisorHomePreview/', methods=['GET', 'POST'])
 def advisorHomePreview():
-    advisees = [
-        {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'email': 'example@gcc.edu', 'status': 1, 'year': 'Senior'},
-        {'id': 207458, 'name': 'Steve Stevenson', 'credits': 50, 'email': 'example@gcc.edu', 'status': 2, 'year': 'Junior'},
-        {'id': 206832, 'name': 'Linus Tech Tips', 'credits': 55, 'email': 'example@gcc.edu', 'status': 3, 'year': 'Sophomore'},
-        {'id': 208776, 'name': 'Shel Silverstein', 'credits': 47, 'email': 'example@gcc.edu', 'status': 4, 'year': 'Freshman'},
-    ]
-    return render_template('advisorLandingPage.html', advisees=advisees)
+    if flask.request.method == 'POST':
+        # json = flask.request.get_json()
+        # if json is not None:
+        #     user_id = json.get('user')
+        #     print(f'requesting advisor view of student {user_id}')
+        #     return flask.redirect(flask.url_for('advisorViewingStudent'))
+        pass
+    else:
+        advisees = [
+            {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'email': 'example@gcc.edu', 'status': 1, 'year': 'Senior', 'major': 'Major'},
+            {'id': 207458, 'name': 'Steve Stevenson', 'credits': 50, 'email': 'example@gcc.edu', 'status': 2, 'year': 'Junior', 'major': 'Major'},
+            {'id': 206832, 'name': 'Linus Tech Tips', 'credits': 55, 'email': 'example@gcc.edu', 'status': 3, 'year': 'Sophomore', 'major': 'Major'},
+            {'id': 208776, 'name': 'Shel Silverstein', 'credits': 47, 'email': 'example@gcc.edu', 'status': 4, 'year': 'Freshman', 'major': 'Major'},
+        ]
+        return render_template('advisorLandingPage.html', advisees=advisees)
 
 
 @app.route('/studentLanding')
@@ -186,6 +194,12 @@ def advisorViewingStudent():
 
 
 if __name__ == "__main__":
+    # from webscraping.adviseescraper import AsyncAdviseeScraper
+    # import getpass
+    # username = input('Username: ')
+    # password = getpass.getpass()
+    # scraper = AsyncAdviseeScraper(username, password, lambda a: _)
+    # scraper.start()
     app.run(debug=True)
 
 # Having debug=True allows possible Python errors to appear on the web page

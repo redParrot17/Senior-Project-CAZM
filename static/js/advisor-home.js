@@ -101,12 +101,30 @@ function sortAdvisees(advisees) {
 
 // CALLBACK FUNCTIONS //
 
+// Sends an html POST request to the current location
+function httpPost(object) {
+    let xhr = new XMLHttpRequest();
+    let url = window.location.href;
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        if (xhr.readyState === xhr.DONE) {
+            if (xhr.status === 200) {
+                console.log(xhr.response);
+                console.log(xhr.responseText);
+            }
+        }
+    }
+    xhr.send(JSON.stringify(object));
+}
+
 function onClickAdvisee(user_id) {
-    console.log(user_id);
+    window.location.href = `/studentProfile`;
 }
 
 function onClickLogout() {
     console.log('Perform logout')
+    window.location.href = '/'
 }
 
 function onClickMessage() {
