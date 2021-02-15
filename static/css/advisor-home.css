@@ -14,6 +14,26 @@
 .list-group {
     max-height: 400px;
     margin-bottom: 10px;
+    padding-left: 30px; 
+    padding-right: 30px;
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.list-group::-webkit-scrollbar {
+    display: none;
+}
+
+.advisee:hover {
+    background-color: lightgray;
+}
+
+.richText-btn {
+    color: black;
+}
+
+.emailRichText {
+    background-color: white;
 }
