@@ -23,6 +23,8 @@ class Advisee:
             * major:           the title of the student's major
         """
 
+        print(values)
+
         self.user_id = values.pop('user_id')
         self.email = values.pop('email')
         self.name = values.pop('name')

@@ -4,8 +4,10 @@ import flask_login
 from flask_login import login_required
 from os import urandom
 from user import User
-from mygcc import MyGcc
 from database import Database
+
+from webscraping.mygcc import MyGcc
+import webscraping.errors as errors
 ''' set app, cache time, and session secret key '''
 
 #users dictionary
@@ -37,15 +39,23 @@ def load_user(user_id):
 def login_get():
     return render_template('loginPage.html')
 
+@app.route('/', methods=['POST'])
 @app.route('/login/', methods=['POST'])
 def login_post():
+
+    # fetch the username and password
     username = flask.request.form['username']
     password = flask.request.form['password']
     mygcc = MyGcc(username, password)
+
     try:
+        # try to login to mygcc via the supplied credentials
         mygcc.login()
+
+        # fetch the user's id and if they are an advisor
         user_id = mygcc.profile.user_id
         is_advisor = mygcc.advising.is_advisor
+
         if user_id is not None:
             user = User(user_id, is_advisor, username, password)
             users[user.get_id()] = user
@@ -53,13 +63,29 @@ def login_post():
             if is_advisor:
                 return flask.redirect(flask.url_for("advisorHomePreview"))
             else:
-                return flask.redirect(flask.url_for("advisorHomePreview"))
+                return flask.redirect(flask.url_for("studentLanding"))
         else:
-            print('Bad Login')
-    except Exception as exception:
-        print('Bad Login', exception)
+            # return to login if no user id was found
+            return flask.redirect(flask.url_for('login_get'))
+
+    except errors.LoginError:
+        # return to login if the credentials were invalid
+        return flask.redirect(flask.url_for('login_get'))
+
 	#TODO Replace this route handler with proper login credential handling
     return render_template('loginPage.html')
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    # removes the user from the cache
+    user = flask_login.current_user
+    if user.get_id() in users:
+        del users[user.get_id()]
+    
+    # logs out the user
+    flask_login.logout_user()
+
+    return flask.redirect(flask.url_for('login_get'))
 
 ## ADVISOR SCHEDULE REVIEW ##
 @app.route('/advisorSchReview/')
@@ -117,41 +143,51 @@ def advisorHomePreview():
 @app.route('/studentLanding')
 def studentLanding():
 	student = [ {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'status': 'Pending', 'grad_semester': 'Spring 2024', 'major': 'Computer Science'} ]
-	studentSchedule = [
-		{
-			'semester': 'Fall 2020',
-			'classes': ['COMP 141', 'COMP 155', 'MATH 161', 'PHYS 101', 'HUMA 102']
-		},
-		{
-			'semester': 'Spring 2021',
-			'classes': ['COMP 220', 'MATH 162', 'PHYS 102', 'WRIT 101', 'PHYE 100']
-		},
-		{
-			'semester': 'Fall 2021',
-			'classes': ['COMP 222', 'COMP 244', 'MATH 213', 'HUMA 200', 'PSYC 101', 'General Elective']
-		},
-		{
-			'semester': 'Spring 2022',
-			'classes': ['COMP 205', 'COMP 233', 'COMP 342', 'MATH 214', 'HUMA 202']
-		},
-		{
-			'semester': 'Fall 2022',
-			'classes': ['COMP 325', 'COMP 422', 'COMP 390', 'COMP 401', 'HUMA 301', 'General Elective']
-		},
-		{
-			'semester': 'Spring 2023',
-			'classes': ['COMP 314', 'COMP 340', 'COMP 350', 'COMP 402', 'General Elective', 'General Elective']
-		},
-		{
-			'semester': 'Fall 2023',
-			'classes': ['COMP 448', 'COMP 451', 'COMP 435', 'HUMA 303', 'General Elective', 'General Elective']
-		},
-		{
-			'semester': 'Spring 2024',
-			'classes': ['COMP 443', 'COMP 452', 'COMP 441', 'General Elective', 'General Elective']
-		}
-	]
-	return render_template('studentLanding.html', student=student, studentSchedule=studentSchedule)
+	db = Database()
+	template = db.get_template(1)
+	# studentSchedule = [
+	# 	{
+	# 		'semester': 'Fall',
+    #         'year': '2020',
+	# 		'classes': ['COMP 141', 'COMP 155', 'MATH 161', 'PHYS 101', 'HUMA 102']
+	# 	},
+	# 	{
+	# 		'semester': 'Spring',
+    #         'year': '2021',
+	# 		'classes': ['COMP 220', 'MATH 162', 'PHYS 102', 'WRIT 101', 'PHYE 100']
+	# 	},
+	# 	{
+	# 		'semester': 'Fall',
+    #         'year': '2021',
+	# 		'classes': ['COMP 222', 'COMP 244', 'MATH 213', 'HUMA 200', 'PSYC 101', 'General Elective']
+	# 	},
+	# 	{
+	# 		'semester': 'Spring',
+    #         'year': '2022',
+	# 		'classes': ['COMP 205', 'COMP 233', 'COMP 342', 'MATH 214', 'HUMA 202']
+	# 	},
+	# 	{
+	# 		'semester': 'Fall',
+    #         'year': '2022',
+	# 		'classes': ['COMP 325', 'COMP 422', 'COMP 390', 'COMP 401', 'HUMA 301', 'General Elective']
+	# 	},
+	# 	{
+	# 		'semester': 'Spring',
+    #         'year': '2023',
+	# 		'classes': ['COMP 314', 'COMP 340', 'COMP 350', 'COMP 402', 'General Elective', 'General Elective']
+	# 	},
+	# 	{
+	# 		'semester': 'Fall',
+    #         'year': '2023',
+	# 		'classes': ['COMP 448', 'COMP 451', 'COMP 435', 'HUMA 303', 'General Elective', 'General Elective']
+	# 	},
+	# 	{
+	# 		'semester': 'Spring',
+    #         'year': '2024',
+	# 		'classes': ['COMP 443', 'COMP 452', 'COMP 441', 'General Elective', 'General Elective']
+	# 	}
+	# ]
+	return render_template('studentLanding.html', student=student, studentSchedule=template)
 
 @app.route("/studentProfile/")
 def advisorViewingStudent():

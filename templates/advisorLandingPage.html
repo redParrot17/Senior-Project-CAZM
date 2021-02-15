@@ -27,9 +27,8 @@
         <nav class="navbar navbar-dark" style="background-color: #B0002A;">
             <div class="container">
                 <a class="navbar-brand">HBCAZM</a>
-                <form class="form-inline">
-                    <button class="btn btn-outline-light my-2 my-sm-0" 
-                        type="button" onclick="onClickLogout()">Logout</button>
+                <form class="form-inline" action="/logout" method="post">
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
                 </form>
             </div>
         </nav>
@@ -47,13 +46,19 @@
 
 
             <div id="toolbar">
+
+                <!-- Search bar for filtering table results -->
                 <div class="form-group row">
                     <div class="col input-group">
                         <input type="search" id="search-text" class="form-control rounded" placeholder="Filter (name or student id)" aria-label="Search">
                         <button type="button" id="search-btn" class="btn btn-outline-primary">search</button>
                     </div>
                 </div>
+
+                <!-- Filter and sort options for displaying table results -->
                 <div class="form-group row">
+
+                    <!-- Filter results by scheduling status -->
                     <div class="col-8">
                         <div id="status-selector" class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
                             <label class="btn btn-secondary active">
@@ -71,17 +76,14 @@
                         </div>
                     </div>
 
+                    <!-- Filtering results by year (Senior/Freshman/Junior etc..) -->
                     <div class="col">
                         <select id="filterYearSelection" class="form-control">
                             <option selected>All Years...</option>
-                            <option>Super-Senior</option>
-                            <option>Senior</option>
-                            <option>Junior</option>
-                            <option>Sophomore</option>
-                            <option>Freshman</option>
                         </select>
                     </div>
 
+                    <!-- Which field to sort the results by -->
                     <div class="col">
                         <select id="sortBySelection" class="form-control">
                             <option selected>Sort By...</option>
@@ -91,12 +93,15 @@
                         </select>
                     </div>
                 </div>
-            </form>
+
+            </div>
 
             <div class="line"></div>
 
+            <!-- The "table" that the results will be displayed in -->
             <ul class="list-group" id="table"></ul>
 
+            <!-- Button to trigger the email modal -->
             <div class="row" style="margin-top: 30px;">
                 <div class="col text-center">
                     <button 
