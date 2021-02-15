@@ -54,22 +54,22 @@ class Database:
         cursor = self.db.cursor(buffered=True)
 
         args = (major_code,)
-        sql = 'SELECT COURSE_CODE, SEMESTER, YEAR FROM SCHEDULE_COURSES ORDER BY YEAR DESC, SEMESTER WHERE SCHEDULE_ID=%s;'
+        sql = 'SELECT COURSE_CODE, SEMESTER, YEAR FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s ORDER BY YEAR ASC, SEMESTER DESC;'
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
 
         template = []
         courses = []
-        current_semester = ""
-        current_year = ""
+        current_semester = "FALL"
+        current_year = "2020"
         for course_code, semester, year in results:
-            if courses and semester + year != current_semester + current_year:
-                template.append([current_semester, current_year, courses]) #append semester schedule to template
+            if courses and semester + str(year) != current_semester + current_year:
+                template.append({'semester': current_semester, 'year':current_year, 'classes': courses}) #append semester schedule to template
                 courses = [] #clear courses
                 current_semester = semester
-                current_year = year
+                current_year = str(year)
             courses.append(course_code)
-            
+
         return template
             
