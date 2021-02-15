@@ -25,7 +25,7 @@ class Database:
         cursor.execute(sql, arg)
 
         # fetch all the rows resulting from the sql statement return value
-        result = cursor.fetchall()
+        results = cursor.fetchall()
 
         # close the cursor
         cursor.close()
@@ -39,8 +39,8 @@ class Database:
     def search_course_codes(self, argument1):
          cursor = self.db.cursor(buffered=True)
 
-         args = argument1 + "%"
-         sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE COURSE_CODE LIKE "%s";'
+         args = (argument1 + "%",)
+         sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE COURSE_CODE LIKE %s;'
          cursor.execute(sql, args)
          results = cursor.fetchall()
          cursor.close()
