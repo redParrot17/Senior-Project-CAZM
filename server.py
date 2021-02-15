@@ -1,10 +1,11 @@
 import flask
-from flask import Flask,render_template
+from flask import Flask,render_template, request, jsonify
 import flask_login
 from flask_login import login_required
 from os import urandom
 from user import User
 from mygcc import MyGcc
+from database import Database
 ''' set app, cache time, and session secret key '''
 
 #users dictionary
@@ -27,12 +28,11 @@ def load_user(user_id):
     return users.get(user_id)
 
 
-@app.route('/')
-def index():
-    return render_template('index.html', sample_value='Purple Unicorns!')
+
 
 
 ## LOGIN ##
+@app.route('/')
 @app.route('/login/', methods=['GET'])
 def login_get():
     return render_template('loginPage.html')
@@ -111,3 +111,13 @@ if __name__ == "__main__":
 
 # Having debug=True allows possible Python errors to appear on the web page
 # run with $> python server.py
+
+@app.route('/searchClasses/')
+def searchClasses():
+    DB = Database()
+    class_name = request.args.get('class_name', 0, type=str)
+    
+    query_results = DB.search_course_codes(class_name)
+
+    return(jsonify(query_results))
+

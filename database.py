@@ -1,6 +1,7 @@
 import mysql.connector
 
 
+
 class Database:
 
     def __init__(self, config_file='mysql.cnf'):
@@ -34,3 +35,17 @@ class Database:
         for foo, bar in results:
             return_value.append([foo, bar])
         return return_value
+
+    def search_course_codes(self, argument1):
+         cursor = self.db.cursor(buffered=True)
+
+         args = argument1 + "%"
+         sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE COURSE_CODE LIKE "%s";'
+         cursor.execute(sql, args)
+         results = cursor.fetchall()
+         cursor.close()
+
+         course_info = []
+         for course_code, year, semester in results:
+             course_info.append([course_code, year, semester, argument1])
+         return course_info
