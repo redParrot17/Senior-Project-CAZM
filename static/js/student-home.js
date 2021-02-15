@@ -9,7 +9,7 @@ function setStudentInfo(json) {
 
 function buildStudentInfo(student) {
     return [
-        '<div class="col-4 bg-gcc-primary student-info">',
+        '<div class="bg-gcc-primary p-2 student-info rounded">',
                     `<h1>${student.name}</h1>`,
                     `<h2>Student ID: ${student.id}</h2>`,
 

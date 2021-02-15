@@ -7,31 +7,44 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/css/project.css">
         <link rel="stylesheet" href="/static/css/studentPage.css">
+        <link href="/static/css/advisorStudentSchedule.css" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <div class="container">
             <div class="row">
-                <button class="hb-btn rounded" id="backBtn">Back</button>
-                <button type="button" class="hb-btn rounded">Print Schedule</button>
-                <button class="hb-btn rounded">Message Student</button>
-                <button type="button" class="hb-btn rounded" id="editScheduleBtn">Edit Schedule</button>
+                <div class="col-3">
+                  <button type="button" class="hb-btn rounded" id="backButton">Back</button>
+                </div>
+                <div class="col-3">
+                  <button type="button" class="hb-btn rounded">Print Schedule</button>
+                </div>
+                <div class="col-3">
+                  <button class="hb-btn rounded">Message Student</button>
+                </div>
+                <div class="col-3">
+                  <button type="button" class="hb-btn rounded" id="editScheduleBtn">Edit Schedule</button>
+                </div>
             </div>
             <div class="row">
-                <div id="studentInfo">
+              <div class="col-4">
+                <div class="height100p10 rounded" id="studentInfo">
                 </div>
-
-                <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
+              </div>
+              <div class="col">
+                <div class="landing-schedule rounded overflow-auto p-2" id="Scrollstyle">
+                  <div class="SSheaderText rounded p-2">
+                    <h4> Course Schedule </h4>
+                  </div>
                     {% for schedule in studentSchedule %}
-                        <div class="schedule-semester">
-                            <h4>{{schedule.get("semester")}}</h4>
+                        <fieldset class="schedule-semester rounded">
+                            <legend>{{schedule.get("semester")}}</legend>
 
                             {% for class in schedule.get("classes") %}
                                 {% if loop.index % 2 == 1 %}
-                            <div class="container">
+                            <div class="container rounded">
                                 <div class="row justify-content-center">
                                 {%endif%}
                                     <div class="col-5">
@@ -42,11 +55,11 @@
                             </div>
                                 {%endif%}
                             {%endfor%}
-                        </div>
+                        </fieldset>
                     {% endfor %}
                 </div>
+              </div>
             </div>
-        </div>
 
         <!-- Javascripts -->
         <script src="/static/js/student-home.js"></script>
@@ -55,7 +68,7 @@
         </script>
 
         <script>
-            document.getElementById("backBtn").onclick = function () {
+            document.getElementById("backButton").onclick = function () {
                 location.href = "/advisorHomePreview"
             };
         </script>

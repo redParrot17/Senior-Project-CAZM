@@ -1,4 +1,4 @@
-/* CSS used for both student landing page 
+/* CSS used for both student landing page
     and advisor viewing student page */
 
 .hb-btn {
@@ -7,6 +7,6 @@
     background-color: #111;
     color: white;
     padding: 10px 25px;
-    margin: 0px 20px;
+    margin: 10px;
     border: none;
 }
