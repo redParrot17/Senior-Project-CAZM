@@ -49,3 +49,27 @@ class Database:
          for course_code, year, semester in results:
              course_info.append([course_code, year, semester])
          return course_info
+    
+    def get_template(self, major_code):
+        cursor = self.db.cursor(buffered=True)
+
+        args = (major_code,)
+        sql = 'SELECT COURSE_CODE, SEMESTER, YEAR FROM SCHEDULE_COURSES ORDER BY YEAR DESC, SEMESTER WHERE SCHEDULE_ID=%s;'
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+        template = []
+        courses = []
+        current_semester = ""
+        current_year = ""
+        for course_code, semester, year in results:
+            if courses and semester + year != current_semester + current_year:
+                template.append([current_semester, current_year, courses]) #append semester schedule to template
+                courses = [] #clear courses
+                current_semester = semester
+                current_year = year
+            courses.append(course_code)
+            
+        return template
+            
