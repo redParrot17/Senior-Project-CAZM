@@ -7,14 +7,16 @@ var reqs;
 window.addEventListener("DOMContentLoaded", function () {
 
 
-$.getJSON($SCRIPT_ROOT + '/getRequirements', {
-    major_name: "Computer Science",
-    major_year: 2020
-}, function (data) {
-    reqs = data;
-    console.log(reqs);
+    $.getJSON($SCRIPT_ROOT + '/getRequirements', {
+        major_name: "Computer Science",
+        major_year: 2020
+    }, function (data) {
+        reqs = data;
+        console.log(reqs);
+        loadStatusSheet(reqs);
+    })
 
-})
+
     let search = document.getElementById("search-button");
 
     search.addEventListener("click", function () {
@@ -31,7 +33,7 @@ $.getJSON($SCRIPT_ROOT + '/getRequirements', {
 
                 /* Outer Div */
                 let name = course.course_code;
-                          
+
                 let courseID = name.replace(" ", "_") + "_" + course.semester + "_" + course.year;
                 let div = document.createElement("div");
                 div.id = courseID;
@@ -52,7 +54,7 @@ $.getJSON($SCRIPT_ROOT + '/getRequirements', {
                 /* Trash Can */
                 let trash = document.createElement("i");
                 trash.classList = "fas fa-trash-alt ml-auto m-2 itemInvisible trashRed"
-                trash.setAttribute("onclick","removeDragItem(event)");
+                trash.setAttribute("onclick", "removeDragItem(event)");
 
                 /* Combine elements */
 
