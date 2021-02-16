@@ -93,9 +93,8 @@ def advisorSchReview():
     classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
 
     DB = Database()
+	
     statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
-    
-    class_name = request.args.get('class_name', 0, type=str)
 
     query_results = DB.get_all_courses()
 

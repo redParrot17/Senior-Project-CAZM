@@ -37,9 +37,9 @@
           {% for item in statusSheet %}
 
           <fieldset class="statusSheetSectionContainer container rounded">
-            <legend class="StatusSheetTitles"> {{item.get("title")}}</legend>
-            {%for class in item.get("classes")%}
-                {{class}} <br />
+            <legend class="StatusSheetTitles"> {{item["title"]}}</legend>
+            {%for class in item["classes"]%}
+                {{class}} <br/>
             {% endfor %}
           </fieldset>
           {%endfor%}
