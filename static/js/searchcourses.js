@@ -1,9 +1,20 @@
 var classes;
+var reqs;
+
 
 
 
 window.addEventListener("DOMContentLoaded", function () {
 
+
+$.getJSON($SCRIPT_ROOT + '/getRequirements', {
+    major_name: "Computer Science",
+    major_year: 2020
+}, function (data) {
+    reqs = data;
+    console.log(reqs);
+
+})
     let search = document.getElementById("search-button");
 
     search.addEventListener("click", function () {

@@ -243,6 +243,16 @@ def searchClasses():
 
     return(jsonify(query_results))
 
+@app.route('/getRequirements/')
+def getRequirements():
+	DB = Database()
+	major_name = request.args.get('major_name', 0, type=str)
+	major_year = request.args.get('major_year', 0, type=int)
+
+	query_results = DB.getRequirements(major_name, major_year)
+
+	return(jsonify(query_results))
+
 
 if __name__ == "__main__":
     # from webscraping.adviseescraper import AsyncAdviseeScraper
