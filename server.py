@@ -245,7 +245,10 @@ if __name__ == "__main__":
 def searchClasses():
     DB = Database()
     class_name = request.args.get('class_name', 0, type=str)
-    
+
+   # if (class_name == ''):
+		
+
     query_results = DB.search_course_codes(class_name)
 
     return(jsonify(query_results))
