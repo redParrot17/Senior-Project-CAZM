@@ -227,8 +227,12 @@ border-right: none;
 padding: 5px;
 border-radius: 5px 0 0 5px;
 outline: none;
+color: black;
 }
 
+.hide{
+  display: none;
+}
 
 .searchButton {
 width: 40px;

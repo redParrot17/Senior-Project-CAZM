@@ -6,7 +6,7 @@ class Database:
 
     def __init__(self, config_file='mysql.cnf'):
         self.db = mysql.connector.connect(option_files=config_file, autocommit=True)
-    
+
     def close(self):
         self.db.close()
 
@@ -50,7 +50,19 @@ class Database:
          for course_code, name, year, semester in results:
              course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
          return course_info
-    
+
+    def get_all_courses(self):
+         cursor = self.db.cursor(buffered=True)
+         sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE;'
+         cursor.execute(sql)
+         results = cursor.fetchall()
+         cursor.close()
+
+         course_info = []
+         for course_code, year, semester in results:
+             course_info.append({"courseCode": course_code, "year":year, "semester":semester})
+         return course_info
+
     def get_template(self, major_code):
         cursor = self.db.cursor(buffered=True)
 
@@ -73,4 +85,3 @@ class Database:
             courses.append(course_code)
 
         return template
-            

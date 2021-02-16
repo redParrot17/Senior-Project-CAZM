@@ -52,7 +52,7 @@
     <div class="col" id="middle">
       <div class="row">
         <div class="col-8">
-          <button class="button approvebtn rounded" type="button">Approve Schedule</button>
+          <button class="button approvebtn rounded hide" type="button">Approve Schedule</button>
         </div>
         <div class="ml-auto" onclick="toggleSideBar(event)">
 
@@ -140,76 +140,13 @@
       </div>
     </div>
     <div class="border rounded-bottom">
-      <div id="COMP_100" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text text-center">COMP 100</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_102" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 102</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_103" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 103</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_104" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 104</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed"></i>
-      </div>
-      <div id="COMP_105" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 105</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_106" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 106</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_107" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 107</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_108" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 108</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_109" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 109</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_110" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 110</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_141" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 141</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_205" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 205</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_220" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 220</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-      <div id="COMP_222" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text">COMP 222</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
+      {% for course in allCourses %}
+        <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+          <i class="fas fa-arrows-alt"></i>
+          <span class="drag_item_text text-center">{{course.courseCode}}</span>
+          <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
+        </div>
+      {% endfor%}
     </div>
     </div>
 </div>
@@ -220,7 +157,7 @@
 <!-- Javascript -->
 <script src="/static/js/drag-drop.js" charset="utf-8"></script>
 <script src="/static/js/side-bar.js" charset="utf-8"></script>
-<script src="/static/js/searchcourses.js"></script> 
+<script src="/static/js/searchcourses.js"></script>
 
 
 </body>
