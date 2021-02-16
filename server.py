@@ -91,34 +91,10 @@ def logout():
 @app.route('/advisorSchReview/')
 def advisorSchReview():
     classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
-    statusSheet=[
-    	{
-    		"title":"Humanities Core",
-    		"classes": ["c1", "c2", "c3"]
 
-    	},
-        {
-    		"title":"SSFT Requirement",
-    		"classes": ["c1", "c2", "c3"]
-
-    	},
-        {
-    		"title":"Writing Requirement",
-    		"classes": ["c1", "c2", "c3"]
-
-    	},
-        {
-    		"title":"Foundations of Social Sciences",
-    		"classes": ["c1", "c2", "c3"]
-
-    	},
-    	{
-    		"title":"Physical Education",
-    		"classes": ["c1", "c2", "c3"]
-
-    	}
-    ]
     DB = Database()
+    statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
+    
     class_name = request.args.get('class_name', 0, type=str)
 
     query_results = DB.get_all_courses()
