@@ -38,16 +38,17 @@ class Database:
 
     def search_course_codes(self, argument1):
          cursor = self.db.cursor(buffered=True)
-
-         args = (argument1 + "%",)
-         sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE COURSE_CODE LIKE %s;'
+         arg1 = argument1 + "%"
+         arg2 = arg1
+         args = (arg1,arg2)
+         sql = 'SELECT COURSE_CODE, NAME, YEAR, SEMESTER FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s;'
          cursor.execute(sql, args)
          results = cursor.fetchall()
          cursor.close()
 
          course_info = []
-         for course_code, year, semester in results:
-             course_info.append([course_code, year, semester])
+         for course_code, name, year, semester in results:
+             course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
          return course_info
     
     def get_template(self, major_code):
