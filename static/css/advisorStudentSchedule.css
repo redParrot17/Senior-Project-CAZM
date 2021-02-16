@@ -227,12 +227,8 @@ border-right: none;
 padding: 5px;
 border-radius: 5px 0 0 5px;
 outline: none;
-color: white;
 }
 
-.searchTerm:focus{
-color: white;
-}
 
 .searchButton {
 width: 40px;
