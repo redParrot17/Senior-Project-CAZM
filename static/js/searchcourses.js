@@ -21,9 +21,9 @@ window.addEventListener("DOMContentLoaded", function () {
                 /* Outer Div */
                 let name = course.course_code;
                           
-                 let id = name.replace(" ", "_");
+                let courseID = name.replace(" ", "_") + "_" + course.semester + "_" + course.year;
                 let div = document.createElement("div");
-                div.id = id;
+                div.id = courseID;
                 div.className = "drag_item";
                 div.draggable = "true";
                 div.setAttribute("ondragstart", "drag(event)");
