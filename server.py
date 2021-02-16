@@ -229,6 +229,16 @@ def advisorViewingStudent():
 	return render_template('advisorViewingStudent.html', student=student, studentSchedule=studentSchedule)
 
 
+@app.route('/searchClasses/')
+def searchClasses():
+    DB = Database()
+    class_name = request.args.get('class_name', 0, type=str)
+    
+    query_results = DB.search_course_codes(class_name)
+
+    return(jsonify(query_results))
+    
+
 if __name__ == "__main__":
     # from webscraping.adviseescraper import AsyncAdviseeScraper
     # import getpass
@@ -240,13 +250,4 @@ if __name__ == "__main__":
 
 # Having debug=True allows possible Python errors to appear on the web page
 # run with $> python server.py
-
-@app.route('/searchClasses/')
-def searchClasses():
-    DB = Database()
-    class_name = request.args.get('class_name', 0, type=str)
-    
-    query_results = DB.search_course_codes(class_name)
-
-    return(jsonify(query_results))
 
