@@ -36,6 +36,27 @@ class Database:
             return_value.append([foo, bar])
         return return_value
 
+    def getRequirementClasses(self, requirement_id, title):
+        cursor = self.db.cursor(buffered=True)
+        args = (title, requirement_id)
+        sql = """
+        SELECT 
+        COURSE_CODE 
+        FROM REQUIREMENT INNER JOIN REQUIREMENT_COURSES 
+        USING(REQUIREMENT_ID)
+        WHERE TITLE=%s AND REQUIREMENT_ID=%s;
+            """
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+        courses = []
+
+        for course in results:
+            courses.append(course)
+        
+        return courses
+
     def getRequirements(self, major_name, major_year):
         cursor = self.db.cursor(buffered=True)
         args = (major_name, major_year)
@@ -52,13 +73,15 @@ class Database:
 
         req_info = {}
         for requirement_id, title, required_credits, alternate_requirements in results:
-             req_info[requirement_id] = {
-                 "alternate_requirements" : alternate_requirements,
-                 "required_credits" : required_credits,
-                 "title": title
-                }
+            req_info[requirement_id] = {
+                "alternate_requirements" : alternate_requirements,
+                "required_credits" : required_credits,
+                "title": title,
+                "classes": self.getRequirementClasses(requirement_id, title)
+            }
              
         return req_info
+
     def search_course_codes(self, argument1):
          cursor = self.db.cursor(buffered=True)
          arg1 = argument1 + "%"
