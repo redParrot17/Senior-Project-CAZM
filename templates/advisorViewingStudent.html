@@ -40,7 +40,7 @@
                   </div>
                     {% for schedule in studentSchedule %}
                         <fieldset class="schedule-semester rounded">
-                            <legend>{{schedule.get("semester")}}</legend>
+                            <legend>{{schedule.get("semester")}} {{schedule.get("year")}}</legend>
 
                             {% for class in schedule.get("classes") %}
                                 {% if loop.index % 2 == 1 %}
