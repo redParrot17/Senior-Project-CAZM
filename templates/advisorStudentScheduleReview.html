@@ -140,7 +140,13 @@
       </div>
     </div>
     <div class="border rounded-bottom" id="course-container">
-
+      {% for course in allCourses %}
+      <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+        <i class="fas fa-arrows-alt"></i>
+        <span class="drag_item_text text-center">{{course.courseCode}}</span>
+        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
+      </div>
+    {% endfor%}
     </div>
     </div>
 </div>
