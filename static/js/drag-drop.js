@@ -60,7 +60,7 @@ function drop(ev) {
 
     // get data
     let id = ev.dataTransfer.getData("text");                // Get the item transfered id
-   
+
     let targetNode = ev.target;                              // get the target node (drag_container)
     let targetNodeParent = targetNode.parentElement;         // get the target node (drag_box)
     let targetNodeContainer = targetNodeParent.parentElement;// get the target node (drag_box_container)
@@ -73,8 +73,16 @@ function drop(ev) {
 
     // add dragged item to drag_container
     targetNode.appendChild(document.getElementById(id));     // add the item transfered to the target element
-    targetNode.classList.add("bg-light");                   // makes spot white bg
-    document.getElementById(id).childNodes[2].classList.remove("itemInvisible");
+    targetNode.classList.add("bg-light");
+    console.log(document.getElementById(id).childNodes);
+    if(document.getElementById(id).childNodes.length == 7){
+      document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
+    }               // makes spot white bg
+    if(document.getElementById(id).childNodes.length == 3){
+      document.getElementById(id).childNodes[2].classList.remove("itemInvisible");
+    }
+    //console.log(document.getElementById(id).childNodes);
+
     document.getElementById(id).classList.add("drag_item_fill");
 
     // create a new (drag_box > drag_container) div
