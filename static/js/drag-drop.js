@@ -117,11 +117,11 @@ function removeDragItem(ev) {
   //}
 }
 
-const selectedCourses = [];
+var selectedCourses = [];
 function updateSelectedCourses(){
     selectedCourses = [];
     let selected = document.getElementsByClassName("drag_item_fill");
-    for(let i in selected){
-        selectedCourses.push(selected[i].childNodes[1].innerHTML)
+    for(var i = 0; i < selected.length; i++){
+        selectedCourses.push(selected[i].innerText)
       }
 }
