@@ -87,6 +87,7 @@ function drop(ev) {
         removeDiv(parentNode);                               // if a valid item to remove remove the item
         console.log("div removed")
     }
+    updateSelectedCourses();
 }
 
 
@@ -106,4 +107,13 @@ function removeDragItem(ev) {
       //ev.target.childNodes[5].classList.add("itemInvisible");
       //ev.target.classList.add("drag_item_fill");
   //}
+}
+
+const selectedCourses = [];
+function updateSelectedCourses(){
+    selectedCourses = [];
+    let selected = document.getElementsByClassName("drag_item_fill");
+    for(let i in selected){
+        selectedCourses.push(selected[i].childNodes[1].innerHTML)
+      }
 }
