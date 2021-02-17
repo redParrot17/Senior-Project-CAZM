@@ -10,10 +10,14 @@ body {
   top: 0;
   right: 0;
 
-  background-color: #111;
+  background-color: #ffffff;
   overflow-x: hidden;
   transition: 0.5s;
-  padding-top: 10px;
+  padding-top: 5px;
+}
+
+.sidebar-container{
+  border: 1px solid black;
 }
 
 .topLeftRounded{
@@ -173,14 +177,14 @@ legend {
 
 .searchContainer{
   flex: 1 1 auto;
-  width: 90%;
+  width: 100%;
   background-color: white;
   display: flex;
   flex-direction: column;
 }
 .filterContainer{
   height: auto;
-  width: 90%;
+  width: 100%;
   padding: 0;
   padding-bottom: 10px;
   background-color: white;
@@ -358,4 +362,8 @@ color: white !important;
 
 .form-group{
   margin-bottom: 0px;
+}
+
+.height-row{
+  min-height: 3rem;
 }

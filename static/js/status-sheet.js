@@ -16,7 +16,7 @@ function loadStatusSheet(reqs) {
 		let container = document.getElementById("req-list")
 		container.appendChild(fieldset)
 
-		let courselist = document.createElement("ol")
+		let courselist = document.createElement("ul")
 		var courseAry = value.classes
 
 		for (let i in courseAry) {
@@ -43,7 +43,7 @@ function loadStatusSheet(reqs) {
 			let alt = reqs[alt_req_key].classes
 
 
-			let altCourselist = document.createElement("ol")
+			let altCourselist = document.createElement("ul")
 			let altCourseAry = alt
 
 			for (let i in altCourseAry) {

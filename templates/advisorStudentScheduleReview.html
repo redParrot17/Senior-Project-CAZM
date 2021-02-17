@@ -26,7 +26,9 @@
   <div class="row" id="wrap">
     <div class="col-4 " id="left">
       <!-- <div class="row-1"> -->
-        <button class="backbtn rounded" onclick="window.location.href = '/studentProfile'">Back</button>
+        <div class="height-row">
+          <button class="backbtn rounded" onclick="window.location.href = '/studentProfile'">Back</button>
+        </div>
       <!-- </div>
       <div class="row-2"> -->
         <div id=req-list class="container outsideContainer mt-3 p-2 mb-3 rounded overflow-auto Scrollstyle" >
@@ -44,7 +46,7 @@
     </div>
 
     <div class="col" id="middle">
-      <div class="row">
+      <div class="row height-row">
         <div class="col-8">
           <button class="button approvebtn rounded hide" type="button">Approve Schedule</button>
         </div>
@@ -79,70 +81,76 @@
 
 
 <div id="mySidebar" class="sidebar">
-  <div class="search">
-     <input type="text" id="search-bar" class="searchTerm" placeholder="Search">
-     <button  type="submit" id="search-button" class="searchButton">
-       <i class="fa fa-search"></i>
-    </button>
+  <div class="height-row">
+    <div class="search">
+      <input type="text" id="search-bar" class="searchTerm" placeholder="Search">
+      <button  type="submit" id="search-button" class="searchButton">
+        <i class="fa fa-search"></i>
+     </button>
+   </div>
   </div>
-  <div class="container filterContainer mt-3 mb-3 rounded">
-    <div class="headerText rounded-top">
-      Filters
+
+  <div class="rounded sidebar-container mt-3 pt-2 mb-3">
+    <div class="container filterContainer  mb-3 rounded">
+      <div class="headerText rounded-top">
+        Filters
+      </div>
+      <label class="Checkcontainer">Pre-requisites Met
+        <input type="checkbox">
+        <span class="checkmark"></span>
+      </label>
+  
+      <label class="Checkcontainer">Major requirement
+        <input type="checkbox">
+        <span class="checkmark"></span>
+      </label>
+  
+      <label class="Checkcontainer">Hide Previous Courses
+        <input type="checkbox">
+        <span class="checkmark"></span>
+      </label>
+  
+      <label class="Checkcontainer">Show Intersessions
+        <input type="checkbox">
+        <span class="checkmark"></span>
+      </label>
     </div>
-    <label class="Checkcontainer">Pre-requisites Met
-      <input type="checkbox">
-      <span class="checkmark"></span>
-    </label>
-
-    <label class="Checkcontainer">Major requirement
-      <input type="checkbox">
-      <span class="checkmark"></span>
-    </label>
-
-    <label class="Checkcontainer">Hide Previous Courses
-      <input type="checkbox">
-      <span class="checkmark"></span>
-    </label>
-
-    <label class="Checkcontainer">Show Intersessions
-      <input type="checkbox">
-      <span class="checkmark"></span>
-    </label>
+    <div class="container searchContainer mt-3 p-0 mb-3 rounded overflow-auto Scrollstyle" >
+      <div class="row">
+        <div class="form-group  col-7 p-0">
+          <select class="form-control dropdown topLeftRounded">
+            <option value="Semester">Semester:</option>
+            <option value="Fall">Fall</option>
+            <option value="Spring">Spring</option>
+            <option value="Winter">Winter</option>
+            <option value="January">January</option>
+            <option value="May">May</option>
+            <option value="Summer">Summer</option>
+          </select>
+        </div>
+        <div class="form-group  col-5 p-0">
+          <select class="form-control dropdown topRightRounded">
+            <option value="Year">Year:</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+          </select>
+        </div>
+      </div>
+      <div class="rounded-bottom" id="course-container">
+        {% for course in allCourses %}
+        <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+          <i class="fas fa-arrows-alt"></i>
+          <span class="drag_item_text text-center">{{course.courseCode}}</span>
+          <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
+        </div>
+      {% endfor%}
+      </div>
+      </div>
   </div>
-  <div class="container searchContainer mt-3 p-0 mb-3 rounded overflow-auto Scrollstyle" >
-    <div class="row">
-      <div class="form-group  col-7 p-0">
-        <select class="form-control dropdown topLeftRounded">
-          <option value="Semester">Semester:</option>
-          <option value="Fall">Fall</option>
-          <option value="Spring">Spring</option>
-          <option value="Winter">Winter</option>
-          <option value="January">January</option>
-          <option value="May">May</option>
-          <option value="Summer">Summer</option>
-        </select>
-      </div>
-      <div class="form-group  col-5 p-0">
-        <select class="form-control dropdown topRightRounded">
-          <option value="Year">Year:</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-        </select>
-      </div>
-    </div>
-    <div class="border rounded-bottom" id="course-container">
-      {% for course in allCourses %}
-      <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-        <i class="fas fa-arrows-alt"></i>
-        <span class="drag_item_text text-center">{{course.courseCode}}</span>
-        <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-      </div>
-    {% endfor%}
-    </div>
-    </div>
+  
 </div>
 
 
