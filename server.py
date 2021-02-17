@@ -122,14 +122,14 @@ def advisorHomePreview():
 
 @app.route('/studentLanding')
 def studentLanding():
-	student = [ {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'status': 'Pending', 'grad_semester': 'Spring 2024', 'major': 'Computer Science'} ]
+	student = {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'status': 'Pending', 'grad_semester': 'Spring 2024', 'major': 'Computer Science'}
 	db = Database()
 	template = db.get_template(1)
 	return render_template('studentLanding.html', student=student, studentSchedule=template)
 
 @app.route("/studentProfile/")
 def advisorViewingStudent():
-	student = [ {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'status': 'Pending', 'grad_semester': 'Spring 2024', 'major': 'Computer Science'} ]
+	student = {'id': 209123, 'name': 'Sally Silly', 'credits': 54, 'status': 'Pending', 'grad_semester': 'Spring 2024', 'major': 'Computer Science'}
 	db = Database()
 	template = db.get_template(1)
 	return render_template('advisorViewingStudent.html', student=student, studentSchedule=template)

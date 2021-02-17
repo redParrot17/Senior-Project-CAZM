@@ -13,18 +13,52 @@
     </head>
 
     <body>
-        <div class="container">
-            <div class="row">
-                <button type="button" class="hb-btn rounded">Print Schedule</button>
-                <button type="button" class="hb-btn rounded" id="editScheduleBtn">Edit Schedule</button>
+
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-dark" style="background-color: #B0002A;">
+            <div class="container">
+                <a class="navbar-brand">HBCAZM</a>
                 <form class="form-inline" action="/logout" method="post">
-                    <button class="hb-btn rounded" id="logoutbtn" type="submit">Logout</button>
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
                 </form>
             </div>
+        </nav>
+
+        <div class="container" style="margin-top: 10px;">
+
+            <!-- Print and Edit Buttons -->
             <div class="row">
-                <div id="studentInfo">
+                <!-- Padding to make position of button close to position of same button on advisor's 
+                        student profile view -->
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col-3">
+                    <!-- <button type="button" class="btn btn-lg btn-secondary">Print Schedule</button> -->
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn btn-lg btn-secondary" id="editScheduleBtn">Edit Schedule</button>
+                </div>
+            </div>
+
+            <!-- Primary Content to Display -->
+            <div class="row">
+
+                <!-- Student Information -->
+                <div class="col-5">
+                    <div class="bg-gcc-primary p-2 student-info rounded">
+                        <h1>{{ student.get("name") }}</h1>
+                        <h3>Student ID: {{ student.get("id") }}</h3>
+
+                        <div class="container">
+                            <p>Credits Completed: {{ student.get("credits") }}</p>
+                            <p>Graduation Semester: {{ student.get("grad_semester") }}</p>
+                            <p>Major: {{ student.get("major") }}</p>
+                            <p>Schedule Status: {{ student.get("status") }}</p>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Schedule Overview -->
                 <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
                     {% for schedule in studentSchedule %}
                         <div class="schedule-semester">
@@ -47,18 +81,13 @@
                     {% endfor %}
                 </div>
             </div>
+
         </div>
 
         <!-- Javascripts -->
         <script src="/static/js/student-home.js"></script>
-        <script>
-            setStudentInfo(JSON.parse('{{student|tojson}}'))
-        </script>
-
         <!-- <script>
-            document.getElementById("logoutbtn").onclick = function () {
-                location.href = "/login/"
-            };
+            setStudentInfo(JSON.parse('{{student|tojson}}'))
         </script> -->
 
         <script>
