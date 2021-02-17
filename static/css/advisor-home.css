@@ -12,10 +12,10 @@
 }
 
 .list-group {
-    max-height: 400px;
+    max-height: 450px;
     margin-bottom: 10px;
-    padding-left: 30px; 
-    padding-right: 30px;
+    padding-left: 10px; 
+    padding-right: 10px;
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none;
