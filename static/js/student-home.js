@@ -29,8 +29,8 @@ function buildStudentSchedule(schedule) {
 
 $(document).ready(function() {
     //Set up student info
-    $studentInfo.html('')
-    student.forEach(s => {
-        $studentInfo.html($studentInfo.html() + buildStudentInfo(s))
-    });
+    // $studentInfo.html('')
+    // student.forEach(s => {
+    //     $studentInfo.html($studentInfo.html() + buildStudentInfo(s))
+    // });
 });

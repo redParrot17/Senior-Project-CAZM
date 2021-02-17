@@ -21,7 +21,7 @@
   padding-bottom: 25px;
 }
 .student-info .container {
-    text-align: left
+    text-align: left;
     margin: 10px;
     margin-top: 30px;
 }
@@ -80,6 +80,12 @@ legend {
     padding-left: 5px;
     padding-right: 5px;
     margin: 10px;
+}
+
+.navbar {
+    -webkit-box-shadow: 0 8px 6px -6px #999;
+    -moz-box-shadow: 0 8px 6px -6px #999;
+    box-shadow: 0 8px 6px -6px #999;
 }
 
 /* light red #b0002a */
