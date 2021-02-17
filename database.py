@@ -40,9 +40,9 @@ class Database:
         cursor = self.db.cursor(buffered=True)
         args = (title, requirement_id)
         sql = """
-        SELECT 
-        COURSE_CODE 
-        FROM REQUIREMENT INNER JOIN REQUIREMENT_COURSES 
+        SELECT
+        COURSE_CODE
+        FROM REQUIREMENT INNER JOIN REQUIREMENT_COURSES
         USING(REQUIREMENT_ID)
         WHERE TITLE=%s AND REQUIREMENT_ID=%s;
             """
@@ -54,17 +54,17 @@ class Database:
 
         for course in results:
             courses.append(course)
-        
+
         return courses
 
     def getRequirements(self, major_name, major_year):
         cursor = self.db.cursor(buffered=True)
         args = (major_name, major_year)
         sql = """
-        SELECT 
-        REQUIREMENT_ID, TITLE, REQUIRED_CREDITS, ALTERNATE_REQUIREMENTS 
-        FROM MAJOR_REQUIREMENTS INNER JOIN REQUIREMENT 
-        ON REQUIREMENT.REQUIREMENT_ID = MAJOR_REQUIREMENTS.MAJOR_REQUIREMENT_ID 
+        SELECT
+        REQUIREMENT_ID, TITLE, REQUIRED_CREDITS, ALTERNATE_REQUIREMENTS
+        FROM MAJOR_REQUIREMENTS INNER JOIN REQUIREMENT
+        ON REQUIREMENT.REQUIREMENT_ID = MAJOR_REQUIREMENTS.MAJOR_REQUIREMENT_ID
         WHERE MAJOR_NAME=%s AND MAJOR_YEAR=%s;
             """
         cursor.execute(sql, args)
@@ -79,7 +79,7 @@ class Database:
                 "title": title,
                 "classes": self.getRequirementClasses(requirement_id, title)
             }
-             
+
         return req_info
 
     def search_course_codes(self, argument1):
@@ -87,7 +87,7 @@ class Database:
          arg1 = argument1 + "%"
          arg2 = arg1
          args = (arg1,arg2)
-         sql = 'SELECT COURSE_CODE, NAME, YEAR, SEMESTER FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s;'
+         sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s GROUP BY COURSE_CODE;'
          cursor.execute(sql, args)
          results = cursor.fetchall()
          cursor.close()
@@ -99,7 +99,7 @@ class Database:
 
     def get_all_courses(self):
          cursor = self.db.cursor(buffered=True)
-         sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE;'
+         sql = 'SELECT COURSE_CODE, ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE GROUP BY COURSE_CODE;'
          cursor.execute(sql)
          results = cursor.fetchall()
          cursor.close()
@@ -107,6 +107,7 @@ class Database:
          course_info = []
          for course_code, year, semester in results:
              course_info.append({"courseCode": course_code, "year":year, "semester":semester})
+         print(course_info)
          return course_info
 
     def get_template(self, major_code):
