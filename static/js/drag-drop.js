@@ -74,7 +74,7 @@ function drop(ev) {
     // add dragged item to drag_container
     targetNode.appendChild(document.getElementById(id));     // add the item transfered to the target element
     targetNode.classList.add("bg-light");
-    console.log(document.getElementById(id).childNodes);
+    // console.log(document.getElementById(id).childNodes);
     if(document.getElementById(id).childNodes.length == 7){
       document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
     }               // makes spot white bg
@@ -96,11 +96,12 @@ function drop(ev) {
         console.log("div removed")
     }
     updateSelectedCourses();
+    updateStatusSheet(selectedCourses);
 }
 
 
 function removeDragItem(ev) {
-  console.log(ev.target);
+//   console.log(ev.target);
   ev.target.remove("itemInvisible");
 
   // get data

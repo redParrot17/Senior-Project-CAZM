@@ -17,6 +17,7 @@ function loadStatusSheet(reqs) {
 		container.appendChild(fieldset)
 
 		let courselist = document.createElement("ul")
+		courselist.className="fa-ul"
 		var courseAry = value.classes
 
 		for (let i in courseAry) {
@@ -24,6 +25,13 @@ function loadStatusSheet(reqs) {
 			let li = document.createElement("li")
 			li.classList = "requirement-list-course"
 			li.innerHTML = courseAry[i]
+
+			let span = document.createElement("span")
+			span.innerHTML = '<i class="far fa-square" style="color: red;"></i>'
+			span.className="fa-li"
+			li.appendChild(span)
+	
+
 			courselist.appendChild(li)
 
 		}
@@ -44,6 +52,7 @@ function loadStatusSheet(reqs) {
 
 
 			let altCourselist = document.createElement("ul")
+			altCourselist.className="fa-ul"
 			let altCourseAry = alt
 
 			for (let i in altCourseAry) {
@@ -51,7 +60,17 @@ function loadStatusSheet(reqs) {
 				let li = document.createElement("li")
 				li.classList = "requirement-list-course"
 				li.innerHTML = altCourseAry[i]
+
+				let span = document.createElement("span")
+				span.innerHTML = '<i class="far fa-square" style="color: red;"></i>'
+				span.className="fa-li"
+				li.appendChild(span)
+		
+
 				altCourselist.appendChild(li)
+
+				
+				
 
 			}
 			fieldset.appendChild(altCourselist)
@@ -60,7 +79,7 @@ function loadStatusSheet(reqs) {
 			for(let k in keys){ 
     
 				if ( keys[k] == alt_req_key) { 	
-					console.log("Removed " + keys[k] + " from list")
+					
 					keys.splice(k, 1); 
 				}
 			
@@ -68,5 +87,20 @@ function loadStatusSheet(reqs) {
 		
 
 		} //End Alternates
+	}
+}
+
+function updateStatusSheet(selectedCourses){
+	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
+	
+	for(course in statusSheetCourses){
+		let ssCourse = statusSheetCourses[course]
+
+		if(selectedCourses.includes(ssCourse.innerText)){
+			console.log(ssCourse.childNodes)
+			ssCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
+			ssCourse.childNodes[1].childNodes[0].style = "color: green;"
+
+		}
 	}
 }
