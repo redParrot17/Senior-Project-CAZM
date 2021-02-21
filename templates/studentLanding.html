@@ -1,99 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Landing Page</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width", initial-scale=1>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/static/css/project.css">
-        <link rel="stylesheet" href="/static/css/studentPage.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </head>
 
-    <body>
+<head>
+    <title>Landing Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" , initial-scale=1>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/project.css">
+    <link rel="stylesheet" href="/static/css/studentPage.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
 
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-dark" style="background-color: #B0002A;">
-            <div class="container">
-                <a class="navbar-brand">HBCAZM</a>
-                <form class="form-inline" action="/logout" method="post">
-                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
-                </form>
-            </div>
-        </nav>
+<body>
 
-        <div class="container" style="margin-top: 10px;">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-dark" style="background-color: #B0002A;">
+        <div class="container">
+            <a class="navbar-brand">HBCAZM</a>
+            <form class="form-inline" action="/logout" method="post">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
 
-            <!-- Print and Edit Buttons -->
-            <div class="row">
-                <!-- Padding to make position of button close to position of same button on advisor's 
+    <div class="container" style="margin-top: 10px;">
+
+        <!-- Print and Edit Buttons -->
+        <div class="row">
+            <!-- Padding to make position of button close to position of same button on advisor's 
                         student profile view -->
-                <div class="col"></div>
-                <div class="col"></div>
-                <div class="col-3">
-                    <!-- <button type="button" class="btn btn-lg btn-secondary">Print Schedule</button> -->
-                </div>
-                <div class="col-3">
-                    <button type="button" class="btn btn-lg btn-secondary" id="editScheduleBtn">Edit Schedule</button>
-                </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col-3">
+                <button type="button" class="btn btn-lg btn-secondary" id="printScheduleBtn">Print Schedule</button>
             </div>
-
-            <!-- Primary Content to Display -->
-            <div class="row">
-
-                <!-- Student Information -->
-                <div class="col-5">
-                    <div class="bg-gcc-primary p-2 student-info rounded">
-                        <h1>{{ student.get("name") }}</h1>
-                        <h3>Student ID: {{ student.get("id") }}</h3>
-
-                        <div class="container">
-                            <p>Credits Completed: {{ student.get("credits") }}</p>
-                            <p>Graduation Semester: {{ student.get("grad_semester") }}</p>
-                            <p>Major: {{ student.get("major") }}</p>
-                            <p>Schedule Status: {{ student.get("status") }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Schedule Overview -->
-                <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
-                    {% for schedule in studentSchedule %}
-                        <div class="schedule-semester">
-                            <h4>{{schedule.get("semester")}} {{schedule.get("year")}}</h4>
-
-                            {% for class in schedule.get("classes") %}
-                                {% if loop.index % 2 == 1 %}
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                {%endif%}
-                                    <div class="col-5">
-                                        <p>{{class}}</p>
-                                    </div>
-                                {% if loop.index % 2 == 0 or loop.index == loop.length %}
-                                </div>
-                            </div>
-                                {%endif%}
-                            {%endfor%}
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="col-3">
+                <button type="button" class="btn btn-lg btn-secondary" id="editScheduleBtn">Edit Schedule</button>
             </div>
-
         </div>
 
-        <!-- Javascripts -->
-        <script src="/static/js/student-home.js"></script>
-        <!-- <script>
+        <!-- Primary Content to Display -->
+        <div class="row">
+
+            <!-- Student Information -->
+            <div class="col-5">
+                <div class="bg-gcc-primary p-2 student-info rounded" id="StudentInfo">
+                    <h1>{{ student.get("name") }}</h1>
+                    <h3>Student ID: {{ student.get("id") }}</h3>
+
+                    <div class="container">
+                        <p>Credits Completed: {{ student.get("credits") }}</p>
+                        <p>Graduation Semester: {{ student.get("grad_semester") }}</p>
+                        <p>Major: {{ student.get("major") }}</p>
+                        <p>Schedule Status: {{ student.get("status") }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Overview -->
+            <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
+                {% for schedule in studentSchedule %}
+                <div class="schedule-semester">
+                    <h4>{{schedule.get("semester")}} {{schedule.get("year")}}</h4>
+
+                    {% for class in schedule.get("classes") %}
+                    {% if loop.index % 2 == 1 %}
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            {%endif%}
+                            <div class="col-5">
+                                <p>{{class}}</p>
+                            </div>
+                            {% if loop.index % 2 == 0 or loop.index == loop.length %}
+                        </div>
+                    </div>
+                    {%endif%}
+                    {%endfor%}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Javascripts -->
+    <script src="/static/js/student-home.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <!-- <script>
             setStudentInfo(JSON.parse('{{student|tojson}}'))
         </script> -->
 
-        <script>
-            document.getElementById("editScheduleBtn").onclick = function () {
-                location.href = "/advisorSchReview/"
-            };
-        </script>
-    </body>
+    <script>
+        document.getElementById("editScheduleBtn").onclick = function () {
+            location.href = "/advisorSchReview/"
+        };
+    </script>
+
+    <script>
+        document.getElementById("printScheduleBtn").onclick = function () {
+            var element1 = document.getElementById("StudentInfo");
+            var element2 = document.getElementById("Scrollstyle");
+            element2.style.height = "auto";
+            html2pdf().set({ pagebreak: {avoid: '.schedule-semester'}}).from(element1).toPdf().get('pdf').then(function (pdf) {
+                pdf.addPage();
+            }).from(element2).toContainer().toCanvas().toPdf().save("schedule");
+            setTimeout(() => { element2.style.height = "500px"; }, 300);
+        }
+    </script>
+</body>
+
 </html>
