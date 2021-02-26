@@ -3,21 +3,29 @@ body {
 }
 
 .sidebar {
-  height: 100%;
+  height: 100vh;
   width: 0;
   position: fixed;
   z-index: 1;
   top: 0;
   right: 0;
 
-  background-color: #ffffff;
-  overflow-x: hidden;
+  background-color: white;
   transition: 0.5s;
-  padding-top: 5px;
 }
 
 .sidebar-container{
   border: 1px solid black;
+}
+.course-container{
+  height: 100%;
+}
+.sidebar-container-inside{
+  border: 1px solid black;
+  flex : auto;
+  display: flex;
+  flex-direction: column;
+  height: 50%;
 }
 
 .topLeftRounded{
@@ -107,7 +115,7 @@ body {
 }
 
 #wrap{
-  height: 100vh;
+  height: 90vh;
 }
 .Scrollstyle::-webkit-scrollbar-track
 {
@@ -116,13 +124,13 @@ body {
 	background-color: #555;
 }
 
-#Scrollstyle::-webkit-scrollbar
+.Scrollstyle::-webkit-scrollbar
 {
 	width: 12px;
 	background-color: #555;
 }
 
-#Scrollstyle::-webkit-scrollbar-thumb
+.Scrollstyle::-webkit-scrollbar-thumb
 {
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
@@ -132,7 +140,6 @@ body {
 #mySidebar{
   display: flex;
   flex-flow: column;
-  height: 100%;
 }
 
 
@@ -147,12 +154,15 @@ body {
   margin-right: 0px;
   margin-left: 0px;
 }
+.rowDropDown {
+  flex-wrap: nowrap;
+}
 
 .outsideContainer{
   height: 100%;
   background-color: white;
   border: 1px solid black;
-  /* data-mdb-perfect-scrollbar='true' */
+  data-mdb-perfect-scrollbar='true'
 }
 
 .scheduleContainer{
@@ -161,8 +171,7 @@ body {
   margin-top: 10px;
   margin-bottom: 10px;
   padding-top: 10px;
-
-  /* data-mdb-perfect-scrollbar='true' */
+  data-mdb-perfect-scrollbar='true'
 }
 legend {
     width: auto;
@@ -176,11 +185,13 @@ legend {
 }
 
 .searchContainer{
-  flex: 1 1 auto;
+  /*flex: 1 1 auto;*/
   width: 100%;
   background-color: white;
-  display: flex;
+  /*display: flex;
   flex-direction: column;
+  height: 100%*/
+  flex-grow: 1;
 }
 .filterContainer{
   height: auto;
@@ -212,23 +223,22 @@ legend {
   .sidebar {padding-top: 15px;}
   .sidebar a {font-size: 18px;}
 }
-
+ .top-row{
+   height: 10%;
+ }
 
 .search {
-width: 100%;
-padding-left: 5%;
-padding-right: 5%;
 position: relative;
 display: flex;
+width: 100%;
 }
 
 .searchTerm {
 width: 100%;
 height: 36px;
-border: 3px solid black;
+border: 1px solid black;
 border-right: none;
 padding: 5px;
-border-radius: 5px 0 0 5px;
 outline: none;
 color: black;
 }
@@ -240,11 +250,10 @@ color: black;
 .searchButton {
 width: 40px;
 height: 36px;
-border: 3px solid black;
+border: 1px solid black;
 background: white;
 text-align: center;
 color: black;
-border-radius: 0 5px 5px 0;
 cursor: pointer;
 font-size: 20px;
 }
@@ -255,6 +264,7 @@ background-color: #960000;
 color: white;
 padding-left: 10px;
 margin-bottom: 10px;
+border-bottom: solid black;
 }
 
 .ScheduleheaderText{
@@ -360,10 +370,32 @@ color: white !important;
   flex: 1 1 auto;
 }
 
+.border-bottom{
+  border-bottom: 1px solid black !important;
+}
+
 .form-group{
   margin-bottom: 0px;
 }
 
+.form-border-semester{
+  border-top: 1px solid black !important;
+  border-bottom: 1px solid black !important;
+  border-left: 0px solid black !important;
+  border-right: .5px solid black !important;
+}
+
+.form-border-year{
+  border-top: 1px solid black !important;
+  border-bottom: 1px solid black !important;
+  border-left: .5px solid black !important;
+  border-right: 0px solid black !important;
+}
+
 .height-row{
   min-height: 3rem;
+}
+
+.navbar{
+  height : 10%;
 }

@@ -29,7 +29,7 @@
 
         <!-- Print and Edit Buttons -->
         <div class="row">
-            <!-- Padding to make position of button close to position of same button on advisor's 
+            <!-- Padding to make position of button close to position of same button on advisor's
                         student profile view -->
             <div class="col"></div>
             <div class="col"></div>
@@ -60,9 +60,9 @@
             </div>
 
             <!-- Schedule Overview -->
-            <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
+            <div class="col bg-gcc-primary landing-schedule overflow-auto rounded" id="Scrollstyle">
                 {% for schedule in studentSchedule %}
-                <div class="schedule-semester">
+                <div class="schedule-semester rounded">
                     <h4>{{schedule.get("semester")}} {{schedule.get("year")}}</h4>
 
                     {% for class in schedule.get("classes") %}
