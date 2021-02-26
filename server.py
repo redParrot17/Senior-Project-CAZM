@@ -144,6 +144,13 @@ def searchClasses():
 
     return(jsonify(query_results))
 
+@app.route('/filterPrevious/')
+def filterPreviousClasses():
+    db = Database()
+    schedule_id = request.args.get('schedule_id', 0, type=int)
+    query_results = db.filter_previous(schedule_id)
+    return jsonify(query_results)
+
 @app.route('/getRequirements/')
 def getRequirements():
 	DB = Database()
