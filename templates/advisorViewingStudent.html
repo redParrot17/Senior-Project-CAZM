@@ -126,7 +126,7 @@
       html2pdf().set({ pagebreak: {avoid: '.schedule-semester'}}).from(element1).toPdf().get('pdf').then(function (pdf) {
         pdf.addPage();
       }).from(element2).toContainer().toCanvas().toPdf().save("schedule");
-      setTimeout(() => { element2.style.height = "500px"; }, 300);
+      setTimeout(() => { element2.style.height = "500px"; }, 1000);
     }
   </script>
 </body>
