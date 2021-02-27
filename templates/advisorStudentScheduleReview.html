@@ -99,8 +99,8 @@
      </button>
    </div>
   </div>
-  <div class="rounded sidebar-container mt-3 pt-2 mb-3">
-      <div class="container filterContainer  mb-3 rounded">
+  <div class="rounded sidebar-container-inside m-2">
+      <div class="container filterContainer rounded">
         <div class="headerText rounded-top">
           Filters
         </div>
@@ -124,10 +124,10 @@
           <span class="checkmark"></span>
         </label>
       </div>
-      <div class="container searchContainer mt-3 p-0 mb-3 rounded overflow-auto Scrollstyle" >
-        <div class="row">
+      <div class="container searchContainer p-0 rounded overflow-hidden" >
+        <div class="row rowDropDown">
           <div class="form-group  col-7 p-0">
-            <select class="form-control dropdown topLeftRounded">
+            <select class="form-control form-border-semester dropdown topLeftRounded">
               <option value="Semester">Semester:</option>
               <option value="Fall">Fall</option>
               <option value="Spring">Spring</option>
@@ -138,7 +138,7 @@
             </select>
           </div>
           <div class="form-group  col-5 p-0">
-            <select class="form-control dropdown topRightRounded">
+            <select class="form-control form-border-year dropdown topRightRounded">
               <option value="Year">Year:</option>
               <option value="2021">2021</option>
               <option value="2022">2022</option>
