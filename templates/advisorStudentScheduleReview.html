@@ -101,7 +101,7 @@
      </button>
    </div>
   </div>
-  <div class="rounded sidebar-container-inside m-2">
+  <div class="rounded sidebar-container-inside m-2 mb-3">
       <div class="container filterContainer rounded">
         <div class="headerText rounded-top">
           Filters
@@ -153,9 +153,9 @@
         <div class="container course-container rounded-bottom overflow-auto Scrollstyle" id="course-container">
           {% for course in allCourses %}
             <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-              <i class="fas fa-arrows-alt"></i>
-              <span class="drag_item_text text-center">{{course.courseCode}}</span>
-              <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
+              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt"></i>
+              <span class="col pr-0 pl-0 drag_item_text text-center">{{course.courseCode}}</span>
+              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
             </div>
           {% endfor%}
         </div>

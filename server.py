@@ -90,7 +90,7 @@ def logout():
 ## ADVISOR SCHEDULE REVIEW ##
 @app.route('/advisorSchReview/')
 def advisorSchReview():
-    classes=["FALL 2021","SPRINT 2022","FALL 2022","SPRING 2021"]
+    classes=["FALL 2021","SPRING 2022","FALL 2022","SPRING 2021"]
 
     DB = Database()
 
