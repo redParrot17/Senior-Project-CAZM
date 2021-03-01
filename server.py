@@ -88,9 +88,24 @@ def logout():
     return flask.redirect(flask.url_for('login_get'))
 
 ## ADVISOR SCHEDULE REVIEW ##
+
+'''
+TODO
+1) get Prereqs from server
+2) Build prereq hierarchy with dataset attributes
+3) Special js function for first semester
+4) Build Pool of Prereqs met (include year standing)
+5) Check against pool for each class (User object? ask christian)
+
+
+'''
+
+
+
 @app.route('/advisorSchReview/')
+
 def advisorSchReview():
-    classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
+    classes=[{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0}, {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1} , {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2}, {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
 
     DB = Database()
 	
@@ -153,7 +168,14 @@ def getRequirements():
 	query_results = DB.getRequirements(major_name, major_year)
 
 	return(jsonify(query_results))
+    
+@app.route('/getRequisites/')
+def getRequisites():
+	DB = Database()
 
+	query_results = DB.getRequisites()
+
+	return(jsonify(query_results))
 
 if __name__ == "__main__":
     # from webscraping.adviseescraper import AsyncAdviseeScraper
