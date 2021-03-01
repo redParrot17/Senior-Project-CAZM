@@ -90,10 +90,10 @@ def logout():
 ## ADVISOR SCHEDULE REVIEW ##
 @app.route('/advisorSchReview/')
 def advisorSchReview():
-    classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
+    classes=["FALL 2021","SPRINT 2022","FALL 2022","SPRING 2021"]
 
     DB = Database()
-	
+
     statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
 
     query_results = DB.get_all_courses()

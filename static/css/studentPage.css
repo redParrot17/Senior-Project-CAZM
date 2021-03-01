@@ -10,3 +10,25 @@
     margin: 10px;
     border: none;
 }
+.btn{
+  background-color: Black;
+}
+
+.btn-outline-light{
+  background-color: transparent;
+}
+
+.shaddow {
+    -webkit-box-shadow: 0 8px 6px -6px #999;
+    -moz-box-shadow: 0 8px 6px -6px #999;
+    box-shadow: 0 8px 6px -6px #999;
+}
+
+.mainRow{
+  height: 78vh;
+  flex-grow: 1;
+}
+
+.mainCol{
+  height: 100%;
+}

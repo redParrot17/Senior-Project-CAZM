@@ -24,20 +24,22 @@
 <body>
 
   <!-- Navigation Bar -->
-  <nav class="navbar navbar-dark border-bottom" id="nav" style="background-color: #B0002A;">
+  <nav class="navbar shaddow navbar-dark" id="nav" style="background-color: #B0002A;">
       <div class="container">
           <a class="navbar-brand">HBCAZM</a>
           <form class="form-inline" action="/logout" method="post">
-              <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+              <button class="btn shaddow btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
           </form>
       </div>
   </nav>
 
-  <div class="row top-row" id="wrap">
-    <div class="col-4 " id="left">
+
+
+  <div class="mr-4 ml-4 row top-row" id="wrap">
+    <div class="col-4 paddingTen" id="left">
       <!-- <div class="row-1"> -->
         <div class="row">
-          <button class="backbtn rounded" onclick="window.location.href = '/studentProfile'">Back</button>
+          <button class="btn btn-lg shaddow btn-secondary" onclick="window.location.href = '/studentProfile'">Back</button>
         </div>
       <!-- </div>
       <div class="row-2"> -->
@@ -55,14 +57,14 @@
 
     </div>
 
-    <div class="col" id="middle">
+    <div class="col paddingTen" id="middle">
       <div class="row">
         <div class="col-11">
-          <button class="button approvebtn rounded" type="button">Approve Schedule</button>
+          <button class="btn approvebtn shaddow btn-lg btn-secondary" type="button">Approve Schedule</button>
         </div>
         <div class="ml-auto" onclick="toggleSideBar(event)">
 
-        <i class=" openbtn fas fa-arrow-circle-left rounded-circle" ></i>
+        <i class=" openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle" ></i>
 
           <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
         </div>
