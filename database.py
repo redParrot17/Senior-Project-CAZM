@@ -132,3 +132,25 @@ class Database:
             courses.append(course_code)
 
         return template
+    
+    # ADVISEE METHODS #
+
+    def update_advisee(self):
+        pass
+
+    def get_advisee(self):
+        pass
+
+    def delete_advisee(self, advisor_id: int, advisee_id: int):
+        cursor = self.db.cursor(buffered=True)
+        sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s AND STUDENT_ID=%s;'
+        arguments = tuple(advisor_id, advisee_id)
+        cursor.execute(sql_query, arguments)
+        cursor.close()
+
+    def delete_all_advisees(self, advisor_id: int):
+        cursor = self.db.cursor(buffered=True)
+        sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s;'
+        arguments = tuple(advisor_id)
+        cursor.execute(sql_query, arguments)
+        cursor.close()
