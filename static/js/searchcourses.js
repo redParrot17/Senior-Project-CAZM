@@ -1,6 +1,6 @@
 var classes;
 var reqs;
-
+var requisites
 
 
 
@@ -12,11 +12,19 @@ window.addEventListener("DOMContentLoaded", function () {
         major_year: 2020
     }, function (data) {
         reqs = data;
-        console.log(reqs);
         loadStatusSheet(reqs);
         
     })
 
+    $.getJSON($SCRIPT_ROOT + '/getRequisites', {
+       
+    }, function (data) {
+        requisites = data;
+        console.log(requisites);
+        
+    })
+
+    
 
     let search = document.getElementById("search-button");
 
@@ -67,6 +75,6 @@ window.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-
+    addClassestoPools();
 
 });

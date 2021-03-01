@@ -44,15 +44,12 @@ function dragEnd(ev) {
             // if the place dragged from was a (drag_box > drag_container) div, add
             if( targetNodeContainer.classList.contains("drag_box") ) {
                 targetNodeContainer.id = ""; // remove the "CurrentDrag" id
-                console.log("tag removed");
+                // console.log("tag removed");
                 //ev.target.childNodes[5].classList.add("itemInvisible");
                 //ev.target.classList.add("drag_item_fill");
             }
         }
-        else{
 
-
-        }
     }
 
 function drop(ev) {
@@ -64,15 +61,22 @@ function drop(ev) {
     let targetNode = ev.target;                              // get the target node (drag_container)
     let targetNodeParent = targetNode.parentElement;         // get the target node (drag_box)
     let targetNodeContainer = targetNodeParent.parentElement;// get the target node (drag_box_container)
-
+    let targetNodeSemester = targetNodeContainer.parentElement; //get the semester box dragged into
+    let courseNode = document.getElementById(id)
     // check if (drag_box > drag_container) div already has an item
     if (!targetNode.classList.contains("drag_container")) {
       //console.log(ev)
         return;
     }
+    if(!checkRequisites(id, targetNodeSemester.dataset.semester, targetNodeSemester.dataset.year)){
+        //TODO Flash Warning
+        console.log("Prerequisites for "+ id + " not met");
+    }
 
+
+   
     // add dragged item to drag_container
-    targetNode.appendChild(document.getElementById(id));     // add the item transfered to the target element
+    targetNode.appendChild(courseNode);     // add the item transfered to the target element
     targetNode.classList.add("bg-light");
     targetNode.classList.add("border");
     // console.log(document.getElementById(id).childNodes);
@@ -88,14 +92,18 @@ function drop(ev) {
 
     // create a new (drag_box > drag_container) div
     createDiv(targetNodeContainer);                          // create a new div for elements to be dragged to
-    console.log("div made");
+
+    // console.log("div made");
 
     // remove the (drag_box > drag_container) div the node was dragged from
     let parentNode = document.getElementById("CurrentDrag"); // Select the node previous to the drop
     if( parentNode != null && parentNode.classList.contains("drag_box") ) {
         removeDiv(parentNode);                               // if a valid item to remove remove the item
-        console.log("div removed")
+        // zconsole.log("div removed")
     }
+
+
+    addClassestoPools();
     updateSelectedCourses();
     updateStatusSheet(selectedCourses);
 }
@@ -126,4 +134,15 @@ function updateSelectedCourses(){
     for(var i = 0; i < selected.length; i++){
         selectedCourses.push(selected[i].innerText)
       }
+}
+
+
+function setWarnings(code, semester, year, element){
+    if(!checkRequisites(code, semester, year)){
+        element.style.backgroundColor = "#fdf1af";
+    }
+    else{
+        element.style.backgroundColor = ""
+    }
+    
 }

@@ -75,8 +75,8 @@
         </div>
 
         {% for class in classes %}
-        <fieldset class="container scheduleContainer rounded">
-          <legend> {{class}} </legend>
+        <fieldset class="container scheduleContainer rounded" data-semester="{{class.get('Semester')}}" data-year="{{class.get('Year')}}" data-order="{{class.get('Semester-Order')}}">
+          <legend > {{class.get('Semester')}} {{class.get('Year')}}</legend>
           <div class="row rounded mb-2 drag_box_container mt-0" id="btn_cont">
               <div class="col-6 drag_box">
                   <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
@@ -170,9 +170,14 @@
 <!-- Javascript -->
 <script src="/static/js/drag-drop.js" charset="utf-8"></script>
 <script src="/static/js/side-bar.js" charset="utf-8"></script>
-<script src="/static/js/searchcourses.js"></script>
+<script src="/static/js/searchcourses.js" charset="utf-8"></script>
 <script src="/static/js/status-sheet.js" charset="utf-8"></script>
+
+<script src="/static/js/prereqs.js" charset="utf-8"></script>
+
+
 <script src="/static/js/filtercourses.js" charset="utf-8"></script>
+
 
 
 </body>
