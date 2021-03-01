@@ -145,7 +145,7 @@ class Database:
         cursor = self.db.cursor(buffered=True)
         currentYear = date.today().year
         args = (schedule_id, currentYear)
-        sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE IN (SELECT COURSE_CODE FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s AND YEAR<=%s) GROUP BY COURSE_CODE;'
+        sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE NOT IN (SELECT COURSE_CODE FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s AND YEAR<=%s) GROUP BY COURSE_CODE;'
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
