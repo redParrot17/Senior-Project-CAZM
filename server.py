@@ -105,10 +105,11 @@ TODO
 @app.route('/advisorSchReview/')
 
 def advisorSchReview():
+
     classes=[{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0}, {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1} , {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2}, {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
 
     DB = Database()
-	
+
     statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
 
     query_results = DB.get_all_courses()

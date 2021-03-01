@@ -6,8 +6,7 @@
     text-align: center;
     color: white;
     min-width: 100%;
-    margin: 10px;
-    margin-top: 30px;
+    margin-top: 10px;
     margin-bottom: 20px;
     height: 100%;
 }
@@ -15,7 +14,12 @@
 .student-info h1 {
     margin-top: 10px;
 }
-
+.btn{
+  background-color: Black;
+}
+.btn-outline-light{
+  background-color: transparent;
+}
 .height100p10{
   height: 100%;
   padding-bottom: 25px;
@@ -23,15 +27,13 @@
 .student-info .container {
     text-align: left;
     margin: 10px;
-    margin-top: 30px;
 }
 
 .landing-schedule {
-    height: 500px;
+    height: 100%;
     margin: 10% 20px;
-    border: 2px solid black;
-    margin: 10px;
-    margin-top: 30px;
+    border: 1px solid black;
+    margin-top: 10px;
 }
 
 .schedule-semester {
@@ -39,7 +41,7 @@
     background-color: white;
     color: black;
     /* min-height: 200px; */
-    border: 2px solid black;
+    border: 1px solid black;
 }
 
 .schedule-semester h1, h2, h3, h4, h5, h6 {
@@ -56,25 +58,26 @@
     margin: 20px;
 }
 
-#Scrollstyle::-webkit-scrollbar-track
+.Scrollstyle::-webkit-scrollbar-track
 {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  border-radius: 10px;
-  background-color: #555;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: black;
 }
 
-#Scrollstyle::-webkit-scrollbar
+.Scrollstyle::-webkit-scrollbar
 {
-  width: 12px;
-  background-color: #555;
+	width: 12px;
+	background-color: black;
 }
 
-#Scrollstyle::-webkit-scrollbar-thumb
+.Scrollstyle::-webkit-scrollbar-thumb
 {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-  background-color: #F5F5F5;
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #6c757d;
 }
+
 legend {
     width: auto;
     padding-left: 5px;
@@ -82,7 +85,7 @@ legend {
     margin: 10px;
 }
 
-.navbar {
+.shaddow {
     -webkit-box-shadow: 0 8px 6px -6px #999;
     -moz-box-shadow: 0 8px 6px -6px #999;
     box-shadow: 0 8px 6px -6px #999;

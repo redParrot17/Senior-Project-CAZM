@@ -78,6 +78,7 @@ function drop(ev) {
     // add dragged item to drag_container
     targetNode.appendChild(courseNode);     // add the item transfered to the target element
     targetNode.classList.add("bg-light");
+    targetNode.classList.add("border");
     // console.log(document.getElementById(id).childNodes);
     if(document.getElementById(id).childNodes.length == 7){
       document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
@@ -134,6 +135,7 @@ function updateSelectedCourses(){
         selectedCourses.push(selected[i].innerText)
       }
 }
+
 
 function setWarnings(code, semester, year, element){
     if(!checkRequisites(code, semester, year)){
