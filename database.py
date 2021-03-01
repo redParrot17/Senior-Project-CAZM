@@ -1,5 +1,5 @@
 import mysql.connector
-
+from datetime import date
 
 
 class Database:
@@ -140,6 +140,20 @@ class Database:
          for course_code, name, year, semester in results:
              course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
          return course_info
+        
+    def filter_previous(self, schedule_id):
+        cursor = self.db.cursor(buffered=True)
+        currentYear = date.today().year
+        args = (schedule_id, currentYear)
+        sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE IN (SELECT COURSE_CODE FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s AND YEAR<=%s) GROUP BY COURSE_CODE;'
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+        course_info = []
+        for course_code, name, year, semester in results:
+            course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
+        return course_info
 
     def get_all_courses(self):
          cursor = self.db.cursor(buffered=True)
