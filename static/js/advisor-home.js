@@ -6,7 +6,7 @@ const AWAITING_STUDENT_APPROVAL = 2;
 const AWAITING_STUDENT_CREATION = 3;
 const AWAITING_ADVISOR_APPROVAL = 4;
 const STATUS_MAP = {
-    [APPROVED]: 'Approved', 
+    [APPROVED]: 'Approved',
     [AWAITING_STUDENT_APPROVAL]: 'Awaiting Student Approval',
     [AWAITING_STUDENT_CREATION]: 'Awaiting Student Creation',
     [AWAITING_ADVISOR_APPROVAL]: 'Awaiting Advisor Approval',
@@ -41,7 +41,7 @@ function setEmailButtonText(text) {
 // ADVISEE FILTERING METHODS //
 
 function filterByStatus(advisees) {
-    if (selectedStatusFilter === 'all') 
+    if (selectedStatusFilter === 'all')
         return advisees;
     else if (selectedStatusFilter === 'approved')
         return advisees.filter(a => a.status === APPROVED);
@@ -137,7 +137,7 @@ function onClickMessage() {
 
 function buildAdviseeCard(advisee) {
     return [
-        `<div class="advisee shadow p-3 mb-4 bg-body rounded" onclick="onClickAdvisee(${advisee.id})">`,
+        `<div class="advisee border shadow p-3 mb-4 bg-body rounded" onclick="onClickAdvisee(${advisee.id})">`,
         '<div class="row align-items-center">',
         `<div class="col"><h5>${advisee.name}</h5></div>`,
         `<div class="col"><h5>${advisee.id}</h5></div>`,

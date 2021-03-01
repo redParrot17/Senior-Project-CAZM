@@ -16,22 +16,22 @@
 
         <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
         <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-    
+
         <!-- Rich Textfields -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='rich-textfields/richtext.min.css') }}">
     </head>
 
     <body>
 
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-dark" style="background-color: #B0002A;">
-            <div class="container">
-                <a class="navbar-brand">HBCAZM</a>
-                <form class="form-inline" action="/logout" method="post">
-                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
-                </form>
-            </div>
-        </nav>
+      <!-- Navigation Bar -->
+      <nav class="navbar shaddow navbar-dark" style="background-color: #B0002A;">
+          <div class="container">
+              <a class="navbar-brand">HBCAZM</a>
+              <form class="form-inline" action="/logout" method="post">
+                  <button class="btn shaddow btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+              </form>
+          </div>
+      </nav>
 
         <div class="container" style="margin-top: 10px;">
 
@@ -49,9 +49,9 @@
 
                 <!-- Search bar for filtering table results -->
                 <div class="form-group row">
-                    <div class="col input-group">
-                        <input type="search" id="search-text" class="form-control rounded" placeholder="Filter (name or student id)" aria-label="Search">
-                        <button type="button" id="search-btn" class="btn btn-outline-primary">search</button>
+                    <div class="col search">
+                        <input type="search" id="search-text" class="rounded-left searchTerm" placeholder="Filter (name or student id)" aria-label="Search">
+                        <button type="button" id="search-btn" class="searchButton rounded-right"><i class="fa fa-search"></i></button>
                     </div>
                 </div>
 
@@ -60,17 +60,17 @@
 
                     <!-- Filter results by scheduling status -->
                     <div class="col-8">
-                        <div id="status-selector" class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
-                            <label class="btn btn-secondary active">
+                        <div id="status-selector" class="shaddow btn-group btn-group-toggle d-flex" data-toggle="buttons">
+                            <label class="btn btn-secondary toggleBtn active">
                                 <input type="radio" value="all" checked> All
                             </label>
-                            <label class="btn btn-secondary">
+                            <label class="btn btn-secondary toggleBtn">
                                 <input type="radio" value="approved"> Approved
                             </label>
-                            <label class="btn btn-secondary">
+                            <label class="btn btn-secondary toggleBtn">
                                 <input type="radio" value="awaiting-approval"> Awaiting Approval
                             </label>
-                            <label class="btn btn-secondary">
+                            <label class="btn btn-secondary toggleBtn">
                                 <input type="radio" value="awaiting-creation"> Awaiting Creation
                             </label>
                         </div>
@@ -78,14 +78,14 @@
 
                     <!-- Filtering results by year (Senior/Freshman/Junior etc..) -->
                     <div class="col">
-                        <select id="filterYearSelection" class="form-control">
+                        <select id="filterYearSelection" class="border form-control">
                             <option selected>All Years...</option>
                         </select>
                     </div>
 
                     <!-- Which field to sort the results by -->
                     <div class="col">
-                        <select id="sortBySelection" class="form-control">
+                        <select id="sortBySelection" class="border form-control">
                             <option selected>Sort By...</option>
                             <option>Name</option>
                             <option>Major</option>
@@ -104,9 +104,9 @@
             <!-- Button to trigger the email modal -->
             <!-- <div class="row" style="margin-top: 30px;">
                 <div class="col text-center">
-                    <button 
-                        type="button" 
-                        id="message-btn" 
+                    <button
+                        type="button"
+                        id="message-btn"
                         class="btn btn-lg btn-outline-secondary"
                         onclick="onClickMessage()">
 
