@@ -1,5 +1,4 @@
 from webscraping.scraperutils import ScraperUtils
-from webscraping.adviseescraper import AsyncAdviseeScraper
 import webscraping.errors as errors
 
 
@@ -253,7 +252,8 @@ class AdvisingInformation:
         return self.__is_advisor
 
     def get_advisee_scraper(self, callback):
-        return AsyncAdviseeScraper(self.__username, self.__password, callback)
+        raise NotImplementedError
+        #return AsyncAdviseeScraper(self.__username, self.__password, callback)
 
 
 class MyGcc:

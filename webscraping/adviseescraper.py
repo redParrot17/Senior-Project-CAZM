@@ -1,6 +1,6 @@
 from webscraping.scraperutils import ScraperUtils
 import webscraping.errors as errors
-from bs4 import BeautifulSoup
+from database import Database
 import traceback
 
 
@@ -234,6 +234,48 @@ class AdviseeScraper:
         scraper.http_post(scraper.to_url(action), data=payload)
 
 
-def get_advisees(advisor_id: int) -> list:
-    
-    pass
+def get_advisees(username: str, password: str, advisor_id: int) -> list:
+    database = Database()
+
+    # Fetch advisees from the database
+    advisees = database.get_all_advisees(advisor_id)
+
+    # If no advisees exist, scrape for them
+    if len(advisees) == 0:
+        scraper = AdviseeScraper(username, password)
+        scraped_advisees = scraper.fetch()
+
+        for scraped_advisee in scraped_advisees:
+
+            # Student Table
+            student_id = scraped_advisee.pop('user_id')
+            student_name = scraped_advisee.pop('name')
+            last_name, first_name = student_name.split(', ', 2)
+            first_name = first_name.split(' ')[0]
+            email = scraped_advisee.pop('email')
+            classification = scraped_advisee.pop('classification')
+            planned_grad = scraped_advisee.pop('planned_grad')
+            graduation_year = int(planned_grad.split('/')[-1])
+            credits_completed = 0  # TODO: calculate this
+
+            # Major Table
+            major = scraped_advisee.pop('major')
+            enrolled_date = scraped_advisee.pop('enrolled_date')
+            enrolled_year = int(enrolled_date.split('/')[-1])
+            
+            database.update_advisee(
+                advisor_id,
+                student_id, 
+                first_name,
+                last_name,
+                email,
+                classification,
+                graduation_year,
+                credits_completed)
+            
+            # 1. Make sure major exists
+            # 2. Create student
+            # 3. Update student major
+
+
+    return advisees
