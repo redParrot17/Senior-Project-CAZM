@@ -1,4 +1,5 @@
 from webscraping.scraperutils import ScraperUtils
+from webscraping.components.student import Student
 import webscraping.errors as errors
 from database import Database
 import traceback
@@ -234,48 +235,49 @@ class AdviseeScraper:
         scraper.http_post(scraper.to_url(action), data=payload)
 
 
-def get_advisees(username: str, password: str, advisor_id: int) -> list:
+def get_advisers_students(username: str, password: str, adviser_id: int) -> list:
     database = Database()
+    students = database.get_adviser_students(adviser_id)
 
-    # Fetch advisees from the database
-    advisees = database.get_all_advisees(advisor_id)
-
-    # If no advisees exist, scrape for them
-    if len(advisees) == 0:
+    if not students:
         scraper = AdviseeScraper(username, password)
-        scraped_advisees = scraper.fetch()
+        scraped_results = scraper.fetch()
 
-        for scraped_advisee in scraped_advisees:
+        for scraped_result in scraped_results:
 
-            # Student Table
-            student_id = scraped_advisee.pop('user_id')
-            student_name = scraped_advisee.pop('name')
+            # Student information
+
+            student_id = scraped_result.pop('user_id')
+            student_name = scraped_result.pop('name')
             last_name, first_name = student_name.split(', ', 2)
             first_name = first_name.split(' ')[0]
-            email = scraped_advisee.pop('email')
-            classification = scraped_advisee.pop('classification')
-            planned_grad = scraped_advisee.pop('planned_grad')
+            email = scraped_result.pop('email')
+            classification = scraped_result.pop('classification')
+            planned_grad = scraped_result.pop('planned_grad')
             graduation_year = int(planned_grad.split('/')[-1])
             credits_completed = 0  # TODO: calculate this
 
-            # Major Table
-            major = scraped_advisee.pop('major')
-            enrolled_date = scraped_advisee.pop('enrolled_date')
+            # Major information
+
+            major = scraped_result.pop('major')
+            enrolled_date = scraped_result.pop('enrolled_date')
             enrolled_year = int(enrolled_date.split('/')[-1])
-            
-            database.update_advisee(
-                advisor_id,
-                student_id, 
-                first_name,
-                last_name,
-                email,
-                classification,
-                graduation_year,
-                credits_completed)
-            
-            # 1. Make sure major exists
-            # 2. Create student
-            # 3. Update student major
 
+            # Build the student
 
-    return advisees
+            student = Student(
+                student_id=student_id,
+                advisor_id=adviser_id,
+                firstname=first_name,
+                lastname=last_name,
+                email=email,
+                majors=[(major, enrolled_year)],
+                classification=classification,
+                graduation_year=graduation_year)
+
+            # Update the database
+
+            database.create_new_student(student)
+            students.append(student)
+
+    return students

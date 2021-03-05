@@ -310,6 +310,35 @@ class Database:
 
         return student
 
+    def get_adviser_students(self, adviser_id: int) -> list:
+        """ Retrieves all student information associated with an adviser.
+
+        :param adviser_id: adviser's unique identifier
+        :return: list of webscraping.components.Student objects associated with the adviser
+        """
+
+        ### Retrieve all student ids associated with the adviser id ###
+
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT STUDENT_ID FROM STUDENTS WHERE ADVISOR_ID=%s;'
+        arguments = (adviser_id,)
+
+        student_ids = cursor.fetchall()
+        cursor.close()
+
+        ### Retrieve student info for each of the student ids ###
+
+        students = []
+
+        for student_id in student_ids:
+            student = self.get_existing_student(student_id, adviser_id)
+
+            if student is not None:
+                students.append(student)
+
+        return students
+
     def create_new_student(self, student: Student, remove_stale_majors: bool = True):
         """ Creates or updates information for a specific student.
 
@@ -321,6 +350,7 @@ class Database:
                                     within the student object, default True
         """
 
+        # TODO: account for the CREDITS_COMPLETED field of the table
         ### Create or update the information stored in the STUDENTS table ###
 
         cursor = self.db.cursor(buffered=True)
@@ -369,61 +399,5 @@ class Database:
         :param student_id: student's unique identifier
         :param adviser_id: adviser's unique identifier
         """
-        
+
         # TODO: Implement this
-
-
-    # # ADVISEE METHODS #
-    # 
-    # def update_advisee(
-    #         self, 
-    #         advisor_id, 
-    #         student_id, 
-    #         first_name, 
-    #         last_name, 
-    #         email,
-    #         classification,
-    #         graduation_year, 
-    #         credits_completed):
-    #     cursor = self.db.cursor(buffered=True)
-    # 
-    #     sql_query = """
-    #         INSERT INTO STUDENTS 
-    #         (ADVISOR_ID, STUDENT_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR, CREDITS_COMPLETED) 
-    #         VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE 
-    #         ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), LAST=VALUES(LAST), EMAIL=VALUES(EMAIL), 
-    #         CLASSIFICATION=VALUES(CLASSIFICATION), GRAD_YEAR=VALUES(GRAD_YEAR), CREDITS_COMPLETED=VALUES(CREDITS_COMPLETED);
-    #         """
-    #     
-    #     arguments = (
-    #         advisor_id, 
-    #         student_id, 
-    #         first_name, 
-    #         last_name, 
-    #         email, 
-    #         classification, 
-    #         graduation_year, 
-    #         credits_completed,)
-    # 
-    #     cursor.execute(sql_query, arguments)
-    #     cursor.close()
-    # 
-    # def get_advisee(self):
-    #     pass
-    # 
-    # def get_all_advisees(self, advisor_id: int) -> list:
-    #     return []
-    # 
-    # def delete_advisee(self, advisor_id: int, advisee_id: int):
-    #     cursor = self.db.cursor(buffered=True)
-    #     sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s AND STUDENT_ID=%s;'
-    #     arguments = (advisor_id, advisee_id,)
-    #     cursor.execute(sql_query, arguments)
-    #     cursor.close()
-    # 
-    # def delete_all_advisees(self, advisor_id: int):
-    #     cursor = self.db.cursor(buffered=True)
-    #     sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s;'
-    #     arguments = (advisor_id,)
-    #     cursor.execute(sql_query, arguments)
-    #     cursor.close()
