@@ -1,5 +1,5 @@
+from webscraping.components.student import Student
 import mysql.connector
-
 
 
 class Database:
@@ -133,7 +133,9 @@ class Database:
 
         return template
 
-    # METHODS FOR THE MAJOR TABLE #
+
+    ### METHODS FOR THE MAJOR TABLE ###
+
 
     def does_major_exist(self, major_name: str, major_year: int) -> bool:
         """ Checks whether or not a specific major exists within the database.
@@ -172,6 +174,8 @@ class Database:
 
         :param major_name: name of the major
         :param major_year: year the major is offered
+
+        :raises mysql.connector.errors.IntegrityError: if tables MAJOR_REQUIREMENTS or STUDENT_MAJOR depend on this
         """
         cursor = self.db.cursor(buffered=True)
 
@@ -181,7 +185,9 @@ class Database:
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    # METHODS FOR THE STUDENT MAJOR TABLE #
+
+    ### METHODS FOR THE STUDENT MAJOR TABLE ###
+
 
     def get_student_majors(self, student_id: int) -> list:
         """ Gets a student's major and year information from the database.
@@ -204,28 +210,20 @@ class Database:
         cursor.close()
         return results
 
-    def add_major_to_student(self, student_id: int, major_name: str, major_year: int):
+    def add_major_to_student(self, student_id: int, major_name: str, major_year: int, ensure_major_exists: bool = True):
         """ Adds the specified major information to the database and ignores duplicate entries.
 
-        Example::
-
-            # Define parameters to use
-            major_name = 'Advanced Pottery'
-            major_year = 2017
-
-            # Ensure the major exists
-            if not database.does_major_exist(major_name, major_year):
-                create_new_major(major_name, major_year)
-
-            # Add the major to student
-            database.add_major_to_student(123456, major_name, major_year)
-
-        :param student_id: student's unique identifier
-        :param major_name: name of the student's major
-        :param major_year: year the student joined the major
+        :param student_id:          student's unique identifier
+        :param major_name:          name of the student's major
+        :param major_year:          year the student joined the major
+        :param ensure_major_exists: creates the major if it doesn't exist, default True
 
         :raises mysql.connector.errors.IntegrityError: if the major does not exist in the major table
         """
+        if ensure_major_exists:
+            if not self.does_major_exist(major_name, major_year):
+                self.create_new_major(major_name, major_year)
+
         cursor = self.db.cursor(buffered=True)
 
         sql_query = 'INSERT INTO STUDENT_MAJOR (STUDENT_ID, MAJOR_NAME, MAJOR_YEAR) VALUES (%s, %s, %s) ' \
@@ -264,62 +262,168 @@ class Database:
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    # METHODS FOR THE STUDENTS TABLE #
+
+    ### METHODS FOR THE STUDENTS TABLE ###
 
 
+    def get_existing_student(self, student_id: int, adviser_id: int) -> Student:
+        """ Retrieves information stored for a student in the database.
 
+        :param student_id: student's unique identifier
+        :param adviser_id: adviser's unique identifier
+        :return: retrieved student information or None if the student does not exist
+        """
 
-    # ADVISEE METHODS #
+        ### Fetch the student's information stored within the STUDENT table ###
 
-    def update_advisee(
-            self, 
-            advisor_id, 
-            student_id, 
-            first_name, 
-            last_name, 
-            email,
-            classification,
-            graduation_year, 
-            credits_completed):
         cursor = self.db.cursor(buffered=True)
 
-        sql_query = """
-            INSERT INTO STUDENTS 
-            (ADVISOR_ID, STUDENT_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR, CREDITS_COMPLETED) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE 
-            ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), LAST=VALUES(LAST), EMAIL=VALUES(EMAIL), 
-            CLASSIFICATION=VALUES(CLASSIFICATION), GRAD_YEAR=VALUES(GRAD_YEAR), CREDITS_COMPLETED=VALUES(CREDITS_COMPLETED);
-            """
-        
+        sql_query = 'SELECT STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR ' \
+                    'FROM STUDENTS WHERE STUDENT_ID=%s AND ADVISOR_ID=%s;'
+        arguments = (student_id, adviser_id,)
+
+        cursor.execute(sql_query, arguments)
+        result = cursor.fetchone()
+
+        cursor.close()
+
+        ### Fetch the student's information stored within the STUDENT_MAJOR table ###
+
+        majors = self.get_student_majors(student_id)
+
+        ### Build the Student object containing all the student's data ###
+
+        if result is not None:
+            _, advisor_id, firstname, lastname, email, classification, graduation_year = result
+
+            student = Student(
+                student_id=student_id,
+                advisor_id=advisor_id,
+                firstname=firstname,
+                lastname=lastname,
+                email=email,
+                majors=majors,
+                classification=classification,
+                graduation_year=graduation_year)
+        else:
+            student = None
+
+        return student
+
+    def create_new_student(self, student: Student, remove_stale_majors: bool = True):
+        """ Creates or updates information for a specific student.
+
+        - Ensures the student's major exists when updating major information.
+        - Optionally removes stale majors from the student_majors table.
+
+        :param student:             dataclass containing the student's information
+        :param remove_stale_majors: removes majors from a student that are not specified
+                                    within the student object, default True
+        """
+
+        ### Create or update the information stored in the STUDENTS table ###
+
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'INSERT INTO STUDENTS (STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR) ' \
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE STUDENT_ID=VALUES(STUDENT_ID), ' \
+                    'ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), LAST=VALUES(LAST), EMAIL=VALUES(EMAIL), ' \
+                    'CLASSIFICATION=VALUES(CLASSIFICATION), GRAD_YEAR=VALUES(GRAD_YEAR);'
         arguments = (
-            advisor_id, 
-            student_id, 
-            first_name, 
-            last_name, 
-            email, 
-            classification, 
-            graduation_year, 
-            credits_completed,)
+            student.student_id,
+            student.advisor_id,
+            student.firstname,
+            student.lastname,
+            student.email,
+            student.classification,
+            student.graduation_year,)
 
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    def get_advisee(self):
-        pass
+        ### Create or update the information stored in the STUDENT_MAJOR table ###
 
-    def get_all_advisees(self, advisor_id: int) -> list:
-        return []
+        # Determine which majors the student is already registered to
+        student_id = student.student_id
+        majors_to_add = []
+        existing_majors = self.get_student_majors(student_id)
 
-    def delete_advisee(self, advisor_id: int, advisee_id: int):
-        cursor = self.db.cursor(buffered=True)
-        sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s AND STUDENT_ID=%s;'
-        arguments = (advisor_id, advisee_id,)
-        cursor.execute(sql_query, arguments)
-        cursor.close()
+        for major in student.majors:
+            if major in existing_majors:
+                existing_majors.remove(major)
+            else:
+                majors_to_add.append(major)
 
-    def delete_all_advisees(self, advisor_id: int):
-        cursor = self.db.cursor(buffered=True)
-        sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s;'
-        arguments = (advisor_id,)
-        cursor.execute(sql_query, arguments)
-        cursor.close()
+        # Add missing majors to the student
+        for major_name, major_year in majors_to_add:
+            self.add_major_to_student(student_id, major_name, major_year)
+
+        # Remove extra majors from the student
+        if remove_stale_majors:
+            for major_name, major_year in existing_majors:
+                self.remove_major_from_student(student_id, major_name, major_year)
+
+    def delete_existing_student(self, student_id: int, adviser_id: int):
+        """ Removes information about a student from the database.
+
+        :param student_id: student's unique identifier
+        :param adviser_id: adviser's unique identifier
+        """
+        
+        # TODO: Implement this
+
+
+    # # ADVISEE METHODS #
+    # 
+    # def update_advisee(
+    #         self, 
+    #         advisor_id, 
+    #         student_id, 
+    #         first_name, 
+    #         last_name, 
+    #         email,
+    #         classification,
+    #         graduation_year, 
+    #         credits_completed):
+    #     cursor = self.db.cursor(buffered=True)
+    # 
+    #     sql_query = """
+    #         INSERT INTO STUDENTS 
+    #         (ADVISOR_ID, STUDENT_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR, CREDITS_COMPLETED) 
+    #         VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE 
+    #         ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), LAST=VALUES(LAST), EMAIL=VALUES(EMAIL), 
+    #         CLASSIFICATION=VALUES(CLASSIFICATION), GRAD_YEAR=VALUES(GRAD_YEAR), CREDITS_COMPLETED=VALUES(CREDITS_COMPLETED);
+    #         """
+    #     
+    #     arguments = (
+    #         advisor_id, 
+    #         student_id, 
+    #         first_name, 
+    #         last_name, 
+    #         email, 
+    #         classification, 
+    #         graduation_year, 
+    #         credits_completed,)
+    # 
+    #     cursor.execute(sql_query, arguments)
+    #     cursor.close()
+    # 
+    # def get_advisee(self):
+    #     pass
+    # 
+    # def get_all_advisees(self, advisor_id: int) -> list:
+    #     return []
+    # 
+    # def delete_advisee(self, advisor_id: int, advisee_id: int):
+    #     cursor = self.db.cursor(buffered=True)
+    #     sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s AND STUDENT_ID=%s;'
+    #     arguments = (advisor_id, advisee_id,)
+    #     cursor.execute(sql_query, arguments)
+    #     cursor.close()
+    # 
+    # def delete_all_advisees(self, advisor_id: int):
+    #     cursor = self.db.cursor(buffered=True)
+    #     sql_query = 'DELETE FROM STUDENTS WHERE ADVISOR_ID=%s;'
+    #     arguments = (advisor_id,)
+    #     cursor.execute(sql_query, arguments)
+    #     cursor.close()
