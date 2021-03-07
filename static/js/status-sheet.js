@@ -1,6 +1,6 @@
 function loadStatusSheet(reqs) {
 	let keys = Object.keys(reqs)
-	console.log(keys)
+
 	for (let key of keys) {
 		let value = reqs[key]
 

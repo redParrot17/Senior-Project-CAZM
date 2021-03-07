@@ -1,6 +1,6 @@
 var classes;
 var reqs;
-
+var requisites
 
 
 
@@ -12,11 +12,19 @@ window.addEventListener("DOMContentLoaded", function () {
         major_year: 2020
     }, function (data) {
         reqs = data;
-        console.log(reqs);
         loadStatusSheet(reqs);
+
+    })
+
+    $.getJSON($SCRIPT_ROOT + '/getRequisites', {
+       
+    }, function (data) {
+        requisites = data;
+        console.log(requisites);
         
     })
 
+    
 
     let search = document.getElementById("search-button");
 
@@ -45,16 +53,16 @@ window.addEventListener("DOMContentLoaded", function () {
 
                 /* Arrows icon */
                 let arrows = document.createElement("i");
-                arrows.classList = "fas fa-arrows-alt";
+                arrows.classList = "col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt";
 
                 /* Class Text */
                 let span = document.createElement("span");
-                span.classList = "drag_item_text text-center";
+                span.classList = "col pr-0 pl-0 drag_item_text text-center";
                 span.innerHTML = name;
 
                 /* Trash Can */
                 let trash = document.createElement("i");
-                trash.classList = "fas fa-trash-alt ml-auto m-2 itemInvisible trashRed"
+                trash.classList = "col-1 pr-0 pl-0 fas fa-trash-alt ml-auto m-2 itemInvisible trashRed"
                 trash.setAttribute("onclick", "removeDragItem(event)");
 
                 /* Combine elements */
@@ -67,6 +75,6 @@ window.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-
+    addClassestoPools();
 
 });

@@ -23,15 +23,27 @@
 </head>
 <body>
 
-  <div class="row" id="wrap">
-    <div class="col-4 " id="left">
+  <!-- Navigation Bar -->
+  <nav class="navbar shaddow navbar-dark" id="nav" style="background-color: #B0002A;">
+      <div class="container">
+          <a class="navbar-brand">HBCAZM</a>
+          <form class="form-inline" action="/logout" method="post">
+              <button class="btn shaddow btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+          </form>
+      </div>
+  </nav>
+
+
+
+  <div class="mr-4 ml-4 row top-row" id="wrap">
+    <div class="col-4 paddingTen" id="left">
       <!-- <div class="row-1"> -->
-        <div class="height-row">
-          <button class="backbtn rounded" onclick="window.location.href = '/studentProfile'">Back</button>
+        <div class="row">
+          <button class="btn btn-lg shaddow btn-secondary" onclick="window.location.href = '/studentProfile'">Back</button>
         </div>
       <!-- </div>
       <div class="row-2"> -->
-        <div id=req-list class="container outsideContainer mt-3 p-2 mb-3 rounded overflow-auto Scrollstyle" >
+        <div id=req-list class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle" >
           <div class="SSheaderText rounded p-2">
             <h4> Status Sheet </h4>
           </div>
@@ -45,26 +57,26 @@
 
     </div>
 
-    <div class="col" id="middle">
-      <div class="row height-row">
-        <div class="col-8">
-          <button class="button approvebtn rounded hide" type="button">Approve Schedule</button>
+    <div class="col paddingTen" id="middle">
+      <div class="row">
+        <div class="col-11">
+          <button class="btn approvebtn shaddow btn-lg btn-secondary" type="button">Approve Schedule</button>
         </div>
         <div class="ml-auto" onclick="toggleSideBar(event)">
 
-        <i class=" openbtn fas fa-arrow-circle-left rounded-circle" ></i>
+        <i class=" openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle" ></i>
 
           <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
         </div>
       </div>
-      <div class="container outsideContainer mt-3 p-2 mb-3 rounded overflow-auto Scrollstyle">
+      <div class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle">
         <div class="SSheaderText rounded p-2">
           <h4> Student Schedule </h4>
         </div>
 
         {% for class in classes %}
-        <fieldset class="container scheduleContainer rounded">
-          <legend> {{class}} </legend>
+        <fieldset class="container scheduleContainer rounded" data-semester="{{class.get('Semester')}}" data-year="{{class.get('Year')}}" data-order="{{class.get('Semester-Order')}}">
+          <legend > {{class.get('Semester')}} {{class.get('Year')}}</legend>
           <div class="row rounded mb-2 drag_box_container mt-0" id="btn_cont">
               <div class="col-6 drag_box">
                   <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
@@ -80,77 +92,76 @@
 
 
 
-<div id="mySidebar" class="sidebar">
-  <div class="height-row">
-    <div class="search">
-      <input type="text" id="search-bar" class="searchTerm" placeholder="Search">
-      <button  type="submit" id="search-button" class="searchButton">
+<div id="mySidebar" class="sidebar sidebar-container">
+  <div class="row mb-1 mt-1">
+    <div class="search m-2">
+      <input type="text" id="search-bar" class="rounded-left searchTerm" placeholder="Search">
+      <button  type="submit" id="search-button" class="searchButton rounded-right">
         <i class="fa fa-search"></i>
      </button>
    </div>
   </div>
+  <div class="rounded sidebar-container-inside m-2 mb-3">
+      <div class="container filterContainer rounded">
+        <div class="headerText rounded-top">
+          Filters
+        </div>
+        <label class="Checkcontainer">Pre-requisites Met
+          <input type="checkbox">
+          <span class="checkmark"></span>
+        </label>
 
-  <div class="rounded sidebar-container mt-3 pt-2 mb-3">
-    <div class="container filterContainer  mb-3 rounded">
-      <div class="headerText rounded-top">
-        Filters
+        <label class="Checkcontainer">Major requirement
+          <input type="checkbox">
+          <span class="checkmark"></span>
+        </label>
+
+        <label class="Checkcontainer">Hide Previous Courses
+          <input type="checkbox" onchange="filterPrevious(this)">
+          <span class="checkmark"></span>
+        </label>
+
+        <label class="Checkcontainer">Show Intersessions
+          <input type="checkbox">
+          <span class="checkmark"></span>
+        </label>
       </div>
-      <label class="Checkcontainer">Pre-requisites Met
-        <input type="checkbox">
-        <span class="checkmark"></span>
-      </label>
-  
-      <label class="Checkcontainer">Major requirement
-        <input type="checkbox">
-        <span class="checkmark"></span>
-      </label>
-  
-      <label class="Checkcontainer">Hide Previous Courses
-        <input type="checkbox">
-        <span class="checkmark"></span>
-      </label>
-  
-      <label class="Checkcontainer">Show Intersessions
-        <input type="checkbox">
-        <span class="checkmark"></span>
-      </label>
-    </div>
-    <div class="container searchContainer mt-3 p-0 mb-3 rounded overflow-auto Scrollstyle" >
-      <div class="row">
-        <div class="form-group  col-7 p-0">
-          <select class="form-control dropdown topLeftRounded">
-            <option value="Semester">Semester:</option>
-            <option value="Fall">Fall</option>
-            <option value="Spring">Spring</option>
-            <option value="Winter">Winter</option>
-            <option value="January">January</option>
-            <option value="May">May</option>
-            <option value="Summer">Summer</option>
-          </select>
+      <div class="container searchContainer p-0 rounded overflow-hidden" >
+        <div class="row rowDropDown">
+          <div class="form-group  col-7 p-0">
+            <select class="form-control form-border-semester dropdown topLeftRounded">
+              <option value="Semester">Semester:</option>
+              <option value="Fall">Fall</option>
+              <option value="Spring">Spring</option>
+              <option value="Winter">Winter</option>
+              <option value="January">January</option>
+              <option value="May">May</option>
+              <option value="Summer">Summer</option>
+            </select>
+          </div>
+          <div class="form-group  col-5 p-0">
+            <select class="form-control form-border-year dropdown topRightRounded">
+              <option value="Year">Year:</option>
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group  col-5 p-0">
-          <select class="form-control dropdown topRightRounded">
-            <option value="Year">Year:</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-          </select>
+        <div class="container course-container rounded-bottom overflow-auto Scrollstyle" id="course-container">
+          {% for course in allCourses %}
+            <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt"></i>
+              <span class="col pr-0 pl-0 drag_item_text text-center">{{course.courseCode}}</span>
+              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
+            </div>
+          {% endfor%}
         </div>
-      </div>
-      <div class="rounded-bottom" id="course-container">
-        {% for course in allCourses %}
-        <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
-          <i class="fas fa-arrows-alt"></i>
-          <span class="drag_item_text text-center">{{course.courseCode}}</span>
-          <i class="fas fa-trash-alt ml-auto m-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
         </div>
-      {% endfor%}
-      </div>
-      </div>
   </div>
-  
+
 </div>
 
 
@@ -159,8 +170,13 @@
 <!-- Javascript -->
 <script src="/static/js/drag-drop.js" charset="utf-8"></script>
 <script src="/static/js/side-bar.js" charset="utf-8"></script>
-<script src="/static/js/searchcourses.js"></script>
+<script src="/static/js/searchcourses.js" charset="utf-8"></script>
 <script src="/static/js/status-sheet.js" charset="utf-8"></script>
+
+<script src="/static/js/prereqs.js" charset="utf-8"></script>
+
+
+<script src="/static/js/filtercourses.js" charset="utf-8"></script>
 
 
 

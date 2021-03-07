@@ -282,8 +282,17 @@ def advisor_sch_review():
 
     # TODO: verify that the advisor has access to this schedule
     # TODO: fetch the schedule information from the database
+    
+    '''
+    TODO
+    1) get Prereqs from server
+    2) Build prereq hierarchy with dataset attributes
+    3) Special js function for first semester
+    4) Build Pool of Prereqs met (include year standing)
+    5) Check against pool for each class (User object? ask christian)
+    '''
 
-    classes = ["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
+    classes = [{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0}, {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1} , {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2}, {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
 
     db = Database()
 
@@ -405,6 +414,13 @@ def searchClasses():
     return jsonify(query_results)
 
 
+@app.route('/filterPrevious/')
+def filterPreviousClasses():
+    db = Database()
+    schedule_id = request.args.get('schedule_id', 0, type=int)
+    query_results = db.filter_previous(schedule_id)
+    return jsonify(query_results)
+
 @app.route('/getRequirements/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def getRequirements():
@@ -415,7 +431,14 @@ def getRequirements():
     query_results = db.getRequirements(major_name, major_year)
 
     return jsonify(query_results)
+    
+@app.route('/getRequisites/')
+def getRequisites():
+  DB = Database()
 
+	query_results = DB.getRequisites()
+
+	return jsonify(query_results)
 
 if __name__ == "__main__":
     # from webscraping.adviseescraper import AsyncAdviseeScraper

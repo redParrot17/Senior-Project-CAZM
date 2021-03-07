@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/project.css">
     <link rel="stylesheet" href="/static/css/studentPage.css">
+    <link href="/static/css/advisorStudentSchedule.css" rel="stylesheet">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -16,40 +18,41 @@
 <body>
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-dark" style="background-color: #B0002A;">
+    <nav class="navbar shaddow navbar-dark" style="background-color: #B0002A;">
         <div class="container">
             <a class="navbar-brand">HBCAZM</a>
             <form class="form-inline" action="/logout" method="post">
-                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+                <button class="btn shaddow btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
             </form>
         </div>
     </nav>
 
-    <div class="container" style="margin-top: 10px;">
+    <div class="verticleFill mr-4 ml-4" style="margin-top: 10px;">
 
         <!-- Print and Edit Buttons -->
         <div class="row">
-            <!-- Padding to make position of button close to position of same button on advisor's 
+            <!-- Padding to make position of button close to position of same button on advisor's
                         student profile view -->
+            <div class="col-3"></div>
             <div class="col"></div>
             <div class="col"></div>
-            <div class="col-3">
-                <button type="button" class="btn btn-lg btn-secondary" id="printScheduleBtn">Print Schedule</button>
+            <div class="col">
+                <button type="button" class="btn shaddow btn-lg btn-secondary" id="printScheduleBtn">Print Schedule</button>
             </div>
-            <div class="col-3">
-                <button type="button" class="btn btn-lg btn-secondary" id="editScheduleBtn">Edit Schedule</button>
+            <div class="col">
+                <button type="button" class="btn shaddow btn-lg btn-secondary" id="editScheduleBtn">Edit Schedule</button>
             </div>
         </div>
 
         <!-- Primary Content to Display -->
-        <div class="row">
+        <div class="row mainRow">
 
             <!-- Student Information -->
-            <div class="col-5">
-                <div class="bg-gcc-primary p-2 student-info rounded" id="StudentInfo">
+            <div class="col-4 mainCol">
+                <div class="bg-gcc-primary p-2 mb-3 student-info rounded border" id="StudentInfo">
                     <h1>{{ student.get("name") }}</h1>
                     <h3>Student ID: {{ student.get("id") }}</h3>
-
+                    <div class="container" style="height:40px"></div>
                     <div class="container">
                         <p>Credits Completed: {{ student.get("credits") }}</p>
                         <p>Graduation Semester: {{ student.get("grad_semester") }}</p>
@@ -59,28 +62,32 @@
                 </div>
             </div>
 
-            <!-- Schedule Overview -->
-            <div class="col bg-gcc-primary landing-schedule overflow-auto" id="Scrollstyle">
-                {% for schedule in studentSchedule %}
-                <div class="schedule-semester">
-                    <h4>{{schedule.get("semester")}} {{schedule.get("year")}}</h4>
-
-                    {% for class in schedule.get("classes") %}
-                    {% if loop.index % 2 == 1 %}
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            {%endif%}
-                            <div class="col-5">
-                                <p>{{class}}</p>
-                            </div>
-                            {% if loop.index % 2 == 0 or loop.index == loop.length %}
-                        </div>
-                    </div>
-                    {%endif%}
-                    {%endfor%}
+            <div class="col mainCol">
+              <div class="landing-schedule rounded overflow-auto p-2 Scrollstyle" id = "scrollbar">
+                <div class="SSheaderText rounded p-2">
+                  <h4> Course Schedule </h4>
                 </div>
-                {% endfor %}
-            </div>
+                  {% for schedule in studentSchedule %}
+                  <fieldset class="schedule-semester rounded">
+                    <legend>{{schedule.get("semester")}} {{schedule.get("year")}}</legend>
+
+                      {% for class in schedule.get("classes") %}
+                      {% if loop.index % 2 == 1 %}
+                      <div class="container rounded">
+                          <div class="row justify-content-center">
+                              {%endif%}
+                              <div class="col-5 rounded" style="height: 60px; text-align:center; vertical-align: middle">
+                                  <div class="p-3">{{class}}</div>
+                              </div>
+                              {% if loop.index % 2 == 0 or loop.index == loop.length %}
+                          </div>
+                      </div>
+                      {%endif%}
+                      {%endfor%}
+                  </fieldset>
+                  {% endfor %}
+              </div>
+          </div>
         </div>
 
     </div>
@@ -101,12 +108,12 @@
     <script>
         document.getElementById("printScheduleBtn").onclick = function () {
             var element1 = document.getElementById("StudentInfo");
-            var element2 = document.getElementById("Scrollstyle");
+            var element2 = document.getElementById("scrollBar");
             element2.style.height = "auto";
             html2pdf().set({ pagebreak: {avoid: '.schedule-semester'}}).from(element1).toPdf().get('pdf').then(function (pdf) {
                 pdf.addPage();
             }).from(element2).toContainer().toCanvas().toPdf().save("schedule");
-            setTimeout(() => { element2.style.height = "500px"; }, 300);
+            setTimeout(() => { element2.style.height = "500px"; }, 1000);
         }
     </script>
 </body>

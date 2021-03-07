@@ -1,6 +1,6 @@
 from webscraping.components.student import Student
 import mysql.connector
-
+from datetime import date
 
 __all__ = ('Database',)
 
@@ -65,6 +65,50 @@ class Database:
 
         return courses
 
+
+    ''' 
+    EXAMPLE JSON:
+
+    {
+        "COURSE CODE": {
+            REQUIREMENT_TYPE: {
+                REQUIREMENT_GROUP: [REQUISITE CODE, REQUISITE CODE],
+                REQUIREMENT_GROUP: [REQUISITE CODE, REQUISITE CODE, REQUISITE CODE]
+            }
+    }
+
+    }
+
+    '''
+    def getRequisites(self):
+        cursor = self.db.cursor(buffered=True)
+        
+        sql = """
+        SELECT COURSE_CODE, REQUISITE_CODE, TYPE, REQUISITE_GROUP FROM REQUISITES
+            """
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        cursor.close()
+
+        courses = {}
+
+        for course_code, requisite_code, type, group in results:
+            if course_code not in courses:
+                #Make new K/V Pair course_code
+                courses[course_code] =  {type : {group: [requisite_code]}}
+            else:
+
+                if type in courses[course_code]:
+                    if group in courses[course_code][type]:
+                        courses[course_code][type][group].append(requisite_code)
+                    else:
+                        courses[course_code][type][group] = [requisite_code]
+                else:
+                    courses[course_code][type] = {group: [requisite_code]}
+        return courses
+
+
+
     def getRequirements(self, major_name, major_year):
         cursor = self.db.cursor(buffered=True)
         args = (major_name, major_year)
@@ -104,6 +148,20 @@ class Database:
          for course_code, name, year, semester in results:
              course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
          return course_info
+        
+    def filter_previous(self, schedule_id):
+        cursor = self.db.cursor(buffered=True)
+        currentYear = date.today().year
+        args = (schedule_id, currentYear)
+        sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE NOT IN (SELECT COURSE_CODE FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s AND YEAR<=%s) GROUP BY COURSE_CODE;'
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+        course_info = []
+        for course_code, name, year, semester in results:
+            course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
+        return course_info
 
     def get_all_courses(self):
          cursor = self.db.cursor(buffered=True)
