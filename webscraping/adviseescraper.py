@@ -5,6 +5,10 @@ from database import Database
 import traceback
 
 
+# The AdviseeOverviewParser and date_to_semester_year are not intended for external use
+__all__ = ('get_advisers_students', 'AdviseeScraper')
+
+
 class AdviseeOverviewParser:
     """A helper class for parsing data from an advisee overview page."""
 
@@ -235,10 +239,52 @@ class AdviseeScraper:
         scraper.http_post(scraper.to_url(action), data=payload)
 
 
-def get_advisers_students(username: str, password: str, adviser_id: int) -> list:
-    database = Database()
-    students = database.get_adviser_students(adviser_id)
+def date_to_semester_year(date: str) -> tuple:
+    """ Returns the semester and year represented by a month/day/year date string.
 
+    Months of January, February, March, April, May, June are considered Spring.
+    Months of July, August, September, October, November, December are considered Fall.
+
+    :param date: date string formatted as month/day/year
+    :return: tuple of the ('Semester', year)
+    """
+    month, day, year = date.split('/')
+    semester = 'Spring' if month < 7 else 'Fall'
+    return semester, int(year)
+
+
+def get_advisers_students(adviser_id: int, username: str, password: str,
+                          update_database=True, force_refresh=False) -> list:
+    """ Retrieves all student information associated with an adviser.
+
+    If no student information is stored in the database, this will
+    attempt to fetch the information from mygcc and update the database.
+
+    :param adviser_id:      adviser's unique identifier
+    :param username:        adviser's gcc account username
+    :param password:        adviser's gcc account password
+
+    :param update_database: if the database should be updated with newly
+                            scraped info in the event the database contains
+                            no prior information about the adviser's students,
+                            default True
+
+    :param force_refresh:   if the student info should be scraped from mygcc
+                            regardless of if the database contained existing
+                            student information, default False
+
+    :return: list of Students associated with the specified adviser
+    """
+
+    database = Database()
+    students = []
+
+    # Tries to retrieve existing student information from
+    #   the database provided we aren't forced to refresh
+    if not force_refresh:
+        students = database.get_adviser_students(adviser_id)
+
+    # Tries to fetch the student information if nothing was in the database
     if not students:
         scraper = AdviseeScraper(username, password)
         scraped_results = scraper.fetch()
@@ -253,15 +299,15 @@ def get_advisers_students(username: str, password: str, adviser_id: int) -> list
             first_name = first_name.split(' ')[0]
             email = scraped_result.pop('email')
             classification = scraped_result.pop('classification')
+
             planned_grad = scraped_result.pop('planned_grad')
-            graduation_year = int(planned_grad.split('/')[-1])
-            credits_completed = 0  # TODO: calculate this
+            grad_semester, grad_year = date_to_semester_year(planned_grad)
 
             # Major information
 
             major = scraped_result.pop('major')
             enrolled_date = scraped_result.pop('enrolled_date')
-            enrolled_year = int(enrolled_date.split('/')[-1])
+            enrolled_semester, enrolled_year = date_to_semester_year(enrolled_date)
 
             # Build the student
 
@@ -273,11 +319,16 @@ def get_advisers_students(username: str, password: str, adviser_id: int) -> list
                 email=email,
                 majors=[(major, enrolled_year)],
                 classification=classification,
-                graduation_year=graduation_year)
+                graduation_year=grad_year,
+                graduation_semester=grad_semester,
+                enrolled_year=enrolled_year,
+                enrolled_semester=enrolled_semester
+            )
 
             # Update the database
+            if update_database:
+                database.create_new_student(student)
 
-            database.create_new_student(student)
             students.append(student)
 
     return students

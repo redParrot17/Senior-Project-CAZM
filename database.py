@@ -2,10 +2,18 @@ from webscraping.components.student import Student
 import mysql.connector
 
 
+__all__ = ('Database',)
+
+
 class Database:
 
-    def __init__(self, config_file='mysql.cnf'):
-        self.db = mysql.connector.connect(option_files=config_file, autocommit=True)
+    def __init__(self, config_file='mysql.cnf', autocommit=True):
+        """ Constructor
+
+        :param config_file: file path of the database configuration file, default 'mysql.cnf'
+        :param autocommit:  whether or not to automatically commit changes, default True
+        """
+        self.db = mysql.connector.connect(option_files=config_file, autocommit=autocommit)
 
     def close(self):
         self.db.close()
@@ -141,7 +149,7 @@ class Database:
         """ Checks whether or not a specific major exists within the database.
 
         :param major_name: name of the major
-        :param major_year: year the major is offered
+        :param major_year: year the major is offered (cannot exceed 2155)
         :return: True if the entry exists, False otherwise
         """
         cursor = self.db.cursor(buffered=True)
@@ -159,7 +167,7 @@ class Database:
         """ Adds a new major to the database.
 
         :param major_name: name of the major
-        :param major_year: year the major is offered
+        :param major_year: year the major is offered (cannot exceed 2155)
         """
         cursor = self.db.cursor(buffered=True)
 
@@ -173,7 +181,7 @@ class Database:
         """ Deletes an existing major from the database.
 
         :param major_name: name of the major
-        :param major_year: year the major is offered
+        :param major_year: year the major is offered (cannot exceed 2155)
 
         :raises mysql.connector.errors.IntegrityError: if tables MAJOR_REQUIREMENTS or STUDENT_MAJOR depend on this
         """
@@ -215,7 +223,7 @@ class Database:
 
         :param student_id:          student's unique identifier
         :param major_name:          name of the student's major
-        :param major_year:          year the student joined the major
+        :param major_year:          year the student joined the major (cannot exceed 2155)
         :param ensure_major_exists: creates the major if it doesn't exist, default True
 
         :raises mysql.connector.errors.IntegrityError: if the major does not exist in the major table
@@ -239,7 +247,7 @@ class Database:
 
         :param student_id: student's unique identifier
         :param major_name: name of the student's major
-        :param major_year: year the student joined the major
+        :param major_year: year the student joined the major (cannot exceed 2155)
         """
         cursor = self.db.cursor(buffered=True)
 
@@ -266,7 +274,7 @@ class Database:
     ### METHODS FOR THE STUDENTS TABLE ###
 
 
-    def get_existing_student(self, student_id: int, adviser_id: int) -> Student:
+    def get_student(self, student_id: int, adviser_id: int) -> Student:
         """ Retrieves information stored for a student in the database.
 
         :param student_id: student's unique identifier
@@ -278,8 +286,9 @@ class Database:
 
         cursor = self.db.cursor(buffered=True)
 
-        sql_query = 'SELECT STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR ' \
-                    'FROM STUDENTS WHERE STUDENT_ID=%s AND ADVISOR_ID=%s;'
+        sql_query = 'SELECT STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, ' \
+                    'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER, ' \
+                    'CREDITS_COMPLETED FROM STUDENTS WHERE STUDENT_ID=%s AND ADVISOR_ID=%s;'
         arguments = (student_id, adviser_id,)
 
         cursor.execute(sql_query, arguments)
@@ -294,7 +303,9 @@ class Database:
         ### Build the Student object containing all the student's data ###
 
         if result is not None:
-            _, advisor_id, firstname, lastname, email, classification, graduation_year = result
+            _, advisor_id, firstname, lastname, email, \
+                classification, graduation_year, graduation_semester, \
+                enrolled_year, enrolled_semester, credits_completed = result
 
             student = Student(
                 student_id=student_id,
@@ -304,7 +315,11 @@ class Database:
                 email=email,
                 majors=majors,
                 classification=classification,
-                graduation_year=graduation_year)
+                graduation_year=graduation_year,
+                graduation_semester=graduation_semester,
+                enrolled_year=enrolled_year,
+                enrolled_semester=enrolled_semester,
+                credits_completed=credits_completed)
         else:
             student = None
 
@@ -324,7 +339,10 @@ class Database:
         sql_query = 'SELECT STUDENT_ID FROM STUDENTS WHERE ADVISOR_ID=%s;'
         arguments = (adviser_id,)
 
-        student_ids = cursor.fetchall()
+        cursor.execute(sql_query, arguments)
+        results = cursor.fetchall()
+        student_ids = [result[0] for result in results]
+
         cursor.close()
 
         ### Retrieve student info for each of the student ids ###
@@ -332,7 +350,7 @@ class Database:
         students = []
 
         for student_id in student_ids:
-            student = self.get_existing_student(student_id, adviser_id)
+            student = self.get_student(student_id, adviser_id)
 
             if student is not None:
                 students.append(student)
@@ -350,13 +368,13 @@ class Database:
                                     within the student object, default True
         """
 
-        # TODO: account for the CREDITS_COMPLETED field of the table
         ### Create or update the information stored in the STUDENTS table ###
 
         cursor = self.db.cursor(buffered=True)
 
-        sql_query = 'INSERT INTO STUDENTS (STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR) ' \
-                    'VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE STUDENT_ID=VALUES(STUDENT_ID), ' \
+        sql_query = 'INSERT INTO STUDENTS (STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, ' \
+                    'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER) VALUES (%s, %s, %s, %s, ' \
+                    '%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE STUDENT_ID=VALUES(STUDENT_ID), ' \
                     'ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), LAST=VALUES(LAST), EMAIL=VALUES(EMAIL), ' \
                     'CLASSIFICATION=VALUES(CLASSIFICATION), GRAD_YEAR=VALUES(GRAD_YEAR);'
         arguments = (
@@ -366,7 +384,10 @@ class Database:
             student.lastname,
             student.email,
             student.classification,
-            student.graduation_year,)
+            student.graduation_year,
+            student.graduation_semester,
+            student.enrolled_year,
+            student.enrolled_semester)
 
         cursor.execute(sql_query, arguments)
         cursor.close()
@@ -393,11 +414,73 @@ class Database:
             for major_name, major_year in existing_majors:
                 self.remove_major_from_student(student_id, major_name, major_year)
 
-    def delete_existing_student(self, student_id: int, adviser_id: int):
+    def delete_student(self, student_id: int, adviser_id: int,
+                       delete_majors=False, delete_schedules=False):
         """ Removes information about a student from the database.
 
-        :param student_id: student's unique identifier
-        :param adviser_id: adviser's unique identifier
+        :param student_id:          student's unique identifier
+        :param adviser_id:          adviser's unique identifier
+
+        :param delete_majors:       if the student's major information should
+                                    automatically be deleted from the STUDENT_MAJOR
+                                    table to avoid a foreign key conflicts, default False
+
+        :param delete_schedules:    if the student's schedules should automatically
+                                    be deleted from the SCHEDULE table to avoid a foreign
+                                    key conflict, default False
+
+        :raises mysql.connector.errors.IntegrityError:
+                if the student still has majors in the STUDENT_MAJOR table or if
+                the student has schedules within the SCHEDULE table
         """
 
-        # TODO: Implement this
+        if delete_majors is True:
+            self.remove_all_majors_from_student(student_id)
+
+        if delete_schedules is True:
+            # TODO: invoke schedule deletion once the method exists
+            pass
+
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'DELETE FROM STUDENTS WHERE STUDENT_ID=%s AND ADVISOR_ID=%s;'
+        arguments = (student_id, adviser_id,)
+
+        cursor.execute(sql_query, arguments)
+        cursor.close()
+
+    def delete_advisers_students(self, adviser_id: int, delete_majors=False, delete_schedules=False):
+        """ Removes information for all students associated with an adviser.
+
+        :param adviser_id:          adviser's unique identifier
+
+        :param delete_majors:       if the student's major information should
+                                    automatically be deleted from the STUDENT_MAJOR
+                                    table to avoid a foreign key conflicts, default False
+
+        :param delete_schedules:    if the student's schedules should automatically
+                                    be deleted from the SCHEDULE table to avoid a foreign
+                                    key conflict, default False
+
+        :raises mysql.connector.errors.IntegrityError:
+                if a student still has majors in the STUDENT_MAJOR table or if
+                a student has schedules within the SCHEDULE table
+        """
+
+        ### Fetch all student ID's associated with the adviser ###
+
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT STUDENT_ID FROM STUDENTS WHERE ADVISOR_ID=%s;'
+        arguments = (adviser_id,)
+
+        cursor.execute(sql_query, arguments)
+        results = cursor.fetchall()
+        student_ids = [result[0] for result in results]
+
+        cursor.close()
+
+        ### Perform all of the deletions ###
+
+        for student_id in student_ids:
+            self.delete_student(student_id, adviser_id, delete_majors, delete_schedules)
