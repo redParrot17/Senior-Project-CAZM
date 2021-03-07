@@ -17,14 +17,14 @@ window.addEventListener("DOMContentLoaded", function () {
     })
 
     $.getJSON($SCRIPT_ROOT + '/getRequisites', {
-       
+
     }, function (data) {
         requisites = data;
         console.log(requisites);
-        
+
     })
 
-    
+
 
     let search = document.getElementById("search-button");
 
@@ -48,8 +48,9 @@ window.addEventListener("DOMContentLoaded", function () {
                 div.id = courseID;
                 div.className = "drag_item";
                 div.draggable = "true";
-                div.setAttribute("ondragstart", "drag(event)");
-                div.setAttribute("ondragend", "dragEnd(event)");
+
+                div.setAttribute("ondragstart", "set_valid_drag_locations(event);drag(event);");
+                div.setAttribute("ondragend", "revert_drag_locations(event);dragEnd(event);");
 
                 /* Arrows icon */
                 let arrows = document.createElement("i");
