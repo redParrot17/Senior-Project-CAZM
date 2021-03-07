@@ -300,10 +300,10 @@ def advisor_sch_review():
 
     query_results = db.get_all_courses()
 
-    listOfCourses = DB.get_courses()
+    list_of_courses = db.get_courses()
     
     return render_template(
-        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=listOfCourses)
+        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses)
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -399,8 +399,10 @@ def student_sch_review():
 
     query_results = db.get_all_courses()
 
+    list_of_courses = db.get_courses()
+    
     return render_template(
-        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results)
+        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses)
 
 
 ### UTILITY ENDPOINTS ###
