@@ -332,11 +332,11 @@ class Database:
     ### METHODS FOR THE STUDENTS TABLE ###
 
 
-    def get_student(self, student_id: int, adviser_id: int) -> Student:
+    def get_student(self, student_id: int, adviser_id: int = None) -> Student:
         """ Retrieves information stored for a student in the database.
 
         :param student_id: student's unique identifier
-        :param adviser_id: adviser's unique identifier
+        :param adviser_id: adviser's unique identifier or None to ignore that field
         :return: retrieved student information or None if the student does not exist
         """
 
@@ -344,10 +344,16 @@ class Database:
 
         cursor = self.db.cursor(buffered=True)
 
-        sql_query = 'SELECT STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, ' \
-                    'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER, ' \
-                    'CREDITS_COMPLETED FROM STUDENTS WHERE STUDENT_ID=%s AND ADVISOR_ID=%s;'
-        arguments = (student_id, adviser_id,)
+        if adviser_id is not None:
+            sql_query = 'SELECT STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, ' \
+                        'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER, ' \
+                        'CREDITS_COMPLETED FROM STUDENTS WHERE STUDENT_ID=%s AND ADVISOR_ID=%s;'
+            arguments = (student_id, adviser_id,)
+        else:
+            sql_query = 'SELECT STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, ' \
+                        'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER, ' \
+                        'CREDITS_COMPLETED FROM STUDENTS WHERE STUDENT_ID=%s;'
+            arguments = (student_id,)
 
         cursor.execute(sql_query, arguments)
         result = cursor.fetchone()
