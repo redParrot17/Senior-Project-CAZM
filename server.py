@@ -283,15 +283,16 @@ def advisor_sch_review():
     # TODO: verify that the advisor has access to this schedule
     # TODO: fetch the schedule information from the database
 
-    classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
+    classes = ["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
 
-    DB = Database()
+    db = Database()
 
-    statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
+    status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
 
-    query_results = DB.get_all_courses()
+    query_results = db.get_all_courses()
 
-    return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet, allCourses=query_results)
+    return render_template(
+        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results)
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -379,37 +380,41 @@ def student_sch_review():
     # TODO: verify that the student has access to this schedule
     # TODO: fetch the schedule information from the database
 
-    classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
+    classes=["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
 
-    DB = Database()
+    db = Database()
 
-    statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
+    status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
 
-    query_results = DB.get_all_courses()
+    query_results = db.get_all_courses()
 
-    return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet, allCourses=query_results)
+    return render_template(
+        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results)
 
 
 ### UTILITY ENDPOINTS ###
 
 @app.route('/searchClasses/')
+@flask_login.login_required     # you must be logged in to access this endpoint
 def searchClasses():
-    DB = Database()
+    db = Database()
     class_name = request.args.get('class_name', 0, type=str)
 
-    query_results = DB.search_course_codes(class_name)
+    query_results = db.search_course_codes(class_name)
 
-    return(jsonify(query_results))
+    return jsonify(query_results)
+
 
 @app.route('/getRequirements/')
+@flask_login.login_required     # you must be logged in to access this endpoint
 def getRequirements():
-	DB = Database()
-	major_name = request.args.get('major_name', 0, type=str)
-	major_year = request.args.get('major_year', 0, type=int)
+    db = Database()
+    major_name = request.args.get('major_name', 0, type=str)
+    major_year = request.args.get('major_year', 0, type=int)
 
-	query_results = DB.getRequirements(major_name, major_year)
+    query_results = db.getRequirements(major_name, major_year)
 
-	return(jsonify(query_results))
+    return jsonify(query_results)
 
 
 if __name__ == "__main__":
