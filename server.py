@@ -114,7 +114,9 @@ def advisorSchReview():
 
     query_results = DB.get_all_courses()
 
-    return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet, allCourses=query_results)
+    listOfCourses = DB.get_courses()
+
+    return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet, allCourses=query_results, listOfCourses=listOfCourses)
 
 
 @app.route('/advisorHomePreview/', methods=['GET', 'POST'])
@@ -176,7 +178,7 @@ def getRequirements():
 	query_results = DB.getRequirements(major_name, major_year)
 
 	return(jsonify(query_results))
-    
+
 @app.route('/getRequisites/')
 def getRequisites():
 	DB = Database()

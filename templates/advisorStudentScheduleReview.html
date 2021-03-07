@@ -13,6 +13,10 @@
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
   </script>
 
+  <script type=text/javascript>
+    var listOfCourses = {{ listOfCourses|tojson|safe}};
+  </script>
+
   <!-- font/icons -->
   <script src="https://kit.fontawesome.com/77ddb78ecd.js" crossorigin="anonymous"></script>
 
@@ -69,21 +73,10 @@
           <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
         </div>
       </div>
-      <div class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle">
+      <div class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle" id= "main-schedule">
         <div class="SSheaderText rounded p-2">
           <h4> Student Schedule </h4>
         </div>
-
-        {% for class in classes %}
-        <fieldset class="container scheduleContainer rounded" data-semester="{{class.get('Semester')}}" data-year="{{class.get('Year')}}" data-order="{{class.get('Semester-Order')}}">
-          <legend > {{class.get('Semester')}} {{class.get('Year')}}</legend>
-          <div class="row rounded mb-2 drag_box_container mt-0" id="btn_cont">
-              <div class="col-6 drag_box">
-                  <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-              </div>
-          </div>
-        </fieldset>
-        {% endfor %}
       </div>
     </div>
   </div>
@@ -152,7 +145,7 @@
         </div>
         <div class="container course-container rounded-bottom overflow-auto Scrollstyle" id="course-container">
           {% for course in allCourses %}
-            <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+            <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);">
               <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt"></i>
               <span class="col pr-0 pl-0 drag_item_text text-center">{{course.courseCode}}</span>
               <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
@@ -168,6 +161,7 @@
 
 
 <!-- Javascript -->
+<script src="/static/js/createStudentSchedule.js" charset="utf-8"></script>
 <script src="/static/js/drag-drop.js" charset="utf-8"></script>
 <script src="/static/js/side-bar.js" charset="utf-8"></script>
 <script src="/static/js/searchcourses.js" charset="utf-8"></script>
