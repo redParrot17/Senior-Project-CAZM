@@ -424,11 +424,13 @@ def filterPreviousClasses():
 
 
 @app.route('/filterPrevious/')
+@flask_login.login_required     # you must be logged in to access this endpoint
 def filterPreviousClasses():
     db = Database()
     schedule_id = request.args.get('schedule_id', 0, type=int)
     query_results = db.filter_previous(schedule_id)
     return jsonify(query_results)
+
 
 @app.route('/getRequirements/')
 @flask_login.login_required     # you must be logged in to access this endpoint
@@ -450,6 +452,7 @@ def getRequisites():
     query_results = db.getRequisites()
 
     return jsonify(query_results)
+
 
 if __name__ == "__main__":
     # from webscraping.adviseescraper import AsyncAdviseeScraper
