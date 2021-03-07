@@ -1,5 +1,5 @@
 import flask
-from flask import Flask,render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify
 import flask_login
 from os import urandom
 from user import User
@@ -56,7 +56,7 @@ def login_get():
         return flask.redirect(flask.url_for('advisor_landing_page'))
 
     # If the user is logged in as a student, redirect them to the student home page.
-    if user.is_authenticated and hasattr(user, 'is_advisor') and not user.is_advisor:
+    if user.is_authenticated and hasattr(user, 'is_student') and not user.is_student:
         return flask.redirect(flask.url_for('student_landing_page'))
 
     # Since the user is not logged in, we'll serve them the login page.
@@ -272,13 +272,17 @@ def advisor_viewing_student():
 
     # Redirect to the unauthorized page since the advisor does not have access to the requested student
     else:
-        return flask.redirect(flask.url_for('unauthorized'))
+        return login_manager.unauthorized()
 
 
 @app.route('/advisorSchReview/')
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_advisors  # you must be an advisor to view this page
-def advisorSchReview():
+def advisor_sch_review():
+
+    # TODO: verify that the advisor has access to this schedule
+    # TODO: fetch the schedule information from the database
+
     classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
 
     DB = Database()
@@ -294,7 +298,7 @@ def advisorSchReview():
 
 @app.route('/studentLanding')
 @flask_login.login_required     # you must be logged in to view this page
-@security.restrict_to_students  # you mus be a student to view this page
+@security.restrict_to_students  # you must be a student to view this page
 def student_landing_page():
     """
     This endpoint serves to provide an overview to a specific student's
@@ -365,6 +369,25 @@ def student_landing_page():
 
     # Serve the formatted landing page to the student requesting this endpoint
     return render_template('studentLanding.html', student=data, studentSchedule=template)
+
+
+@app.route('/studentSchReview/')
+@flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_students  # you must be a student to view this page
+def student_sch_review():
+
+    # TODO: verify that the student has access to this schedule
+    # TODO: fetch the schedule information from the database
+
+    classes=["Fall 2021","Spring 2022","Fall 2022","Spring 2021"]
+
+    DB = Database()
+
+    statusSheet = DB.getRequirements("COMPUTER SCIENCE", "2020")
+
+    query_results = DB.get_all_courses()
+
+    return render_template('advisorStudentScheduleReview.html', classes=classes, statusSheet=statusSheet, allCourses=query_results)
 
 
 ### UTILITY ENDPOINTS ###
