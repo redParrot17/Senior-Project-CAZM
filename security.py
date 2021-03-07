@@ -69,7 +69,7 @@ def restrict_to_students(func):
         user = flask_login.current_user
 
         # Ensure the user is logged in as a student
-        if hasattr(user, 'is_student') and not user.is_student:
+        if hasattr(user, 'is_student') and user.is_student:
             return func(*args, **kwargs)
 
         # Perform unauthorized redirect
