@@ -68,10 +68,14 @@ function drop(ev) {
       //console.log(ev)
         return;
     }
-    if(!checkRequisites(id, targetNodeSemester.dataset.semester, targetNodeSemester.dataset.year)){
-        //TODO Flash Warning
-        console.log("Prerequisites for "+ id + " not met");
-    }
+    // if(!checkRequisites(id, targetNodeSemester.dataset.semester, targetNodeSemester.dataset.year)){
+    //     new SnackBar({
+    //         message: "Warning: Prerequisites for " + id + " not met.",
+    //         position: "bc",
+    //         status: "warning"
+    //     });
+    //     targetNode.style.backgroundColor = "#ff9800";
+    // }
 
 
 
@@ -89,7 +93,7 @@ function drop(ev) {
     //console.log(document.getElementById(id).childNodes);
 
     document.getElementById(id).classList.add("drag_item_fill");
-    console.log(document.getElementById(id).getAttribute("courseCode"));
+   
     document.getElementById(id).id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
 
     // create a new (drag_box > drag_container) div

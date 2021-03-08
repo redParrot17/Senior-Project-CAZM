@@ -55,10 +55,13 @@ function set_valid_drag_locations(event) {
     // get the current course
     let currentCourse = listOfCourses[i];
     // see if it is the one we want
+    console.log(dragItemId)
     if (dragItemId.includes(currentCourse.courseCode)) {
+
       // get items
       let year = currentCourse.year;
       let semester = currentCourse.semester;
+      
       // add to array
       years.push(year);
       validSemesters.push(semester);
@@ -83,42 +86,42 @@ function set_valid_drag_locations(event) {
 
   // go over invalid objects
   invalidCombos.forEach((item, index) => {
-      let dropContainor = document.getElementById(item);
+      let dropContainer = document.getElementById(item);
 
-      if (dropContainor) { // if item found
+      if (dropContainer) { // if item found
         // make unable to drop
 
-        dropContainor.parentElement.classList.add('greyOut');
-        dropContainor.querySelectorAll(".drag_container").forEach((item) => {
+        dropContainer.parentElement.classList.add('greyOut');
+        dropContainer.querySelectorAll(".drag_container").forEach((item) => {
           item.removeAttribute("ondrop");
         });
-        dropContainor.querySelectorAll(".drag_container").forEach((item) => {
+        dropContainer.querySelectorAll(".drag_container").forEach((item) => {
           item.removeAttribute("ondragover");
         });
       }
   });
 
   combined.forEach((item1, index) => {
-    let dropContainor = document.getElementById(item1);
-    console.log(dropContainor);
+    let dropContainer = document.getElementById(item1);
+    // console.log(dropContainer);
 
     let checkId = dragItemId + "-" + item1;
-    console.log(checkId);
+    // console.log(checkId);
 
-    let hasCourse = dropContainor.querySelectorAll(".drag_item_fill");
-    console.log(hasCourse);
+    let hasCourse = dropContainer.querySelectorAll(".drag_item_fill");
+    // console.log(hasCourse);
 
     if(hasCourse.length > 0){
-      console.log("got in");
+      // console.log("got in");
 
       hasCourse.forEach((item2, index) => {
         if(item2.id == checkId){
 
-          dropContainor.parentElement.classList.add('greyOut');
-          dropContainor.querySelectorAll(".drag_container").forEach((item3) => {
+          dropContainer.parentElement.classList.add('greyOut');
+          dropContainer.querySelectorAll(".drag_container").forEach((item3) => {
             item3.removeAttribute("ondrop");
           });
-          dropContainor.querySelectorAll(".drag_container").forEach((item3) => {
+          dropContainer.querySelectorAll(".drag_container").forEach((item3) => {
             item3.removeAttribute("ondragover");
           });
 
@@ -135,16 +138,16 @@ function set_valid_drag_locations(event) {
 function revert_drag_locations(event) {
   // go over invalid objects
   invalidCombos.forEach((item, index) => {
-      let dropContainor = document.getElementById(item);
+      let dropContainer = document.getElementById(item);
 
-      if (dropContainor) { // if item found
+      if (dropContainer) { // if item found
         // make able to drop
 
-        dropContainor.parentElement.classList.remove('greyOut');
-        dropContainor.querySelectorAll(".drag_container").forEach((item) => {
+        dropContainer.parentElement.classList.remove('greyOut');
+        dropContainer.querySelectorAll(".drag_container").forEach((item) => {
           item.setAttribute("ondrop", "drop(event)");
         });
-        dropContainor.querySelectorAll(".drag_container").forEach((item) => {
+        dropContainer.querySelectorAll(".drag_container").forEach((item) => {
           item.setAttribute("ondragover", "allowDrop(event)");
         });
       }
@@ -168,7 +171,7 @@ $.getJSON($SCRIPT_ROOT + '/studentData', {
 }, function (data) {
     studentData = data;
     console.log(studentData);
-    // set up student schedule containors
+    // set up student schedule containers
     setUpStudentScheduleContainers(studentData);
 
 })
