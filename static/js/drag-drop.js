@@ -68,17 +68,19 @@ function drop(ev) {
       //console.log(ev)
         return;
     }
-    
+
     document.getElementById(id).setAttribute("year", targetNodeSemester.dataset.year)
     document.getElementById(id).setAttribute("semester", targetNodeSemester.dataset.semester)
 
 
 
+
     // add dragged item to drag_container
-    targetNode.appendChild(courseNode.cloneNode(true));     // add the item transfered to the target element
+    let clone = courseNode.cloneNode(true);
+    targetNode.appendChild(clone);     // add the item transfered to the target element
     ev.preventDefault();
     targetNode.classList.add("border");
-    
+
     // console.log(document.getElementById(id).childNodes);
     if(document.getElementById(id).childNodes.length == 7){
       document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
@@ -87,12 +89,14 @@ function drop(ev) {
       document.getElementById(id).childNodes[2].classList.remove("itemInvisible");
     }
     //console.log(document.getElementById(id).childNodes);
-
-    document.getElementById(id).classList.add("drag_item_fill");
-   let newID = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
-   console.log(document.getElementById(document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id))
-    document.getElementById(id).id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
+    clone.classList.add("drag_item_fill");
+   let newID = clone.getAttribute("courseCode")+"-"+targetNodeContainer.id;
+   console.log(clone.getAttribute("courseCode")+"-"+targetNodeContainer.id);
+    clone.id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
+    console.log(document.getElementById(newID));
     // create a new (drag_box > drag_container) div
+
+
     createDiv(targetNodeContainer);                          // create a new div for elements to be dragged to
 
     // console.log("div made");
@@ -137,5 +141,3 @@ function removeDragItem(ev) {
 //         selectedCourses.push(selected[i].innerText)
 //       }
 // }
-
-
