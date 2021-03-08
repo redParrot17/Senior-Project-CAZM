@@ -1,5 +1,17 @@
 let semesters = document.getElementsByClassName("scheduleContainer")
 var pools;
+
+
+function setWarnings(code, semester, year, element){
+    if(!checkRequisites(code, semester, year)){
+        element.style.backgroundColor = "#fdf1af";
+    }
+    else{
+        element.style.backgroundColor = ""
+    }
+
+}
+
 function addClassestoPools() {
     pools = []
     for (let s = 0; s < semesters.length; s++) {

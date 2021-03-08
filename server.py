@@ -363,8 +363,13 @@ def getStudentData():
         'name': f'{student.firstname} {student.lastname}',
         'credits': student.credits_completed,
         'status': 'Pending',    # TODO: fetch this value
-        'enrolled_semester' : f'{student.enrolled_semester} {student.enrolled_year}',
-        'grad_semester' : f'{student.graduation_semester} {student.graduation_year}',
+        'enrolled_semester' : student.enrolled_semester,
+        'enrolled_year' : student.enrolled_year,
+        'grad_semester' : student.graduation_semester,
+        'grad_year' : student.graduation_year,
+        'enrolled_semester_combined' : f'{student.enrolled_semester} {student.enrolled_year}',
+        'grad_semester_combined' : f'{student.graduation_semester} {student.graduation_year}',
+
         'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
     }
 
@@ -372,7 +377,7 @@ def getStudentData():
 
 
 
-@app.route('/studentInfo')
+@app.route('/studentData')
 @security.restrict_to_students
 @flask_login.login_required     # you must be logged in to view this page
 def getStudentInfoJSON():

@@ -139,12 +139,3 @@ function updateSelectedCourses(){
 }
 
 
-function setWarnings(code, semester, year, element){
-    if(!checkRequisites(code, semester, year)){
-        element.style.backgroundColor = "#fdf1af";
-    }
-    else{
-        element.style.backgroundColor = ""
-    }
-
-}

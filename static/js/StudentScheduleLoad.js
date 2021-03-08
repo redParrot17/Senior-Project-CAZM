@@ -7,16 +7,6 @@ var studentInfo;
 
 window.addEventListener("DOMContentLoaded", function () {
 
-
-    $.getJSON($SCRIPT_ROOT + '/getRequirements', {
-        major_name: "Computer Science",
-        major_year: 2020
-    }, function (data) {
-        reqs = data;
-        loadStatusSheet(reqs);
-
-    })
-
     $.getJSON($SCRIPT_ROOT + '/getRequisites', {
 
     }, function (data) {
@@ -25,11 +15,20 @@ window.addEventListener("DOMContentLoaded", function () {
 
     })
 
-    $.getJSON($SCRIPT_ROOT + '/studentInfo', {
+    $.getJSON($SCRIPT_ROOT + '/studentData', {
 
     }, function (data) {
         studentInfo = data;
-        console.log(studentInfo);
+        console.log(studentData);
+
+    })
+
+    $.getJSON($SCRIPT_ROOT + '/getRequirements', {
+        major_name: "Computer Science",
+        major_year: 2020
+    }, function (data) {
+        reqs = data;
+        loadStatusSheet(reqs);
 
     })
 
