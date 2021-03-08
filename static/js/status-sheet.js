@@ -1,3 +1,11 @@
+//TODO Fetch Current Semester from server
+curSemester = {
+	semester: 'Spring',
+	year: '2021'
+}
+
+
+
 function loadStatusSheet(reqs) {
 	let keys = Object.keys(reqs)
 
@@ -92,15 +100,34 @@ function loadStatusSheet(reqs) {
 
 function updateStatusSheet(selectedCourses){
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
-	
-	for(course in statusSheetCourses){
-		let ssCourse = statusSheetCourses[course]
+	console.log(selectedCourses)
+	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
+	for(let courseNum = 0; courseNum < statusSheetCourses.length; courseNum++){
+		let ssCourse = statusSheetCourses[courseNum];
+		let ssCode = ssCourse.innerText;
+		for(let classNum = 0; classNum < selectedClasses.length; classNum++){
+			if(selectedClasses[classNum].getAttribute("coursecode").includes(ssCode)){
+				let year = selectedClasses[classNum].getAttribute("year")
+				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClasses[classNum].getAttribute("semester"))
+				if( ( year < curSemester.year) || (year === curSemester.year && semesterIndex <=  ALL_SEMESTERS.indexOf(curSemester.semester) ) ){
+					console.log(year)
+					console.log(year)
+					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
+					ssCourse.childNodes[1].childNodes[0].style = "color: green;"
+				}
+				else{
+					
+					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
+					ssCourse.childNodes[1].childNodes[0].style = "color: blue;"
+				}
+				console.log(ssCourse.childNodes)
 
-		if(selectedCourses.includes(ssCourse.innerText)){
-			console.log(ssCourse.childNodes)
-			ssCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
-			ssCourse.childNodes[1].childNodes[0].style = "color: green;"
+	
+			}
+			// let selectedSemester = ALL_SEMESTERS.indexOf(selectedClasses[classNum].getAttribute("semester"))
+			
 
 		}
+
 	}
 }

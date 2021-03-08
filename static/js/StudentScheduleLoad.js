@@ -1,21 +1,10 @@
-var classes;
 var reqs;
 var requisites;
-var studentInfo;
+var studentData;
 
 
 
 window.addEventListener("DOMContentLoaded", function () {
-
-
-    $.getJSON($SCRIPT_ROOT + '/getRequirements', {
-        major_name: "Computer Science",
-        major_year: 2020
-    }, function (data) {
-        reqs = data;
-        loadStatusSheet(reqs);
-
-    })
 
     $.getJSON($SCRIPT_ROOT + '/getRequisites', {
 
@@ -25,11 +14,13 @@ window.addEventListener("DOMContentLoaded", function () {
 
     })
 
-    $.getJSON($SCRIPT_ROOT + '/studentInfo', {
 
+    $.getJSON($SCRIPT_ROOT + '/getRequirements', {
+        major_name: "Computer Science",
+        major_year: 2020
     }, function (data) {
-        studentInfo = data;
-        console.log(studentInfo);
+        reqs = data;
+        loadStatusSheet(reqs);
 
     })
 

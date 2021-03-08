@@ -1,5 +1,23 @@
 let semesters = document.getElementsByClassName("scheduleContainer")
 var pools;
+
+
+function setWarnings(code, semester, year, element){
+    if(!checkRequisites(code, semester, year)){
+        element.parentElement.style.backgroundColor = "#ff9800";
+        new SnackBar({
+                    message: "Warning: Prerequisites for " + code + " not met.",
+                    position: "bc",
+                    status: "warning"
+                });
+                
+    }
+    else{
+        element.parentElement.style.backgroundColor = ""
+    }
+
+}
+
 function addClassestoPools() {
     pools = []
     for (let s = 0; s < semesters.length; s++) {
@@ -7,7 +25,7 @@ function addClassestoPools() {
         let classes = semesters[s].getElementsByClassName("drag_item drag_item_fill")
         for (let c = 0; c < classes.length; c++) {
             sem.push(classes[c].id)
-            setWarnings(classes[c].id, semesters[s].dataset.semester, semesters[s].dataset.year, classes[c])
+            setWarnings(classes[c].getAttribute("coursecode"), semesters[s].dataset.semester, semesters[s].dataset.year, classes[c])
         }
         pools.push(sem)
     }
@@ -15,8 +33,6 @@ function addClassestoPools() {
 
 function checkRequisites(code, semester, year) {
     var index;
-    console.log("--CHECKING: " + code + " " + semester + " " + year + "--");
-
     //Get code prereq dict
     let codeReqs = requisites[code]
 
@@ -24,16 +40,21 @@ function checkRequisites(code, semester, year) {
     //! CHECK PREREQS
     if (codeReqs !== undefined) {
         //Get target semester #
+
+
         for (let s = 0; s < semesters.length; s++) {
+
             if (semesters[s].dataset.year === year && semesters[s].dataset.semester === semester) {
-                index = semesters[s].dataset.order
+
+                index = s
+
             }
         }
 
-        console.log("TARGET INDEX: " + index)
         var prereqs = codeReqs[1]
         if (prereqs !== undefined) {
             prereqs = Object.values(prereqs)
+
 
             var found = false;
             var groupNum = 0;
@@ -53,9 +74,13 @@ function checkRequisites(code, semester, year) {
 
                     let compareCode = group[req];
                     for (let p = 0; p < index; p++) {
-                        if (pools[p].includes(compareCode)) {
-                            reqmet = true
+                        for(i in pools[p]){
+                            let e = document.getElementById(pools[p][i])
+                            if (e.getAttribute("coursecode").includes(compareCode)) {
+                                reqmet = true
+                            }
                         }
+                       
 
                     }
 
@@ -65,6 +90,7 @@ function checkRequisites(code, semester, year) {
                 groupNum++;
             }
 
+            
             return (found)
         }
 
