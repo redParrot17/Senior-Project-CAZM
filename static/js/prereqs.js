@@ -19,7 +19,6 @@ function checkRequisites(code, semester, year) {
 
     //Get code prereq dict
     let codeReqs = requisites[code]
-    console.log(codeReqs)
 
 
     //! CHECK PREREQS

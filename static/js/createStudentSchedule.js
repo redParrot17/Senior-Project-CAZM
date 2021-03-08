@@ -58,7 +58,7 @@ function set_valid_drag_locations(event) {
     // get the current course
     let currentCourse = listOfCourses[i];
     // see if it is the one we want
-    if (dragItemId == currentCourse.courseCode) {
+    if (dragItemId.includes(currentCourse.courseCode)) {
       // get items
       let year = currentCourse.year;
       let semester = currentCourse.semester;
@@ -101,6 +101,36 @@ function set_valid_drag_locations(event) {
       }
   });
 
+  combined.forEach((item1, index) => {
+    let dropContainor = document.getElementById(item1);
+    console.log(dropContainor);
+
+    let checkId = dragItemId + "-" + item1;
+    console.log(checkId);
+
+    let hasCourse = dropContainor.querySelectorAll(".drag_item_fill");
+    console.log(hasCourse);
+
+    if(hasCourse.length > 0){
+      console.log("got in");
+
+      hasCourse.forEach((item2, index) => {
+        if(item2.id == checkId){
+
+          dropContainor.parentElement.classList.add('greyOut');
+          dropContainor.querySelectorAll(".drag_container").forEach((item3) => {
+            item3.removeAttribute("ondrop");
+          });
+          dropContainor.querySelectorAll(".drag_container").forEach((item3) => {
+            item3.removeAttribute("ondragover");
+          });
+
+
+          invalidCombos.push(item1);
+        }
+      });
+    }
+  });
 
 }
 
