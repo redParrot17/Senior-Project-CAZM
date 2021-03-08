@@ -74,10 +74,10 @@ function drop(ev) {
     }
 
 
-   
+
     // add dragged item to drag_container
-    targetNode.appendChild(courseNode);     // add the item transfered to the target element
-    targetNode.classList.add("bg-light");
+    targetNode.appendChild(courseNode.cloneNode(true));     // add the item transfered to the target element
+    ev.preventDefault();
     targetNode.classList.add("border");
     // console.log(document.getElementById(id).childNodes);
     if(document.getElementById(id).childNodes.length == 7){
@@ -89,6 +89,8 @@ function drop(ev) {
     //console.log(document.getElementById(id).childNodes);
 
     document.getElementById(id).classList.add("drag_item_fill");
+    console.log(document.getElementById(id).getAttribute("courseCode"));
+    document.getElementById(id).id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
 
     // create a new (drag_box > drag_container) div
     createDiv(targetNodeContainer);                          // create a new div for elements to be dragged to
@@ -144,5 +146,5 @@ function setWarnings(code, semester, year, element){
     else{
         element.style.backgroundColor = ""
     }
-    
+
 }

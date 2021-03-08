@@ -19,6 +19,8 @@ function filterPrevious(checkbox) {
                 div.id = courseID;
                 div.className = "drag_item";
                 div.draggable = "true";
+
+                div.setAttribute("courseCode",courseID);
                 div.setAttribute("ondragstart", "set_valid_drag_locations(event);drag(event);");
                 div.setAttribute("ondragend", "revert_drag_locations(event);dragEnd(event);");
 

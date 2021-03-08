@@ -66,9 +66,9 @@
         <div class="col-11">
           <button class="btn approvebtn shaddow btn-lg btn-secondary" type="button">Approve Schedule</button>
         </div>
-        <div class="ml-auto" onclick="toggleSideBar(event)">
+        <div class="ml-auto" id="toggleBtn" onclick="toggleSideBar(event)">
 
-        <i class=" openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle" ></i>
+        <i class="openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle"></i>
 
           <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
         </div>
@@ -145,7 +145,7 @@
         </div>
         <div class="container course-container rounded-bottom overflow-auto Scrollstyle" id="course-container">
           {% for course in allCourses %}
-            <div id="{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);">
+            <div id="{{course.courseCode}}" courseCode = "{{course.courseCode}}" year="{{course.year}}" semester="{{course.semester}}" class="drag_item" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);">
               <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt"></i>
               <span class="col pr-0 pl-0 drag_item_text text-center">{{course.courseCode}}</span>
               <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>

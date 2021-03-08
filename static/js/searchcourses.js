@@ -46,9 +46,11 @@ window.addEventListener("DOMContentLoaded", function () {
                 let courseID = name/*.replace(" ", "_") + "_" + course.semester + "_" + course.year*/;
                 let div = document.createElement("div");
                 div.id = courseID;
+                div.courseCode = courseID;
                 div.className = "drag_item";
                 div.draggable = "true";
 
+                div.setAttribute("courseCode",courseID);
                 div.setAttribute("ondragstart", "set_valid_drag_locations(event);drag(event);");
                 div.setAttribute("ondragend", "revert_drag_locations(event);dragEnd(event);");
 

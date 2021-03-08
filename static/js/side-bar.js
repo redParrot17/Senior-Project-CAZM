@@ -1,5 +1,5 @@
 function toggleSideBar(event){
-  let btn=event.target.parentElement;
+  let btn=document.getElementById("toggleBtn");
   if(btn.classList.contains("selected")){
     document.getElementById("mySidebar").style.width = "0";
     document.getElementById("middle").style.marginRight= "0";
