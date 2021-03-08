@@ -1,4 +1,3 @@
-var classes;
 var reqs;
 var requisites;
 var studentData;

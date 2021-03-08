@@ -68,14 +68,9 @@ function drop(ev) {
       //console.log(ev)
         return;
     }
-    // if(!checkRequisites(id, targetNodeSemester.dataset.semester, targetNodeSemester.dataset.year)){
-    //     new SnackBar({
-    //         message: "Warning: Prerequisites for " + id + " not met.",
-    //         position: "bc",
-    //         status: "warning"
-    //     });
-    //     targetNode.style.backgroundColor = "#ff9800";
-    // }
+    
+    document.getElementById(id).setAttribute("year", targetNodeSemester.dataset.year)
+    document.getElementById(id).setAttribute("semester", targetNodeSemester.dataset.semester)
 
 
 
@@ -83,6 +78,7 @@ function drop(ev) {
     targetNode.appendChild(courseNode.cloneNode(true));     // add the item transfered to the target element
     ev.preventDefault();
     targetNode.classList.add("border");
+    
     // console.log(document.getElementById(id).childNodes);
     if(document.getElementById(id).childNodes.length == 7){
       document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
@@ -93,9 +89,9 @@ function drop(ev) {
     //console.log(document.getElementById(id).childNodes);
 
     document.getElementById(id).classList.add("drag_item_fill");
-   
+   let newID = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
+   console.log(document.getElementById(document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id))
     document.getElementById(id).id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
-
     // create a new (drag_box > drag_container) div
     createDiv(targetNodeContainer);                          // create a new div for elements to be dragged to
 
@@ -110,8 +106,8 @@ function drop(ev) {
 
 
     addClassestoPools();
-    updateSelectedCourses();
-    updateStatusSheet(selectedCourses);
+
+    updateStatusSheet(pools);
 }
 
 
@@ -133,13 +129,13 @@ function removeDragItem(ev) {
   //}
 }
 
-var selectedCourses = [];
-function updateSelectedCourses(){
-    selectedCourses = [];
-    let selected = document.getElementsByClassName("drag_item_fill");
-    for(var i = 0; i < selected.length; i++){
-        selectedCourses.push(selected[i].innerText)
-      }
-}
+// var selectedCourses = [];
+// function updateSelectedCourses(){
+//     selectedCourses = [];
+//     let selected = document.getElementsByClassName("drag_item_fill");
+//     for(var i = 0; i < selected.length; i++){
+//         selectedCourses.push(selected[i].innerText)
+//       }
+// }
 
 

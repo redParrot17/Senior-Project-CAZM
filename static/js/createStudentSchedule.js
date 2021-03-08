@@ -1,3 +1,5 @@
+
+
 let ALL_SEMESTERS = ["January", "Spring", "May", "Summer", "Fall", "Winter Online"];
 let invalidCombos = [];
 var studentData
@@ -55,7 +57,6 @@ function set_valid_drag_locations(event) {
     // get the current course
     let currentCourse = listOfCourses[i];
     // see if it is the one we want
-    console.log(dragItemId)
     if (dragItemId.includes(currentCourse.courseCode)) {
 
       // get items
