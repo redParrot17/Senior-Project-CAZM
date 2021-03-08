@@ -14,7 +14,7 @@ import webscraping.errors as errors
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
