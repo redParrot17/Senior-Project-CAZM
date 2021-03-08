@@ -1,4 +1,6 @@
 from webscraping.components.student import Student
+from webscraping.components.schedule import Schedule
+from webscraping.components.course import Course
 import mysql.connector
 from datetime import date
 
@@ -177,7 +179,7 @@ class Database:
 
     def get_courses_by_year_and_semester(self, semester, year):
         cursor = self.db.cursor(buffered=True)
-        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE Year LIKE ? AND SEMESTER LIKE ?';
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE Year LIKE ? AND SEMESTER LIKE ?'
         cursor.execute(sql, (year, semester))
         results = cursor.fetchall()
         cursor.close()
@@ -189,7 +191,7 @@ class Database:
 
     def get_courses(self):
         cursor = self.db.cursor(buffered=True)
-        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE';
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE'
         cursor.execute(sql)
         results = cursor.fetchall()
         cursor.close()
@@ -221,6 +223,80 @@ class Database:
             courses.append(course_code)
 
         return template
+
+
+    ### METHODS FOR THE COURSE TABLE ###
+
+
+    def get_course(self, course_code: str, year: int, semester: str) -> Course:
+        """ Retrieves information stored for a course in the database.
+
+        :param course_code: course's unique identifier
+        :param year:        year the course is offered
+        :param semester:    semester the course is offered
+        :return: retrieved course info or None if the course does not exist
+        """
+        course = None
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT CREDITS, NAME FROM COURSE WHERE COURSE_CODE=%s AND YEAR=%s AND SEMESTER=%s;'
+        arguments = (course_code, year, semester,)
+
+        cursor.execute(sql_query, arguments)
+        result = cursor.fetchone()
+
+        if result is not None:
+            credit_hours, name = result
+            course = Course(course_code=course_code, name=name, credit_hours=credit_hours, year=year, semester=semester)
+
+        cursor.close()
+
+        return course
+
+
+    ### METHODS FOR THE SCHEDULE TABLE ###
+
+
+    def get_student_schedule(self, student_id: int) -> Schedule:
+        """ Retrieves information stored for a student's schedule in the database.
+
+        :param student_id: student's unique identifier
+        :return: retrieved schedule info or None if the schedule does not exist
+        """
+        schedule = None
+        course_identifiers = []
+        cursor = self.db.cursor(buffered=True)
+
+        ### Fetch the initial schedule identifier ###
+
+        sql_query = 'SELECT SCHEDULE_ID, STATUS FROM SCHEDULE WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
+
+        cursor.execute(sql_query, arguments)
+        result = cursor.fetchone()
+
+        if result is not None:
+            schedule_id, status = result
+            schedule = Schedule(schedule_id=schedule_id, student_id=student_id, status=status)
+
+            ### Fetch the schedule's course identifiers ###
+
+            sql_query = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s;'
+            arguments = (schedule_id,)
+
+            cursor.execute(sql_query, arguments)
+            course_identifiers = cursor.fetchall()
+
+        cursor.close()
+
+        ### Fetch the course information for each identifier ###
+
+        if schedule is not None:
+            for course_code, year, semester in course_identifiers:
+                course = self.get_course(course_code, year, semester)
+                schedule.courses.append(course)
+
+        return schedule
 
 
     ### METHODS FOR THE MAJOR TABLE ###
