@@ -45,7 +45,7 @@
       </div>
       <div class="col"></div>
       <div class="col">
-        <!-- <button class="btn btn-lg btn-secondary">Message Student</button> -->
+        <button class="btn btn-lg shaddow btn-secondary" id="messageStudentBtn">Message Student</button>
       </div>
       <div class="col">
         <button type="button" class="btn btn-lg shaddow btn-secondary" id="printScheduleBtn">Print Schedule</button>
@@ -110,6 +110,13 @@
   <!-- <script>
         setStudentInfo(JSON.parse('{{student|tojson}}'))
     </script> -->
+
+  <script type=text/javascript>
+    var studentData = {{ student|tojson }}
+    document.getElementById("messageStudentBtn").onclick = function () {
+      location.href = "mailto:" + studentData.email;
+    };
+  </script>
 
   <script>
     document.getElementById("backButton").onclick = function () {
