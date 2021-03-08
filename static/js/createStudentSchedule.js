@@ -71,6 +71,9 @@ function set_valid_drag_locations(event) {
         if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester)> ALL_SEMESTERS.indexOf(studentData.grad_semester))){
           //do nothing
         }
+        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester)< ALL_SEMESTERS.indexOf(studentData.enrolled_semester))){
+          //do nothing
+        }
         else{
           console.log("ADDING TO VALID LIST:"+`${semester}-${year}`)
           combined.push(`${semester}-${year}`);
