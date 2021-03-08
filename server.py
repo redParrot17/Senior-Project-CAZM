@@ -14,7 +14,7 @@ import webscraping.errors as errors
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -234,41 +234,42 @@ def advisor_viewing_student():
     advisor_id = flask_login.current_user.id
 
     # Fetch the student the advisor is requesting
-    db = Database()
-    student = db.get_student(student_id, advisor_id)
-    db.close()
+    with Database() as db:
+        student = db.get_student(student_id, advisor_id)
+        schedule = db.get_student_schedule(student_id)
 
     # Ensure the advisor has access to this student within the database
     if student is not None:
+
         # Format the student's data into that which can be passed to the html template
         data = {
             'id': student.student_id,
             'name': f'{student.firstname} {student.lastname}',
             'credits': student.credits_completed,
-            'email': student.email,
-            'status': 1,    # TODO: populate this with their schedule status
-            'year': student.classification,
-            'major': None if not student.majors else student.majors[0][0],  # TODO: handle multiple majors
-        }
-
-        # TODO: decide if we want to stick with this old structure or adapt the html to work with the new
-        data = {
-            'id': student.student_id,
-            'name': f'{student.firstname} {student.lastname}',
-            'credits': student.credits_completed,
-            'status': 'Pending',
+            'status': schedule.status_str if schedule else 'Unknown',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'major': None if not student.majors else student.majors[0][0],
         }
 
+        # TODO: needs review
+        current_year = 2020
+        current_semester = 'Spring'
+        schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
+
+        if schedule is not None:
+            for course in schedule.courses:
+                if course.semester == current_semester and course.year == current_year:
+                    if course.course_code not in schedule_data['classes']:
+                        schedule_data['classes'].append(course.course_code)
+
         # TODO: the following section needs review
         # Fetch the student's schedule from the database
-        db = Database()
-        schedule = db.get_template(1)
-        db.close()
+        # db = Database()
+        # schedule = db.get_template(1)
+        # db.close()
 
         # Serve the student overview page to the advisor performing the request
-        return render_template('advisorViewingStudent.html', student=data, studentSchedule=schedule)
+        return render_template('advisorViewingStudent.html', student=data, studentSchedule=[schedule_data])
 
     # Redirect to the unauthorized page since the advisor does not have access to the requested student
     else:

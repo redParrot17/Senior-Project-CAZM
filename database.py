@@ -4,6 +4,7 @@ from webscraping.components.course import Course
 import mysql.connector
 from datetime import date
 
+
 __all__ = ('Database',)
 
 
@@ -17,34 +18,14 @@ class Database:
         """
         self.db = mysql.connector.connect(option_files=config_file, autocommit=autocommit)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
     def close(self):
         self.db.close()
-
-    def select_example(self, argument1, argument2):
-
-        # create a cursor to execute sql statements with
-        cursor = self.db.cursor(buffered=True)
-
-        # define the sql statement you want to execute
-        sql = "SELECT foo, bar FROM table-name WHERE foo=%s AND bar=%s;"
-
-        # create a tuple of arguments you need to pass
-        arg = (argument1, argument2)
-
-        # execute the sql statement
-        cursor.execute(sql, arg)
-
-        # fetch all the rows resulting from the sql statement return value
-        results = cursor.fetchall()
-
-        # close the cursor
-        cursor.close()
-
-        # do something with the results
-        return_value = []
-        for foo, bar in results:
-            return_value.append([foo, bar])
-        return return_value
 
     def getRequirementClasses(self, requirement_id, title):
         cursor = self.db.cursor(buffered=True)
@@ -254,7 +235,7 @@ class Database:
         return course
 
 
-    ### METHODS FOR THE SCHEDULE TABLE ###
+    ### METHODS FOR SCHEDULE RELATED TABLES ###
 
 
     def get_student_schedule(self, student_id: int) -> Schedule:
@@ -294,9 +275,31 @@ class Database:
         if schedule is not None:
             for course_code, year, semester in course_identifiers:
                 course = self.get_course(course_code, year, semester)
-                schedule.courses.append(course)
+                if course is not None:
+                    schedule.courses.append(course)
 
         return schedule
+
+    def create_student_schedule(self, schedule: Schedule):
+        """
+
+        :param schedule:
+        :return:
+        """
+
+    def update_student_schedule(self, schedule: Schedule):
+        """
+
+        :param schedule:
+        :return:
+        """
+
+    def delete_student_schedule(self, student_id: int):
+        """
+
+        :param student_id:
+        :return:
+        """
 
 
     ### METHODS FOR THE MAJOR TABLE ###

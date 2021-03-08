@@ -17,3 +17,12 @@ class Schedule:
     student_id: int
     status: int         # see key in class docs
     courses = []        # list of Course objects
+
+    @property
+    def status_str(self):
+        return {
+            1: 'Approved',
+            2: 'Awaiting Student Approval',
+            3: 'Awaiting Student Creation',
+            4: 'Awaiting Advisor Approval'
+        }.get(self.status, 'Unknown')
