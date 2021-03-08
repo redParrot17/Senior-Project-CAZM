@@ -160,11 +160,6 @@ function revert_drag_locations(event) {
 
 
 
-
-
-
-
-
 //------------------------------------------------------------------------------
 $.getJSON($SCRIPT_ROOT + '/studentData', {
 

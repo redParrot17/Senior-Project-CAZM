@@ -1,3 +1,11 @@
+//TODO Fetch Current Semester from server
+curSemester = {
+	semester: 'Spring',
+	year: '2020'
+}
+
+
+
 function loadStatusSheet(reqs) {
 	let keys = Object.keys(reqs)
 
@@ -92,7 +100,7 @@ function loadStatusSheet(reqs) {
 
 function updateStatusSheet(selectedCourses){
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
-	
+	console.log(selectedCourses)
 	for(course in statusSheetCourses){
 		let ssCourse = statusSheetCourses[course]
 

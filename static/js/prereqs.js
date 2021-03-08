@@ -73,14 +73,14 @@ function checkRequisites(code, semester, year) {
                     reqmet = false;
 
                     let compareCode = group[req];
-                    console.log(group)
                     for (let p = 0; p < index; p++) {
-                        console.log(pools[p])
-                        let e = document.getElementById(pools[p])
-                        if (e.getAttribute("coursecode").includes(compareCode)) {
-                            
-                            reqmet = true
+                        for(i in pools[p]){
+                            let e = document.getElementById(pools[p][i])
+                            if (e.getAttribute("coursecode").includes(compareCode)) {
+                                reqmet = true
+                            }
                         }
+                       
 
                     }
 
