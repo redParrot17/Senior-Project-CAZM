@@ -256,6 +256,7 @@ def advisor_viewing_student():
             'id': student.student_id,
             'name': f'{student.firstname} {student.lastname}',
             'credits': student.credits_completed,
+            'email': student.email,
             'status': 'Pending',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'major': None if not student.majors else student.majors[0][0],
