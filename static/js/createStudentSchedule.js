@@ -9,6 +9,8 @@ studentData = {
 
 
 
+
+
 function addClassHolder(semester, year, semesterOrder) {
   document.getElementById("main-schedule").innerHTML += `
   <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">

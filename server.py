@@ -306,18 +306,12 @@ def advisor_sch_review():
         'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses)
 
 
+
+
 ### STUDENT SPECIFIC ENDPOINTS ###
 
-@app.route('/studentLanding')
-@flask_login.login_required     # you must be logged in to view this page
-@security.restrict_to_students  # you must be a student to view this page
-def student_landing_page():
-    """
-    This endpoint serves to provide an overview to a specific student's
-    academic scheduling information. This is the default landing page
-    for students once they perform site login.
-    """
-
+@flask_login.login_required
+def getStudentData():
     # Fetch the student id of the requesting user
     current_user = flask_login.current_user
     student_id = current_user.id
@@ -357,7 +351,7 @@ def student_landing_page():
             majors=[(profile.major, int(enrolled_year))],
             classification=profile.classification,
             graduation_year=int(graduation_year),
-            graduation_semester=graduation_semester,
+            graduation_semester= graduation_semester,
             enrolled_year=int(enrolled_year),
             enrolled_semester=enrolled_semester)
 
@@ -369,10 +363,41 @@ def student_landing_page():
         'name': f'{student.firstname} {student.lastname}',
         'credits': student.credits_completed,
         'status': 'Pending',    # TODO: fetch this value
-        'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
+        'enrolled_semester' : f'{student.enrolled_semester} {student.enrolled_year}',
+        'grad_semester' : f'{student.graduation_semester} {student.graduation_year}',
         'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
     }
 
+    return data
+
+
+
+@app.route('/studentInfo')
+@security.restrict_to_students
+@flask_login.login_required     # you must be logged in to view this page
+def getStudentInfoJSON():
+    '''
+    Returns Student info JSON for logged in student
+    '''
+    return jsonify(getStudentData())
+
+#TODO seperate route for advisors to look at their student's info
+
+
+
+
+@app.route('/studentLanding')
+@flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_students  # you must be a student to view this page
+
+def student_landing_page():
+    """
+    This endpoint serves to provide an overview to a specific student's
+    academic scheduling information. This is the default landing page
+    for students once they perform site login.
+    """
+    data = getStudentData()
+    
     # TODO: this following section requires review
     # Fetch the student's schedule from the database
     db = Database()
