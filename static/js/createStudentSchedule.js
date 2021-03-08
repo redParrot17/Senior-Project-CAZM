@@ -1,11 +1,6 @@
 let ALL_SEMESTERS = ["January", "Spring", "May", "Summer", "Fall", "Winter Online"];
 let invalidCombos = [];
-studentData = {
-  startYear:2020,
-  startSemester:"Fall",
-  gradYear:2024,
-  gradSemester:"Spring"
-};
+var studentData
 
 
 
@@ -23,19 +18,19 @@ function addClassHolder(semester, year, semesterOrder) {
   </fieldset>`;
 }
 
-function setUpStudentScheduleContainors(studentData) {
-  year = studentData.startYear;
+function setUpStudentScheduleContainers(studentData) {
+  year = studentData.enrolled_year;
 
-  while (year <= studentData.gradYear){
+  while (year <= studentData.grad_year){
     counter = 0;
     for (i = 0; i < 6; i++) {
 
-      if ((year === studentData.startYear)&&(i === 0)&&(counter === 0)){
-        i = ALL_SEMESTERS.indexOf(studentData.startSemester);
+      if ((year === studentData.enrolled_year)&&(i === 0)&&(counter === 0)){
+        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester);
         counter = counter + 1;
       }
       addClassHolder(ALL_SEMESTERS[i], year, 0);
-      if ((year === studentData.gradYear) && (i>=ALL_SEMESTERS.indexOf(studentData.gradSemester))){
+      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
         year ++;
         break;
       }
@@ -78,7 +73,7 @@ function set_valid_drag_locations(event) {
     if(!validSemesters.includes(ALL_SEMESTERS[i])) {
       invalidSemesters.push(ALL_SEMESTERS[i]);
 
-      for (let year = studentData.startYear; year <= studentData.gradYear; year++) {
+      for (let year = studentData.enrolled_year; year <= studentData.grad_year; year++) {
         invalidCombos.push(`${ALL_SEMESTERS[i]}-${year}`)
       }
     }
@@ -168,6 +163,13 @@ function revert_drag_locations(event) {
 
 
 //------------------------------------------------------------------------------
+$.getJSON($SCRIPT_ROOT + '/studentData', {
 
-// set up student schedule containors
-setUpStudentScheduleContainors(studentData);
+}, function (data) {
+    studentData = data;
+    console.log(studentData);
+    // set up student schedule containors
+    setUpStudentScheduleContainers(studentData);
+
+})
+

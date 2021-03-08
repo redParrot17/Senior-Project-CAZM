@@ -1,7 +1,7 @@
 var classes;
 var reqs;
 var requisites;
-var studentInfo;
+var studentData;
 
 
 
@@ -15,13 +15,6 @@ window.addEventListener("DOMContentLoaded", function () {
 
     })
 
-    $.getJSON($SCRIPT_ROOT + '/studentData', {
-
-    }, function (data) {
-        studentInfo = data;
-        console.log(studentData);
-
-    })
 
     $.getJSON($SCRIPT_ROOT + '/getRequirements', {
         major_name: "Computer Science",
