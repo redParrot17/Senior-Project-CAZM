@@ -19,10 +19,24 @@ class Schedule:
     courses = []        # list of Course objects
 
     @property
-    def status_str(self):
+    def status_str(self) -> str:
+        return self.status_int_to_str(self.status)
+
+    @classmethod
+    def status_int_to_str(cls, status: int) -> str:
         return {
             1: 'Approved',
             2: 'Awaiting Student Approval',
             3: 'Awaiting Student Creation',
             4: 'Awaiting Advisor Approval'
-        }.get(self.status, 'Unknown')
+        }.get(status, 'Unknown')
+
+    @classmethod
+    def status_str_to_int(cls, status: str) -> int:
+        key = status.lower().replace(' ', '')
+        return {
+            'approved': 1,
+            'awaitingstudentapproval': 2,
+            'awaitingstudentcreation': 3,
+            'awaitingadvisorapproval': 4
+        }.get(key)
