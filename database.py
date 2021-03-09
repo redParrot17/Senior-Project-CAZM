@@ -165,14 +165,14 @@ class Database:
 
     def get_all_courses(self):
          cursor = self.db.cursor(buffered=True)
-         sql = 'SELECT COURSE_CODE, ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE GROUP BY COURSE_CODE;'
+         sql = 'SELECT COURSE_CODE, ANY_VALUE(YEAR), ANY_VALUE(SEMESTER), CREDITS FROM COURSE GROUP BY COURSE_CODE;'
          cursor.execute(sql)
          results = cursor.fetchall()
          cursor.close()
 
          course_info = []
-         for course_code, year, semester in results:
-             course_info.append({"courseCode": course_code, "year":year, "semester":semester})
+         for course_code, year, semester, credits in results:
+             course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
          return course_info
 
     def get_courses_by_year_and_semester(self, semester, year):
