@@ -1,6 +1,9 @@
 from webscraping.components.student import Student
+from webscraping.components.schedule import Schedule
+from webscraping.components.course import Course
 import mysql.connector
 from datetime import date
+
 
 __all__ = ('Database',)
 
@@ -13,38 +16,20 @@ class Database:
         :param config_file: file path of the database configuration file, default 'mysql.cnf'
         :param autocommit:  whether or not to automatically commit changes, default True
         """
-        self.db = mysql.connector.connect(option_files=config_file, autocommit=autocommit)
+        self.autocommit = autocommit
+        self.db = mysql.connector.connect(option_files=config_file, autocommit=False)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
 
     def close(self):
         self.db.close()
 
-    def select_example(self, argument1, argument2):
-
-        # create a cursor to execute sql statements with
-        cursor = self.db.cursor(buffered=True)
-
-        # define the sql statement you want to execute
-        sql = "SELECT foo, bar FROM table-name WHERE foo=%s AND bar=%s;"
-
-        # create a tuple of arguments you need to pass
-        arg = (argument1, argument2)
-
-        # execute the sql statement
-        cursor.execute(sql, arg)
-
-        # fetch all the rows resulting from the sql statement return value
-        results = cursor.fetchall()
-
-        # close the cursor
-        cursor.close()
-
-        # do something with the results
-        return_value = []
-        for foo, bar in results:
-            return_value.append([foo, bar])
-        return return_value
-
     def getRequirementClasses(self, requirement_id, title):
+
         cursor = self.db.cursor(buffered=True)
         args = (title, requirement_id)
         sql = """
@@ -108,10 +93,9 @@ class Database:
         return courses
 
 
-
     def getRequirements(self, major_name, major_year):
         cursor = self.db.cursor(buffered=True)
-        args = (major_name, major_year)
+        args = (major_name, major_year,)
         sql = """
         SELECT
         REQUIREMENT_ID, TITLE, REQUIRED_CREDITS, ALTERNATE_REQUIREMENTS
@@ -126,8 +110,8 @@ class Database:
         req_info = {}
         for requirement_id, title, required_credits, alternate_requirements in results:
             req_info[requirement_id] = {
-                "alternate_requirements" : alternate_requirements,
-                "required_credits" : required_credits,
+                "alternate_requirements": alternate_requirements,
+                "required_credits": required_credits,
                 "title": title,
                 "classes": self.getRequirementClasses(requirement_id, title)
             }
@@ -138,7 +122,7 @@ class Database:
          cursor = self.db.cursor(buffered=True)
          arg1 = argument1 + "%"
          arg2 = arg1
-         args = (arg1,arg2)
+         args = (arg1,arg2,)
          sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s GROUP BY COURSE_CODE;'
          cursor.execute(sql, args)
          results = cursor.fetchall()
@@ -152,7 +136,7 @@ class Database:
     def filter_previous(self, schedule_id):
         cursor = self.db.cursor(buffered=True)
         currentYear = date.today().year
-        args = (schedule_id, currentYear)
+        args = (schedule_id, currentYear,)
         sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE NOT IN (SELECT COURSE_CODE FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s AND YEAR<=%s) GROUP BY COURSE_CODE;'
         cursor.execute(sql, args)
         results = cursor.fetchall()
@@ -223,6 +207,124 @@ class Database:
         return template
 
 
+    ### METHODS FOR THE COURSE TABLE ###
+
+
+    def get_course(self, course_code: str, year: int, semester: str) -> Course:
+        """ Retrieves information stored for a course in the database.
+
+        :param course_code: course's unique identifier
+        :param year:        year the course is offered
+        :param semester:    semester the course is offered
+        :return: retrieved course info or None if the course does not exist
+        """
+        course = None
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT CREDITS, NAME FROM COURSE WHERE COURSE_CODE=%s AND YEAR=%s AND SEMESTER=%s;'
+        arguments = (course_code, year, semester,)
+
+        cursor.execute(sql_query, arguments)
+        result = cursor.fetchone()
+
+        if result is not None:
+            credit_hours, name = result
+            course = Course(course_code=course_code, name=name, credit_hours=credit_hours, year=year, semester=semester)
+
+        cursor.close()
+
+        return course
+
+
+    ### METHODS FOR SCHEDULE RELATED TABLES ###
+
+
+    def get_student_schedule(self, student_id: int) -> Schedule:
+        """ Retrieves information stored for a student's schedule in the database.
+
+        :param student_id: student's unique identifier
+        :return: retrieved schedule info or None if the schedule does not exist
+        """
+        schedule = None
+        course_identifiers = []
+        cursor = self.db.cursor(buffered=True)
+
+        ### Fetch the initial schedule identifier ###
+
+        sql_query = 'SELECT SCHEDULE_ID, STATUS FROM SCHEDULE WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
+
+        cursor.execute(sql_query, arguments)
+        result = cursor.fetchone()
+
+        if result is not None:
+            schedule_id, status = result
+            schedule = Schedule(schedule_id=schedule_id, student_id=student_id, status=status)
+
+            ### Fetch the schedule's course identifiers ###
+
+            sql_query = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s;'
+            arguments = (schedule_id,)
+
+            cursor.execute(sql_query, arguments)
+            course_identifiers = cursor.fetchall()
+
+        cursor.close()
+
+        ### Fetch the course information for each identifier ###
+
+        if schedule is not None:
+            for course_code, year, semester in course_identifiers:
+                course = self.get_course(course_code, year, semester)
+                if course is not None:
+                    schedule.courses.append(course)
+
+        return schedule
+
+    def create_student_schedule(self, schedule: Schedule, *, suppress_commit=False):
+        """
+
+        :param suppress_commit:
+        :param schedule:
+        """
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'INSERT INTO SCHEDULE (STUDENT_ID, STATUS) VALUES (%s, %s);'
+        arguments = (schedule.student_id, schedule.status,)
+
+        cursor.execute(sql_query, arguments)
+        schedule_id = cursor.lastrowid
+
+        for course in schedule.courses:
+            course_code = course.course_code
+            course_year = course.year
+            course_semester = course.semester
+
+        cursor.close()
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+    def update_student_schedule(self, schedule: Schedule, *, suppress_commit=False):
+        cursor = self.db.cursor(buffered=True)
+
+        cursor.close()
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+    def delete_student_schedule(self, student_id: int, *, suppress_commit=False):
+        cursor = self.db.cursor(buffered=True)
+
+        cursor.close()
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+
     ### METHODS FOR THE MAJOR TABLE ###
 
 
@@ -244,11 +346,12 @@ class Database:
         cursor.close()
         return major_exists
 
-    def create_new_major(self, major_name: str, major_year: int):
+    def create_new_major(self, major_name: str, major_year: int, *, suppress_commit=False):
         """ Adds a new major to the database.
 
-        :param major_name: name of the major
-        :param major_year: year the major is offered (cannot exceed 2155)
+        :param major_name:      name of the major
+        :param major_year:      year the major is offered (cannot exceed 2155)
+        :param suppress_commit: if autocommit should be suppressed, default False
         """
         cursor = self.db.cursor(buffered=True)
 
@@ -258,11 +361,16 @@ class Database:
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    def delete_old_major(self, major_name: str, major_year: int):
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+    def delete_old_major(self, major_name: str, major_year: int, *, suppress_commit=False):
         """ Deletes an existing major from the database.
 
-        :param major_name: name of the major
-        :param major_year: year the major is offered (cannot exceed 2155)
+        :param major_name:      name of the major
+        :param major_year:      year the major is offered (cannot exceed 2155)
+        :param suppress_commit: if autocommit should be suppressed, default False
 
         :raises mysql.connector.errors.IntegrityError: if tables MAJOR_REQUIREMENTS or STUDENT_MAJOR depend on this
         """
@@ -273,6 +381,10 @@ class Database:
 
         cursor.execute(sql_query, arguments)
         cursor.close()
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
 
 
     ### METHODS FOR THE STUDENT MAJOR TABLE ###
@@ -299,19 +411,22 @@ class Database:
         cursor.close()
         return results
 
-    def add_major_to_student(self, student_id: int, major_name: str, major_year: int, ensure_major_exists: bool = True):
+    def add_major_to_student(self, student_id: int, major_name: str,
+                             major_year: int, ensure_major_exists=True,
+                             *, suppress_commit=False):
         """ Adds the specified major information to the database and ignores duplicate entries.
 
         :param student_id:          student's unique identifier
         :param major_name:          name of the student's major
         :param major_year:          year the student joined the major (cannot exceed 2155)
         :param ensure_major_exists: creates the major if it doesn't exist, default True
+        :param suppress_commit:     if autocommit should be suppressed, default False
 
         :raises mysql.connector.errors.IntegrityError: if the major does not exist in the major table
         """
         if ensure_major_exists:
             if not self.does_major_exist(major_name, major_year):
-                self.create_new_major(major_name, major_year)
+                self.create_new_major(major_name, major_year, suppress_commit=True)
 
         cursor = self.db.cursor(buffered=True)
 
@@ -323,12 +438,17 @@ class Database:
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    def remove_major_from_student(self, student_id: int, major_name: str, major_year: int):
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+    def remove_major_from_student(self, student_id: int, major_name: str, major_year: int, *, suppress_commit=False):
         """ Removes the specified major information from the database for a student.
 
-        :param student_id: student's unique identifier
-        :param major_name: name of the student's major
-        :param major_year: year the student joined the major (cannot exceed 2155)
+        :param student_id:      student's unique identifier
+        :param major_name:      name of the student's major
+        :param major_year:      year the student joined the major (cannot exceed 2155)
+        :param suppress_commit: if autocommit should be suppressed, default False
         """
         cursor = self.db.cursor(buffered=True)
 
@@ -338,10 +458,15 @@ class Database:
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    def remove_all_majors_from_student(self, student_id: int):
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+    def remove_all_majors_from_student(self, student_id: int, *, suppress_commit=False):
         """ Removes all major information from the database for a student.
 
-        :param student_id: student's unique identifier
+        :param student_id:      student's unique identifier
+        :param suppress_commit: if autocommit should be suppressed, default False
         """
         cursor = self.db.cursor(buffered=True)
 
@@ -350,6 +475,10 @@ class Database:
 
         cursor.execute(sql_query, arguments)
         cursor.close()
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
 
 
     ### METHODS FOR THE STUDENTS TABLE ###
@@ -444,7 +573,7 @@ class Database:
 
         return students
 
-    def create_new_student(self, student: Student, remove_stale_majors: bool = True):
+    def create_new_student(self, student: Student, remove_stale_majors=True, *, suppress_commit=False):
         """ Creates or updates information for a specific student.
 
         - Ensures the student's major exists when updating major information.
@@ -453,6 +582,7 @@ class Database:
         :param student:             dataclass containing the student's information
         :param remove_stale_majors: removes majors from a student that are not specified
                                     within the student object, default True
+        :param suppress_commit:     if autocommit should be suppressed, default False
         """
 
         ### Create or update the information stored in the STUDENTS table ###
@@ -476,7 +606,7 @@ class Database:
             student.graduation_year,
             student.graduation_semester,
             student.enrolled_year,
-            student.enrolled_semester)
+            student.enrolled_semester,)
 
         cursor.execute(sql_query, arguments)
         cursor.close()
@@ -496,15 +626,20 @@ class Database:
 
         # Add missing majors to the student
         for major_name, major_year in majors_to_add:
-            self.add_major_to_student(student_id, major_name, major_year)
+            self.add_major_to_student(student_id, major_name, major_year, suppress_commit=True)
 
         # Remove extra majors from the student
         if remove_stale_majors:
             for major_name, major_year in existing_majors:
-                self.remove_major_from_student(student_id, major_name, major_year)
+                self.remove_major_from_student(student_id, major_name, major_year, suppress_commit=True)
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
 
     def delete_student(self, student_id: int, adviser_id: int,
-                       delete_majors=False, delete_schedules=False):
+                       delete_majors=False, delete_schedules=False,
+                       *, suppress_commit=False):
         """ Removes information about a student from the database.
 
         :param student_id:          student's unique identifier
@@ -518,13 +653,15 @@ class Database:
                                     be deleted from the SCHEDULE table to avoid a foreign
                                     key conflict, default False
 
+        :param suppress_commit:     if autocommit should be suppressed, default False
+
         :raises mysql.connector.errors.IntegrityError:
                 if the student still has majors in the STUDENT_MAJOR table or if
                 the student has schedules within the SCHEDULE table
         """
 
         if delete_majors is True:
-            self.remove_all_majors_from_student(student_id)
+            self.remove_all_majors_from_student(student_id, suppress_commit=True)
 
         if delete_schedules is True:
             # TODO: invoke schedule deletion once the method exists
@@ -538,7 +675,12 @@ class Database:
         cursor.execute(sql_query, arguments)
         cursor.close()
 
-    def delete_advisers_students(self, adviser_id: int, delete_majors=False, delete_schedules=False):
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
+    def delete_advisers_students(self, adviser_id: int, delete_majors=False, delete_schedules=False,
+                                 *, suppress_commit=False):
         """ Removes information for all students associated with an adviser.
 
         :param adviser_id:          adviser's unique identifier
@@ -550,6 +692,8 @@ class Database:
         :param delete_schedules:    if the student's schedules should automatically
                                     be deleted from the SCHEDULE table to avoid a foreign
                                     key conflict, default False
+
+        :param suppress_commit:     if autocommit should be suppressed, default False
 
         :raises mysql.connector.errors.IntegrityError:
                 if a student still has majors in the STUDENT_MAJOR table or if
@@ -572,4 +716,8 @@ class Database:
         ### Perform all of the deletions ###
 
         for student_id in student_ids:
-            self.delete_student(student_id, adviser_id, delete_majors, delete_schedules)
+            self.delete_student(student_id, adviser_id, delete_majors, delete_schedules, suppress_commit=True)
+
+        # commit the changes to the database
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
