@@ -91,9 +91,7 @@ function drop(ev) {
     //console.log(document.getElementById(id).childNodes);
     clone.classList.add("drag_item_fill");
    let newID = clone.getAttribute("courseCode")+"-"+targetNodeContainer.id;
-   console.log(clone.getAttribute("courseCode")+"-"+targetNodeContainer.id);
     clone.id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
-    console.log(document.getElementById(newID));
     // create a new (drag_box > drag_container) div
 
 
@@ -101,8 +99,11 @@ function drop(ev) {
 
     // console.log("div made");
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // remove the (drag_box > drag_container) div the node was dragged from
     let parentNode = document.getElementById("CurrentDrag"); // Select the node previous to the drop
+    console.log("MOVING:" + parentNode);
     if( parentNode != null && parentNode.classList.contains("drag_box") ) {
         removeDiv(parentNode);                               // if a valid item to remove remove the item
         // zconsole.log("div removed")
@@ -114,10 +115,15 @@ function drop(ev) {
     updateStatusSheet(pools);
 }
 
-
+//when the trash can is clicked remove the item from it's semester container
 function removeDragItem(ev) {
 //   console.log(ev.target);
-  ev.target.remove("itemInvisible");
+
+  let parentNode = ev.target.parentElement.parentElement.parentElement;
+  if( parentNode != null && parentNode.classList.contains("drag_box") ) {
+      removeDiv(parentNode);                               // if a valid item to remove remove the item
+      // zconsole.log("div removed")
+  }
 
   // get data
   //let targetNode = ev.target;                              // get the target node (drag_container)
