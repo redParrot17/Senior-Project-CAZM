@@ -177,26 +177,26 @@ class Database:
 
     def get_courses_by_year_and_semester(self, semester, year):
         cursor = self.db.cursor(buffered=True)
-        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE WHERE Year LIKE ? AND SEMESTER LIKE ?';
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE WHERE Year LIKE ? AND SEMESTER LIKE ?';
         cursor.execute(sql, (year, semester))
         results = cursor.fetchall()
         cursor.close()
 
         course_info = []
-        for course_code, year, semester in results:
-            course_info.append({"courseCode": course_code, "year":year, "semester":semester})
+        for course_code, year, semester, credits in results:
+            course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
         return course_info
 
     def get_courses(self):
         cursor = self.db.cursor(buffered=True)
-        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM COURSE';
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE';
         cursor.execute(sql)
         results = cursor.fetchall()
         cursor.close()
 
         course_info = []
-        for course_code, year, semester in results:
-            course_info.append({"courseCode": course_code, "year":year, "semester":semester})
+        for course_code, year, semester, credits in results:
+            course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
         return course_info
 
     def get_template(self, major_code):
