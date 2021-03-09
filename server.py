@@ -246,6 +246,7 @@ def advisor_viewing_student():
             'id': student.student_id,
             'name': f'{student.firstname} {student.lastname}',
             'credits': student.credits_completed,
+            'email': student.email,
             'status': schedule.status_str if schedule else 'Unknown',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'major': None if not student.majors else student.majors[0][0],
@@ -284,14 +285,14 @@ def advisor_sch_review():
     # TODO: verify that the advisor has access to this schedule
     # TODO: fetch the schedule information from the database
     
-    '''
+    """
     TODO
     1) get Prereqs from server
     2) Build prereq hierarchy with dataset attributes
     3) Special js function for first semester
     4) Build Pool of Prereqs met (include year standing)
     5) Check against pool for each class (User object? ask christian)
-    '''
+    """
 
     classes = [{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0}, {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1} , {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2}, {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
 
@@ -308,11 +309,10 @@ def advisor_sch_review():
 
 
 
-
 ### STUDENT SPECIFIC ENDPOINTS ###
 
 @flask_login.login_required
-def getStudentData():
+def get_student_data():
     # Fetch the student id of the requesting user
     current_user = flask_login.current_user
     student_id = current_user.id
@@ -352,11 +352,14 @@ def getStudentData():
             majors=[(profile.major, int(enrolled_year))],
             classification=profile.classification,
             graduation_year=int(graduation_year),
-            graduation_semester= graduation_semester,
+            graduation_semester=graduation_semester,
             enrolled_year=int(enrolled_year),
             enrolled_semester=enrolled_semester)
 
-        # TODO: cache the result in the database
+        # Caching the new student data within the database
+        db = Database()
+        db.create_new_student(student)
+        db.close()
 
     # Format the student data into something that can be passed to the html page
     data = {
@@ -381,11 +384,11 @@ def getStudentData():
 @app.route('/studentData')
 @security.restrict_to_students
 @flask_login.login_required     # you must be logged in to view this page
-def getStudentInfoJSON():
-    '''
+def get_student_info_json():
+    """
     Returns Student info JSON for logged in student
-    '''
-    return jsonify(getStudentData())
+    """
+    return jsonify(get_student_data())
 
 
 @app.route('/studentLanding')
@@ -397,9 +400,8 @@ def student_landing_page():
     academic scheduling information. This is the default landing page
     for students once they perform site login.
     """
-
     student_id = flask_login.current_user.id
-    data = getStudentData()
+    data = get_student_data()
     
     # TODO: this following section requires review
     # Fetch the student's schedule from the database
@@ -450,7 +452,7 @@ def student_sch_review():
 
 @app.route('/searchClasses/')
 @flask_login.login_required     # you must be logged in to access this endpoint
-def searchClasses():
+def search_classes():
     db = Database()
     class_name = request.args.get('class_name', 0, type=str)
 
@@ -461,7 +463,7 @@ def searchClasses():
 
 @app.route('/filterPrevious/')
 @flask_login.login_required     # you must be logged in to access this endpoint
-def filterPreviousClasses():
+def filter_previous_classes():
     db = Database()
     schedule_id = request.args.get('schedule_id', 0, type=int)
     query_results = db.filter_previous(schedule_id)
@@ -470,7 +472,7 @@ def filterPreviousClasses():
 
 @app.route('/getRequirements/')
 @flask_login.login_required     # you must be logged in to access this endpoint
-def getRequirements():
+def get_requirements():
     db = Database()
     major_name = request.args.get('major_name', 0, type=str)
     major_year = request.args.get('major_year', 0, type=int)
@@ -482,7 +484,7 @@ def getRequirements():
   
 @app.route('/getRequisites/')
 @flask_login.login_required     # you must be logged in to access this endpoint
-def getRequisites():
+def get_requisites():
     db = Database()
 
     query_results = db.getRequisites()

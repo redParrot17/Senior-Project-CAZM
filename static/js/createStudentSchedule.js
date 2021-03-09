@@ -48,7 +48,6 @@ function set_valid_drag_locations(event) {
 
   let dragItem = event.target; // item being dragged
   let dragItemId = dragItem.id; // id of item being dragged
-
   // find what are valid drop locations
   validSemesters = [];
   years = [];
@@ -57,16 +56,30 @@ function set_valid_drag_locations(event) {
     // get the current course
     let currentCourse = listOfCourses[i];
     // see if it is the one we want
+
     if (dragItemId.includes(currentCourse.courseCode)) {
 
       // get items
-      let year = currentCourse.year;
+      //let year = currentCourse.year;
       let semester = currentCourse.semester;
-      
+
       // add to array
       years.push(year);
       validSemesters.push(semester);
-      combined.push(`${semester}-${year}`);
+      for (let year = studentData.enrolled_year; year <= studentData.grad_year; year++) {
+        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester)> ALL_SEMESTERS.indexOf(studentData.grad_semester))){
+          //do nothing
+        }
+        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester)< ALL_SEMESTERS.indexOf(studentData.enrolled_semester))){
+          //do nothing
+        }
+        else{
+          combined.push(`${semester}-${year}`);
+          years.push(year);
+        }
+
+      }
+
     }
   }
   //console.log(validSemesters, years, combined);
@@ -104,13 +117,11 @@ function set_valid_drag_locations(event) {
 
   combined.forEach((item1, index) => {
     let dropContainer = document.getElementById(item1);
-    // console.log(dropContainer);
 
     let checkId = dragItemId + "-" + item1;
-    // console.log(checkId);
+    console.log(checkId);
 
     let hasCourse = dropContainer.querySelectorAll(".drag_item_fill");
-    // console.log(hasCourse);
 
     if(hasCourse.length > 0){
       // console.log("got in");
@@ -171,4 +182,3 @@ $.getJSON($SCRIPT_ROOT + '/studentData', {
     setUpStudentScheduleContainers(studentData);
 
 })
-

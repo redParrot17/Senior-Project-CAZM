@@ -109,7 +109,7 @@
     <script>
         document.getElementById("printScheduleBtn").onclick = function () {
             var element1 = document.getElementById("StudentInfo");
-            var element2 = document.getElementById("scrollBar");
+            var element2 = document.getElementById("scrollbar");
             element2.style.height = "auto";
             html2pdf().set({ pagebreak: {avoid: '.schedule-semester'}}).from(element1).toPdf().get('pdf').then(function (pdf) {
                 pdf.addPage();
