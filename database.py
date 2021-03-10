@@ -149,7 +149,7 @@ class Database:
              course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
          return course_info
 
-    def filter_previous(self, schedule_id):
+    def filter_duplicates(self, schedule_id):
         cursor = self.db.cursor(buffered=True)
         currentYear = date.today().year
         args = (schedule_id, currentYear)

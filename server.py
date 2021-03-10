@@ -446,12 +446,12 @@ def search_classes():
     return jsonify(query_results)
 
 
-@app.route('/filterPrevious/')
+@app.route('/filterDuplicates/')
 @flask_login.login_required     # you must be logged in to access this endpoint
-def filter_previous_classes():
+def filter_duplicate_classes():
     db = Database()
     schedule_id = request.args.get('schedule_id', 0, type=int)
-    query_results = db.filter_previous(schedule_id)
+    query_results = db.filter_duplicates(schedule_id)
     return jsonify(query_results)
 
 
