@@ -371,24 +371,6 @@ class Database:
         cursor.close()
         return result is not None
 
-    # def get_student_schedule_id(self, student_id: int) -> int:
-    #     """ Retrieves the schedule id of a student's schedule.
-    #
-    #     :param student_id: student's unique identifier
-    #     :return: the schedule_id if it exists, otherwise None
-    #     """
-    #     cursor = self.db.cursor(buffered=True)
-    #
-    #     sql_query = 'SELECT SCHEDULE_ID FROM SCHEDULE WHERE STUDENT_ID=%s;'
-    #     arguments = (student_id,)
-    #
-    #     cursor.execute(sql_query, arguments)
-    #     student_id = cursor.fetchone()
-    #
-    #     cursor.close()
-    #
-    #     return student_id[0] if student_id else None
-
     def get_student_schedule(self, student_id: int) -> Schedule:
         """ Retrieves information stored for a student's schedule in the database.
 
