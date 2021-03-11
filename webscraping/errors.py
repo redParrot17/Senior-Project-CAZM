@@ -1,4 +1,8 @@
 
+class StudentDoesntExist(Exception):
+    """ Caused when performing an update operation on a student that does not exist. """
+
+
 class ScraperError(Exception):
     """ Common base class for all web-scraping exceptions. """
 

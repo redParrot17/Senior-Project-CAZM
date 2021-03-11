@@ -13,7 +13,6 @@ class Schedule:
         4 = Awaiting Advisor Approval
     """
 
-    schedule_id: int
     student_id: int
     status: int         # see key in class docs
     courses = []        # list of Course objects
