@@ -1,6 +1,7 @@
 from webscraping.components.student import Student
 from webscraping.components.schedule import Schedule
 from webscraping.components.course import Course
+from webscraping.errors import StudentDoesntExist
 import mysql.connector
 from datetime import date
 
@@ -119,19 +120,19 @@ class Database:
         return req_info
 
     def search_course_codes(self, argument1):
-         cursor = self.db.cursor(buffered=True)
-         arg1 = argument1 + "%"
-         arg2 = arg1
-         args = (arg1,arg2,)
-         sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s GROUP BY COURSE_CODE;'
-         cursor.execute(sql, args)
-         results = cursor.fetchall()
-         cursor.close()
+        cursor = self.db.cursor(buffered=True)
+        arg1 = argument1 + "%"
+        arg2 = arg1
+        args = (arg1,arg2,)
+        sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER) FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s GROUP BY COURSE_CODE;'
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
 
-         course_info = []
-         for course_code, name, year, semester in results:
-             course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
-         return course_info
+        course_info = []
+        for course_code, name, year, semester in results:
+            course_info.append({"course_code":course_code,"name":name,"year": year, "semester": semester})
+        return course_info
 
     def filter_previous(self, schedule_id):
         cursor = self.db.cursor(buffered=True)
@@ -148,20 +149,20 @@ class Database:
         return course_info
 
     def get_all_courses(self):
-         cursor = self.db.cursor(buffered=True)
-         sql = 'SELECT COURSE_CODE, ANY_VALUE(YEAR), ANY_VALUE(SEMESTER), ANY_VALUE(CREDITS) FROM COURSE GROUP BY COURSE_CODE;'
-         cursor.execute(sql)
-         results = cursor.fetchall()
-         cursor.close()
+        cursor = self.db.cursor(buffered=True)
+        sql = 'SELECT COURSE_CODE, ANY_VALUE(YEAR), ANY_VALUE(SEMESTER), ANY_VALUE(CREDITS) FROM COURSE GROUP BY COURSE_CODE;'
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        cursor.close()
 
-         course_info = []
-         for course_code, year, semester, credits in results:
-             course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
-         return course_info
+        course_info = []
+        for course_code, year, semester, credits in results:
+            course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
+        return course_info
 
     def get_courses_by_year_and_semester(self, semester, year):
         cursor = self.db.cursor(buffered=True)
-        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE WHERE Year LIKE ? AND SEMESTER LIKE ?';
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE WHERE Year LIKE ? AND SEMESTER LIKE ?;'
         cursor.execute(sql, (year, semester))
         results = cursor.fetchall()
         cursor.close()
@@ -173,7 +174,7 @@ class Database:
 
     def get_courses(self):
         cursor = self.db.cursor(buffered=True)
-        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE';
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE;'
         cursor.execute(sql)
         results = cursor.fetchall()
         cursor.close()
@@ -187,15 +188,15 @@ class Database:
         cursor = self.db.cursor(buffered=True)
 
         args = (major_code,)
-        sql = 'SELECT COURSE_CODE, SEMESTER, YEAR FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s ORDER BY YEAR ASC, SEMESTER DESC;'
+        sql = 'SELECT COURSE_CODE, SEMESTER, YEAR FROM SCHEDULE_COURSES WHERE STUDENT_ID=%s ORDER BY YEAR ASC, SEMESTER DESC;'
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
 
         template = []
         courses = []
-        current_semester = "FALL"
-        current_year = "2020"
+        current_semester = "Spring"
+        current_year = "2021"
         for course_code, semester, year in results:
             if courses and semester + str(year) != current_semester + current_year:
                 template.append({'semester': current_semester, 'year':current_year, 'classes': courses}) #append semester schedule to template
@@ -218,26 +219,157 @@ class Database:
         :param semester:    semester the course is offered
         :return: retrieved course info or None if the course does not exist
         """
+
         course = None
         cursor = self.db.cursor(buffered=True)
 
+        # Prepare the SQL query
         sql_query = 'SELECT CREDITS, NAME FROM COURSE WHERE COURSE_CODE=%s AND YEAR=%s AND SEMESTER=%s;'
         arguments = (course_code, year, semester,)
 
+        # Execute the SQL query
         cursor.execute(sql_query, arguments)
         result = cursor.fetchone()
 
+        # Parse the result into a course object
         if result is not None:
             credit_hours, name = result
-            course = Course(course_code=course_code, name=name, credit_hours=credit_hours, year=year, semester=semester)
+            course = Course(
+                course_code=course_code,
+                name=name,
+                credit_hours=credit_hours,
+                year=year,
+                semester=semester)
+
+        cursor.close()
+        return course
+
+    def search_courses(self, search_query: str, ignore_semester=False) -> list:
+        """ Searches for courses who's codes or names match a search query.
+
+        This supports partial matching and will strip any '%'
+        character from the front and back of the search query.
+
+        :param search_query:    string to match against course identifiers
+
+        :param ignore_semester: if duplicate courses from different semesters should be ignored,
+                                if ignored then year and semester will be None, default False
+
+        :return: list of Course objects that match the search query
+        """
+
+        # Prepare search_query for partial matching.
+        search_query = search_query.strip('%')
+        search_query = f'%{search_query}%'
+        search_results = []
+
+        # Buffered so that we fetch all results to prevent other DB calls
+        # on the same connection from crashing due to incomplete cleanup.
+        cursor = self.db.cursor(buffered=True)
+
+        if ignore_semester:
+
+            # Build the SQL query
+            sql_query = 'SELECT COURSE_CODE, ANY_VALUE(CREDITS), ANY_VALUE(NAME) FROM COURSE ' \
+                        'WHERE COURSE_CODE LIKE %s OR NAME LIKE %s GROUP BY COURSE_CODE;'
+            arguments = (search_query, search_query,)
+
+            # Execute the SQL query
+            cursor.execute(sql_query, arguments)
+            results = cursor.fetchall()
+
+            # Parse the results into course objects
+            for course_code, credit_hours, name in results:
+                course = Course(
+                    course_code=course_code,
+                    name=name,
+                    credit_hours=credit_hours,
+                    year=None,
+                    semester=None)
+                search_results.append(course)
+
+        else:
+
+            # Build the SQL query
+            sql_query = 'SELECT COURSE_CODE, CREDITS, NAME, SEMESTER, YEAR FROM ' \
+                        'COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s;'
+            arguments = (search_query, search_query,)
+
+            # Execute the SQL query
+            cursor.execute(sql_query, arguments)
+            results = cursor.fetchall()
+
+            # Parse the results into course objects
+            for course_code, credit_hours, name, semester, year in results:
+                course = Course(
+                    course_code=course_code,
+                    name=name,
+                    credit_hours=credit_hours,
+                    year=year,
+                    semester=semester)
+                search_results.append(course)
+
+        cursor.close()
+        return search_results
+
+    def get_courses_by_semester(self, semester: str, year: int) -> list:
+        """ Retrieves courses associated with a semester and year.
+
+        :param semester:    semester the course is offered
+        :param year:        year the course is offered
+        :return: list of Course objects satisfying the arguments
+        """
+
+        # Buffered so that we fetch all results to prevent other DB calls
+        # on the same connection from crashing due to incomplete cleanup.
+        cursor = self.db.cursor(buffered=True)
+
+        # Build the SQL query
+        sql_query = 'SELECT COURSE_CODE, CREDITS, NAME FROM COURSE WHERE SEMESTER=%s AND YEAR=%s;'
+        arguments = (semester, year,)
+
+        # Execute the SQL query
+        cursor.execute(sql_query, arguments)
+        results = cursor.fetchall()
 
         cursor.close()
 
-        return course
+        # Parse the results into course objects
+        search_results = []
+        for course_code, credit_hours, name in results:
+            course = Course(
+                course_code=course_code,
+                name=name,
+                credit_hours=credit_hours,
+                year=year,
+                semester=semester)
+            search_results.append(course)
+
+        return search_results
 
 
     ### METHODS FOR SCHEDULE RELATED TABLES ###
 
+
+    def does_schedule_exist(self, student_id: int) -> bool:
+        """ Checks if a student has a schedule in the database.
+
+        :param student_id: student's unique identifier
+        :return: True if a schedule exists for the student, False otherwise
+        """
+
+        cursor = self.db.cursor(buffered=True)
+
+        # Prepare the SQL query
+        sql_query = 'SELECT 1 FROM SCHEDULE WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
+
+        # Execute the SQL query
+        cursor.execute(sql_query, arguments)
+        result = cursor.fetchone()
+
+        cursor.close()
+        return result is not None
 
     def get_student_schedule(self, student_id: int) -> Schedule:
         """ Retrieves information stored for a student's schedule in the database.
@@ -245,33 +377,40 @@ class Database:
         :param student_id: student's unique identifier
         :return: retrieved schedule info or None if the schedule does not exist
         """
-        schedule = None
-        course_identifiers = []
+
+        # Buffered so that we fetch all results to prevent other DB calls
+        # on the same connection from crashing due to incomplete cleanup.
         cursor = self.db.cursor(buffered=True)
+        course_identifiers = []
+        schedule = None
 
-        ### Fetch the initial schedule identifier ###
+        ### Fetch the schedule status ###
 
-        sql_query = 'SELECT SCHEDULE_ID, STATUS FROM SCHEDULE WHERE STUDENT_ID=%s;'
+        # Prepare the SQL query
+        sql_query = 'SELECT SCHEDULE_STATUS FROM STUDENTS WHERE STUDENT_ID=%s;'
         arguments = (student_id,)
 
+        # Execute the SQL query
         cursor.execute(sql_query, arguments)
         result = cursor.fetchone()
 
-        if result is not None:
-            schedule_id, status = result
-            schedule = Schedule(schedule_id=schedule_id, student_id=student_id, status=status)
+        # Parse the result into a schedule object
+        if result is not None and result[0] != 0:
+            schedule = Schedule(student_id=student_id, status=result[0])
 
             ### Fetch the schedule's course identifiers ###
 
-            sql_query = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM SCHEDULE_COURSES WHERE SCHEDULE_ID=%s;'
-            arguments = (schedule_id,)
+            # Prepare the SQL query
+            sql_query = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM SCHEDULE_COURSES WHERE STUDENT_ID=%s;'
+            arguments = (student_id,)
 
+            # Execute the SQL query
             cursor.execute(sql_query, arguments)
             course_identifiers = cursor.fetchall()
 
         cursor.close()
 
-        ### Fetch the course information for each identifier ###
+        ### Fetch the course information for each course identifier ###
 
         if schedule is not None:
             for course_code, year, semester in course_identifiers:
@@ -281,33 +420,68 @@ class Database:
 
         return schedule
 
-    def create_student_schedule(self, schedule: Schedule, *, suppress_commit=False):
+    def update_student_schedule(self, schedule: Schedule, remove_stale_courses=True, *, suppress_commit=False):
+        """ Creates or updates a student's schedule in the database.
+
+        :param schedule:                schedule containing the changes to be implemented
+        :param remove_stale_courses:    if courses not included in schedule should be removed
+        :param suppress_commit:         if autocommit should be suppressed, default False
+
+        :raises webscraping.errors.StudentDoesntExist: if no student exists with a matching student id
         """
 
-        :param suppress_commit:
-        :param schedule:
-        """
+        # Buffered so that we fetch all results to prevent other DB calls
+        # on the same connection from crashing due to incomplete cleanup.
         cursor = self.db.cursor(buffered=True)
+        student_id = schedule.student_id
 
-        sql_query = 'INSERT INTO SCHEDULE (STUDENT_ID, STATUS) VALUES (%s, %s);'
-        arguments = (schedule.student_id, schedule.status,)
+        ### Ensure student actually exists ###
 
+        sql_query = 'SELECT 1 FROM STUDENTS WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
         cursor.execute(sql_query, arguments)
-        schedule_id = cursor.lastrowid
+        student_exists = cursor.fetchone() is not None
 
-        for course in schedule.courses:
-            course_code = course.course_code
-            course_year = course.year
-            course_semester = course.semester
+        if not student_exists:
+            raise StudentDoesntExist(f"Cannot update the schedule of student {student_id} because they don't exist.")
 
-        cursor.close()
+        ### Update the schedule status ###
 
-        # commit the changes to the database
-        if not suppress_commit and self.autocommit:
-            self.db.commit()
+        sql_query = 'UPDATE STUDENTS SET SCHEDULE_STATUS=%s WHERE STUDENT_ID=%s;'
+        arguments = (schedule.status, student_id,)
+        cursor.execute(sql_query, arguments)
 
-    def update_student_schedule(self, schedule: Schedule, *, suppress_commit=False):
-        cursor = self.db.cursor(buffered=True)
+        ### Determine which courses already exist for this schedule ###
+
+        sql_query = 'SELECT COURSE_CODE, YEAR, SEMESTER FROM SCHEDULE_COURSES WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
+        cursor.execute(sql_query, arguments)
+
+        courses_in_database = set(
+            (student_id, course_code, year, semester,)
+            for course_code, year, semester in cursor.fetchall())
+
+        courses_in_schedule = set(
+            (student_id, course.course_code, course.year, course.semester,)
+            for course in schedule.courses)
+
+        courses_to_add = courses_in_schedule - courses_in_database
+        courses_to_del = courses_in_database - courses_in_schedule
+
+        ### Remove stale courses if applicable ###
+
+        if remove_stale_courses:
+
+            sql_query = 'DELETE FROM SCHEDULE_COURSES WHERE STUDENT_ID=%s ' \
+                        'AND COURSE_CODE=%s AND YEAR=%s AND SEMESTER=%s;'
+            cursor.executemany(sql_query, list(courses_to_del))
+
+        ### Add the fresh courses ###
+
+        sql_query = 'INSERT INTO SCHEDULE_COURSES (STUDENT_ID, COURSE_CODE, YEAR, SEMESTER) ' \
+                    'VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE STUDENT_ID=VALUES(STUDENT_ID), ' \
+                    'COURSE_CODE=VALUES(COURSE_CODE), YEAR=VALUES(YEAR), SEMESTER=VALUES(SEMESTER);'
+        cursor.executemany(sql_query, list(courses_to_add))
 
         cursor.close()
 
@@ -316,7 +490,25 @@ class Database:
             self.db.commit()
 
     def delete_student_schedule(self, student_id: int, *, suppress_commit=False):
+        """ Deletes a student's schedule from the database.
+
+        :param student_id:      student's unique identifier
+        :param suppress_commit: if autocommit should be suppressed, default False
+        """
+
         cursor = self.db.cursor(buffered=True)
+
+        ### Delete all the courses from the schedule ###
+
+        sql_query = 'DELETE FROM SCHEDULE_COURSES WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
+        cursor.execute(sql_query, arguments)
+
+        ### Delete base schedule from the database ###
+
+        sql_query = 'UPDATE STUDENTS SET SCHEDULE_STATUS=%s WHERE STUDENT_ID=%s;'
+        arguments = (0, student_id,)
+        cursor.execute(sql_query, arguments)
 
         cursor.close()
 
@@ -424,6 +616,7 @@ class Database:
 
         :raises mysql.connector.errors.IntegrityError: if the major does not exist in the major table
         """
+
         if ensure_major_exists:
             if not self.does_major_exist(major_name, major_year):
                 self.create_new_major(major_name, major_year, suppress_commit=True)
@@ -664,8 +857,7 @@ class Database:
             self.remove_all_majors_from_student(student_id, suppress_commit=True)
 
         if delete_schedules is True:
-            # TODO: invoke schedule deletion once the method exists
-            pass
+            self.delete_student_schedule(student_id, suppress_commit=True)
 
         cursor = self.db.cursor(buffered=True)
 

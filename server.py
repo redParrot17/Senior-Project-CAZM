@@ -253,7 +253,7 @@ def advisor_viewing_student():
         }
 
         # TODO: needs review
-        current_year = 2020
+        current_year = 2021
         current_semester = 'Spring'
         schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
 
@@ -412,7 +412,7 @@ def student_landing_page():
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
 
-    current_year = 2020
+    current_year = 2021
     current_semester = 'Spring'
     schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
 
