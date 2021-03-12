@@ -16,8 +16,8 @@ window.addEventListener("DOMContentLoaded", function () {
 
 
     $.getJSON($SCRIPT_ROOT + '/getRequirements', {
-        major_name: "Computer Science",
-        major_year: 2020
+        major_name: studentData.major_name,
+        major_year: studentData.major_year
     }, function (data) {
         reqs = data;
         loadStatusSheet(reqs);

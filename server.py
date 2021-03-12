@@ -256,7 +256,7 @@ def advisor_viewing_student():
         }
 
         # TODO: needs review
-        current_year = 2020
+        current_year = 2021
         current_semester = 'Spring'
         schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
 
@@ -415,7 +415,7 @@ def student_landing_page():
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
 
-    current_year = 2020
+    current_year = 2021
     current_semester = 'Spring'
     schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
 
@@ -464,12 +464,20 @@ def search_classes():
     return jsonify(query_results)
 
 
-@app.route('/filterPrevious/')
+@app.route('/filterDuplicates/')
 @flask_login.login_required     # you must be logged in to access this endpoint
-def filter_previous_classes():
+def filter_duplicate_classes():
     db = Database()
     schedule_id = request.args.get('schedule_id', 0, type=int)
-    query_results = db.filter_previous(schedule_id)
+    query_results = db.filter_duplicates(schedule_id)
+    return jsonify(query_results)
+
+@app.route('/filterSemester/')
+@flask_login.login_required
+def filter_semester():
+    db = Database()
+    semester = request.args.get('semester', 0, type=str)
+    query_results = db.get_courses_by_semester(semester)
     return jsonify(query_results)
 
 

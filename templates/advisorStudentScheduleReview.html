@@ -109,8 +109,8 @@
           <span class="checkmark"></span>
         </label>
 
-        <label class="Checkcontainer">Hide Previous Courses
-          <input type="checkbox" onchange="filterPrevious(this)">
+        <label class="Checkcontainer">Hide Duplicate Courses
+          <input type="checkbox" onchange="filterDuplicates(this)">
           <span class="checkmark"></span>
         </label>
 
@@ -122,7 +122,7 @@
       <div class="container searchContainer p-0 rounded overflow-hidden" >
         <div class="row rowDropDown">
           <div class="form-group  col-7 p-0">
-            <select class="form-control form-border-semester dropdown topLeftRounded">
+            <select class="form-control form-border-semester dropdown topLeftRounded" onchange="filterSemester(this)">
               <option value="Semester">Semester:</option>
               <option value="Fall">Fall</option>
               <option value="Spring">Spring</option>
