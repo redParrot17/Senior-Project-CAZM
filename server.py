@@ -1,6 +1,9 @@
+# flask utilities
 import flask
 from flask import Flask, render_template, request, jsonify
 import flask_login
+
+# internal utilities
 from os import urandom
 from user import User
 from database import Database
@@ -11,10 +14,12 @@ import webscraping.adviseescraper as advisee_scraper
 from webscraping.components.student import Student
 from webscraping.mygcc import MyGcc
 import webscraping.errors as errors
+from webscraping.backoff import exponential_backoff
+from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -153,7 +158,7 @@ def logout():
 
 ### ADVISOR SPECIFIC ENDPOINTS ###
 
-@app.route('/advisorHomePreview/', methods=['GET', 'POST'])
+@app.route('/advisorHomePreview/')
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_advisors  # you must be an advisor to view this page
 def advisor_landing_page():
@@ -163,56 +168,31 @@ def advisor_landing_page():
     get redirected to after performing site login.
     """
 
-    if flask.request.method == 'GET':
+    # Fetch all of the student's this advisor is responsible for
+    advisor = flask_login.current_user
+    advisor_students = advisee_scraper.get_advisers_students(advisor.id, advisor.username, advisor.password)
 
-        # Fetch all of the student's this advisor is responsible for
-        advisor = flask_login.current_user
-        advisor_students = advisee_scraper.get_advisers_students(advisor.id, advisor.username, advisor.password)
+    # Format all the user data into something we can pass into the html template
+    with Database() as db:
+        data = []
 
-        # Format all the user data into something we can pass into the html template
-        data = [
-            {
+        for student in advisor_students:
+            # Fetches the student's schedule status and defaults to awaiting creation
+            schedule = db.get_student_schedule(student.student_id)
+            schedule_status = schedule.status if schedule else 3
+
+            data.append({
                 'id': student.student_id,
                 'name': f'{student.firstname} {student.lastname}',
                 'credits': student.credits_completed,
                 'email': student.email,
-                'status': 1,    # TODO: populate this with their schedule status
+                'status': schedule_status,
                 'year': student.classification,
                 'major': None if not student.majors else student.majors[0][0],  # TODO: handle multiple majors
-            } for student in advisor_students
-        ]
+            })
 
-        # Serve the advisor landing page template to the user
-        return render_template('advisorLandingPage.html', advisees=data)
-
-    elif flask.request.method == 'POST':
-
-        # TODO: instead of this being handled here, do it in advisor_viewing_student()
-
-        # # Fetch the student the advisor is requesting to view the page of
-        # student_id = 1  # TODO: fetch this value from the post result
-        #
-        # # Fetch the user id of the advisor performing this request
-        # advisor_id = flask_login.current_user.id
-        #
-        # # Fetch the student the advisor is requesting
-        # db = Database()
-        # student = db.get_student(student_id, advisor_id)
-        # db.close()
-        #
-        # if student is not None:
-        #     pass
-        #
-        # # Redirect to unauthorized page since the advisor does not have access to this student
-        # else:
-        #     return flask.redirect(flask.url_for('unauthorized'))
-
-        # json = flask.request.get_json()
-        # if json is not None:
-        #     user_id = json.get('user')
-        #     print(f'requesting advisor view of student {user_id}')
-        #     return flask.redirect(flask.url_for('advisorViewingStudent'))
-        pass
+    # Serve the advisor landing page template to the user
+    return render_template('advisorLandingPage.html', advisees=data)
 
 
 @app.route("/studentProfile/", methods=["POST"])
@@ -250,7 +230,7 @@ def advisor_viewing_student():
             'name': f'{student.firstname} {student.lastname}',
             'credits': student.credits_completed,
             'email': student.email,
-            'status': schedule.status_str if schedule else 'Unknown',
+            'status': schedule.status_str if schedule else 'Awaiting Student Creation',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'major': None if not student.majors else student.majors[0][0],
         }
@@ -265,12 +245,6 @@ def advisor_viewing_student():
                 if course.semester == current_semester and course.year == current_year:
                     if course.course_code not in schedule_data['classes']:
                         schedule_data['classes'].append(course.course_code)
-
-        # TODO: the following section needs review
-        # Fetch the student's schedule from the database
-        # db = Database()
-        # schedule = db.get_template(1)
-        # db.close()
 
         # Serve the student overview page to the advisor performing the request
         return render_template('advisorViewingStudent.html', student=data, studentSchedule=[schedule_data])
@@ -314,6 +288,51 @@ def advisor_sch_review():
 
 ### STUDENT SPECIFIC ENDPOINTS ###
 
+# Exponential backoff required due to an occasional domain resolution failure.
+@exponential_backoff(RequestException, retries=5, timeslot=0.5)
+def scrape_student_data(__student_id, __username, __password):
+    """ Builds a student object of the student who's credentials are passed in.
+
+    :param __student_id:    student's unique identifier
+    :param __username:      student's https://my.gcc.edu username
+    :param __password:      student's https://my.gcc.edu password
+    :return: the student object containing the student's data
+    """
+
+    profile = MyGcc(__username, __password).profile
+
+    student_name = profile.name
+
+    enrolled = profile.enrolled_date
+    enrolled_year = enrolled.split('/')[-1]
+    enrolled_semester = 'Spring' if int(enrolled.split('/')[0]) < 7 else 'Fall'
+
+    graduation = profile.planned_graduation
+    graduation_year = graduation.split('/')[-1]
+    graduation_semester = 'Spring' if int(graduation.split('/')[0]) < 7 else 'Fall'
+
+    # TODO: actually fetch this rather than constructing it
+    email = student_name['lastname'] + \
+        student_name['firstname'][0] + \
+        student_name['middlename'][0] + \
+        enrolled_year[-2:] + '@gcc.edu'
+
+    student = Student(
+        student_id=__student_id,
+        advisor_id=None,
+        firstname=student_name['firstname'],
+        lastname=student_name['lastname'],
+        email=email,
+        majors=[(profile.major, int(enrolled_year))],
+        classification=profile.classification,
+        graduation_year=int(graduation_year),
+        graduation_semester=graduation_semester,
+        enrolled_year=int(enrolled_year),
+        enrolled_semester=enrolled_semester)
+
+    return student
+
+
 @flask_login.login_required
 def get_student_data():
     # Fetch the student id of the requesting user
@@ -321,43 +340,13 @@ def get_student_data():
     student_id = current_user.id
 
     # Fetch the information about this student
-    db = Database()
-    student = db.get_student(student_id)
-    db.close()
+    with Database() as db:
+        student = db.get_student(student_id)
+        schedule = db.get_student_schedule(student_id)
 
     # Fetch the information from the college if not cached
     if student is None:
-        portal = MyGcc(current_user.username, current_user.password)
-        profile = portal.profile
-
-        student_name = profile.name
-
-        enrolled = profile.enrolled_date
-        enrolled_year = enrolled.split('/')[-1]
-        enrolled_semester = 'Spring' if int(enrolled.split('/')[0]) < 7 else 'Fall'
-
-        graduation = profile.planned_graduation
-        graduation_year = graduation.split('/')[-1]
-        graduation_semester = 'Spring' if int(graduation.split('/')[0]) < 7 else 'Fall'
-
-        # TODO: actually fetch this rather than constructing it
-        email = student_name['lastname'] + \
-            student_name['firstname'][0] + \
-            student_name['middlename'][0] + \
-            enrolled_year[-2:] + '@gcc.edu'
-
-        student = Student(
-            student_id=current_user.id,
-            advisor_id=None,
-            firstname=student_name['firstname'],
-            lastname=student_name['lastname'],
-            email=email,
-            majors=[(profile.major, int(enrolled_year))],
-            classification=profile.classification,
-            graduation_year=int(graduation_year),
-            graduation_semester=graduation_semester,
-            enrolled_year=int(enrolled_year),
-            enrolled_semester=enrolled_semester)
+        student = scrape_student_data(student_id, current_user.username, current_user.password)
 
         # Caching the new student data within the database
         db = Database()
@@ -369,14 +358,13 @@ def get_student_data():
         'id': student.student_id,
         'name': f'{student.firstname} {student.lastname}',
         'credits': student.credits_completed,
-        'status': 'Pending',    # TODO: fetch this value
-        'enrolled_semester' : student.enrolled_semester,
-        'enrolled_year' : student.enrolled_year,
-        'grad_semester' : student.graduation_semester,
-        'grad_year' : student.graduation_year,
-        'enrolled_semester_combined' : f'{student.enrolled_semester} {student.enrolled_year}',
-        'grad_semester_combined' : f'{student.graduation_semester} {student.graduation_year}',
-
+        'status': schedule.status_str if schedule else 'Awaiting Student Creation',
+        'enrolled_semester': student.enrolled_semester,
+        'enrolled_year': student.enrolled_year,
+        'grad_semester': student.graduation_semester,
+        'grad_year': student.graduation_year,
+        'enrolled_semester_combined': f'{student.enrolled_semester} {student.enrolled_year}',
+        'grad_semester_combined': f'{student.graduation_semester} {student.graduation_year}',
         'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
     }
 
