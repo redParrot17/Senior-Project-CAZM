@@ -14,7 +14,7 @@ import webscraping.errors as errors
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -215,7 +215,7 @@ def advisor_landing_page():
         pass
 
 
-@app.route("/studentProfile/")
+@app.route("/studentProfile/", methods=["POST"])
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_advisors  # you must be an advisor to view this page
 def advisor_viewing_student():
@@ -228,7 +228,10 @@ def advisor_viewing_student():
     """
 
     # Fetch the student the advisor is requesting to view the page of
-    student_id = 123456  # TODO: fetch this value from the post result
+    student_form = flask.request.form
+    student_id = student_form.get('student_id')
+    if student_id is not None:
+        student_id = int(student_id)
 
     # Fetch the user id of the advisor performing this request
     advisor_id = flask_login.current_user.id
@@ -382,8 +385,8 @@ def get_student_data():
 
 
 @app.route('/studentData')
-@security.restrict_to_students
 @flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_students  # you must be a student to view this page
 def get_student_info_json():
     """
     Returns Student info JSON for logged in student

@@ -119,7 +119,9 @@ function httpPost(object) {
 }
 
 function onClickAdvisee(user_id) {
-    window.location.href = `/studentProfile`;
+    $('#student_id').val(user_id)
+    document.forms[1].submit();
+    // window.location.href = `/studentProfile`;
 }
 
 function onClickLogout() {
@@ -137,7 +139,7 @@ function onClickMessage() {
 
 function buildAdviseeCard(advisee) {
     return [
-        `<div class="advisee border shadow p-3 mb-4 bg-body rounded" onclick="onClickAdvisee(${advisee.id})">`,
+        `<div class="advisee border shadow p-3 mb-4 bg-body rounded" value="${advisee.id}" onclick="onClickAdvisee(${advisee.id})">`,
         '<div class="row align-items-center">',
         `<div class="col"><h5>${advisee.name}</h5></div>`,
         `<div class="col"><h5>${advisee.id}</h5></div>`,
