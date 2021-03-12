@@ -19,7 +19,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -254,35 +254,64 @@ def advisor_viewing_student():
         return login_manager.unauthorized()
 
 
-@app.route('/advisorSchReview/')
+@app.route('/advisorSchReview/', methods=['POST'])
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_advisors  # you must be an advisor to view this page
 def advisor_sch_review():
-
-    # TODO: verify that the advisor has access to this schedule
-    # TODO: fetch the schedule information from the database
-    
     """
-    TODO
-    1) get Prereqs from server
-    2) Build prereq hierarchy with dataset attributes
-    3) Special js function for first semester
-    4) Build Pool of Prereqs met (include year standing)
-    5) Check against pool for each class (User object? ask christian)
+    This endpoint serves to provide advisors with a way to
+    view and edit the schedule for one of their advisees.
+
+    Redirects to the unauthorized page if the advisor does
+    not have access to the student whose schedule is being edited.
     """
 
-    classes = [{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0}, {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1} , {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2}, {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
+    # Fetch the input fields from the request form
+    page_form = flask.request.form
 
-    db = Database()
+    advisor_id = flask_login.current_user.id
+    student_id = page_form.get('student_id')
+    if student_id is not None:
+        student_id = int(student_id)
 
-    status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+    # Ensure the fields were filled out appropriately
+    if student_id is not None:
 
-    query_results = db.get_all_courses()
+        with Database() as db:
+            student = db.get_student(student_id, advisor_id)
+            schedule = db.get_student_schedule(student_id)
 
-    list_of_courses = db.get_courses()
-    
-    return render_template(
-        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses)
+        # Make sure the advisor has access to this student's schedule
+        if student is None:
+            return login_manager.unauthorized()
+
+        """
+        TODO
+        1) get Prereqs from server
+        2) Build prereq hierarchy with dataset attributes
+        3) Special js function for first semester
+        4) Build Pool of Prereqs met (include year standing)
+        5) Check against pool for each class (User object? ask christian)
+        """
+
+        # TODO: this cannot be a hardcoded value
+
+        classes = [{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0},
+                   {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1},
+                   {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2},
+                   {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
+
+        with Database() as db:
+            status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+            query_results = db.get_all_courses()
+            list_of_courses = db.get_courses()
+
+        return render_template(
+            'advisorStudentScheduleReview.html',
+            classes=classes,
+            statusSheet=status_sheet,
+            allCourses=query_results,
+            listOfCourses=list_of_courses)
 
 
 
@@ -371,7 +400,6 @@ def get_student_data():
     return data
 
 
-
 @app.route('/studentData')
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_students  # you must be a student to view this page
@@ -393,12 +421,6 @@ def student_landing_page():
     """
     student_id = flask_login.current_user.id
     data = get_student_data()
-    
-    # TODO: this following section requires review
-    # Fetch the student's schedule from the database
-    # db = Database()
-    # template = db.get_template(1)
-    # db.close()
 
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
@@ -444,39 +466,37 @@ def student_sch_review():
 @app.route('/searchClasses/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def search_classes():
-    db = Database()
-    class_name = request.args.get('class_name', 0, type=str)
-
-    query_results = db.search_course_codes(class_name)
-
+    with Database() as db:
+        class_name = request.args.get('class_name', 0, type=str)
+        query_results = db.search_course_codes(class_name)
     return jsonify(query_results)
 
 
 @app.route('/filterDuplicates/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def filter_duplicate_classes():
-    db = Database()
-    schedule_id = request.args.get('schedule_id', 0, type=int)
-    query_results = db.filter_duplicates(schedule_id)
+    with Database() as db:
+        schedule_id = request.args.get('schedule_id', 0, type=int)
+        query_results = db.filter_duplicates(schedule_id)
     return jsonify(query_results)
 
 @app.route('/filterSemester/')
 @flask_login.login_required
 def filter_semester():
-    db = Database()
-    semester = request.args.get('semester', 0, type=str)
-    query_results = db.get_courses_by_semester(semester)
+    with Database() as db:
+        semester = request.args.get('semester', 0, type=str)
+        query_results = db.get_courses_by_semester(semester)
     return jsonify(query_results)
 
 
 @app.route('/getRequirements/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def get_requirements():
-    db = Database()
     major_name = request.args.get('major_name', 0, type=str)
     major_year = request.args.get('major_year', 0, type=int)
 
-    query_results = db.getRequirements(major_name, major_year)
+    with Database() as db:
+        query_results = db.getRequirements(major_name, major_year)
 
     return jsonify(query_results)
 
@@ -484,10 +504,8 @@ def get_requirements():
 @app.route('/getRequisites/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def get_requisites():
-    db = Database()
-
-    query_results = db.getRequisites()
-
+    with Database() as db:
+        query_results = db.getRequisites()
     return jsonify(query_results)
 
 
