@@ -373,7 +373,8 @@ def get_student_data():
         'grad_year' : student.graduation_year,
         'enrolled_semester_combined' : f'{student.enrolled_semester} {student.enrolled_year}',
         'grad_semester_combined' : f'{student.graduation_semester} {student.graduation_year}',
-
+        'major_name': student.majors[0][0],
+        'major_year': student.majors[0][1],
         'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
     }
 

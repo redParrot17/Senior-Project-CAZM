@@ -173,12 +173,4 @@ function revert_drag_locations(event) {
 
 
 //------------------------------------------------------------------------------
-$.getJSON($SCRIPT_ROOT + '/studentData', {
 
-}, function (data) {
-    studentData = data;
-    console.log(studentData);
-    // set up student schedule containers
-    setUpStudentScheduleContainers(studentData);
-
-})
