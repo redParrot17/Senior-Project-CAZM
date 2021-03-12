@@ -19,7 +19,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -295,6 +295,7 @@ def advisor_sch_review():
         """
 
         # TODO: this cannot be a hardcoded value
+        # TODO: make this page exist standalone from the student side
 
         classes = [{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0},
                    {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1},
@@ -308,6 +309,7 @@ def advisor_sch_review():
 
         return render_template(
             'advisorStudentScheduleReview.html',
+            student_id=student_id,
             classes=classes,
             statusSheet=status_sheet,
             allCourses=query_results,
@@ -444,8 +446,11 @@ def student_landing_page():
 @security.restrict_to_students  # you must be a student to view this page
 def student_sch_review():
 
-    # TODO: verify that the student has access to this schedule
-    # TODO: fetch the schedule information from the database
+    student_id = flask_login.current_user.id
+
+    with Database() as db:
+        student = db.get_student(student_id)
+        schedule = db.get_student_schedule(student_id)
 
     classes=["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
 
