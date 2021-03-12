@@ -312,7 +312,7 @@ class Database:
         cursor.close()
         return search_results
 
-    def get_courses_by_semester(self, semester: str, year: int) -> list:
+    def get_course_objects_by_semester_and_year(self, semester: str, year: int) -> list:
         """ Retrieves courses associated with a semester and year.
 
         :param semester:    semester the course is offered
@@ -346,6 +346,18 @@ class Database:
             search_results.append(course)
 
         return search_results
+
+    def get_courses_by_semester(self, semester):
+        cursor = self.db.cursor(buffered=True)
+        sql = 'SELECT COURSE_CODE, YEAR, SEMESTER, CREDITS FROM COURSE WHERE SEMESTER LIKE %s;'
+        cursor.execute(sql, (semester,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        course_info = []
+        for course_code, year, semester, credits in results:
+            course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
+        return course_info
 
 
     ### METHODS FOR SCHEDULE RELATED TABLES ###

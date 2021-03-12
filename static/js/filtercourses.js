@@ -63,42 +63,55 @@ function filterDuplicates(checkbox) {
           div.appendChild(span)
           div.appendChild(trash)
           container.appendChild(div)
+        }
+    });
+}
 
-            // /* Outer Div */
-            // let name = course.course_code;
+function filterSemester(semesterDropdown) {
+    $.getJSON($SCRIPT_ROOT + '/filterSemester', {
+        semester: semesterDropdown.value
+    }, function (data, status) {
+        classes = data
 
-            // let courseID = name/*.replace(" ", "_") + "_" + course.semester + "_" + course.year*/;
-            // let div = document.createElement("div");
-            // div.id = courseID;
-            // div.courseCode = courseID;
-            // div.year = course.year;
-            // div.semester = course.semester;
-            // div.className = "drag_item";
-            // div.draggable = "true";
-            // div.setAttribute("ondragstart", "set_valid_drag_locations(event);drag(event)");
-            // div.setAttribute("ondragend", "revert_drag_locations(event);dragEnd(event)");
+        let container = document.getElementById("course-container");
+        container.innerHTML = "";
+        for (let i in classes) {
+            let course = classes[i]
 
-            // /* Arrows icon */
-            // let arrows = document.createElement("i");
-            // arrows.classList = "col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt";
+            /* Outer Div */
+            let name = course.courseCode;
 
-            // /* Class Text */
-            // let span = document.createElement("span");
-            // span.classList = "col pr-0 pl-0 drag_item_text text-center";
-            // span.innerHTML = name;
+            let courseID = name/*.replace(" ", "_") + "_" + course.semester + "_" + course.year*/;
+            let div = document.createElement("div");
+            div.id = courseID;
+            div.className = "drag_item";
+            div.draggable = "true";
 
-            // /* Trash Can */
-            // let trash = document.createElement("i");
-            // trash.classList = "col-1 pr-0 pl-0 fas fa-trash-alt mr-2 itemInvisible trashRed"
-            // trash.setAttribute("onclick", "removeDragItem(event)");
+            div.setAttribute("semester", course.semester);
+            div.setAttribute("courseCode", courseID);
+            div.setAttribute("ondragstart", "set_valid_drag_locations(event);drag(event);");
+            div.setAttribute("ondragend", "revert_drag_locations(event);dragEnd(event);");
 
-            // /* Combine elements */
+            /* Arrows icon */
+            let arrows = document.createElement("i");
+            arrows.classList = "col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt";
 
-            // div.appendChild(arrows)
-            // div.appendChild(span)
-            // div.appendChild(trash)
-            // container.appendChild(div)
+            /* Class Text */
+            let span = document.createElement("span");
+            span.classList = "col pr-0 pl-0 drag_item_text text-center";
+            span.innerHTML = name;
 
+            /* Trash Can */
+            let trash = document.createElement("i");
+            trash.classList = "col-1 pr-0 pl-0 fas fa-trash-alt ml-auto m-2 itemInvisible trashRed"
+            trash.setAttribute("onclick", "removeDragItem(event)");
+
+            /* Combine elements */
+
+            div.appendChild(arrows)
+            div.appendChild(span)
+            div.appendChild(trash)
+            container.appendChild(div)
         }
     });
 }
