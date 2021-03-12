@@ -469,6 +469,14 @@ def filter_duplicate_classes():
     query_results = db.filter_duplicates(schedule_id)
     return jsonify(query_results)
 
+@app.route('/filterSemester/')
+@flask_login.login_required
+def filter_semester():
+    db = Database()
+    semester = request.args.get('semester', 0, type=str)
+    query_results = db.get_courses_by_semester(semester)
+    return jsonify(query_results)
+
 
 @app.route('/getRequirements/')
 @flask_login.login_required     # you must be logged in to access this endpoint
