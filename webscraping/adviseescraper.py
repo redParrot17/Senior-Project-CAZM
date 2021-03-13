@@ -4,6 +4,9 @@ import webscraping.errors as errors
 from database import Database
 import traceback
 
+from webscraping.backoff import exponential_backoff
+from requests.exceptions import RequestException
+
 
 # The AdviseeOverviewParser and date_to_semester_year are not intended for external use
 __all__ = ('get_advisers_students', 'AdviseeScraper')
@@ -253,6 +256,14 @@ def date_to_semester_year(date: str) -> tuple:
     return semester, int(year)
 
 
+# Exponential backoff required due to an occasional domain resolution failure.
+@exponential_backoff(RequestException, retries=5, timeslot=0.5)
+def _scrape_adviser_students(__username, __password):
+    scraper = AdviseeScraper(__username, __password)
+    scraped_results = scraper.fetch()
+    return scraped_results
+
+
 def get_advisers_students(adviser_id: int, username: str, password: str,
                           update_database=True, force_refresh=False) -> list:
     """ Retrieves all student information associated with an adviser.
@@ -286,8 +297,7 @@ def get_advisers_students(adviser_id: int, username: str, password: str,
 
     # Tries to fetch the student information if nothing was in the database
     if not students:
-        scraper = AdviseeScraper(username, password)
-        scraped_results = scraper.fetch()
+        scraped_results = _scrape_adviser_students(username, password)
 
         for scraped_result in scraped_results:
 
