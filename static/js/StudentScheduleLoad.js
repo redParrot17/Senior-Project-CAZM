@@ -43,7 +43,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     let search = document.getElementById("search-button");
     console.log(search)
-    search.addEventListener("click", searchClasses);
+    search.addEventListener("click", filterCourses);
     addClassestoPools();
 
 });
