@@ -15,7 +15,7 @@ class Schedule:
 
     student_id: int
     status: int         # see key in class docs
-    courses = []        # list of Course objects
+    courses: list        # list of Course objects
 
     @property
     def status_str(self) -> str:
