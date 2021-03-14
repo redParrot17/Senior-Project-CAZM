@@ -8,30 +8,62 @@ var studentData
 
 
 
-function addClassHolder(semester, year, semesterOrder) {
-  document.getElementById("main-schedule").innerHTML += `
+function addClassHolder(semester, year, semesterOrder, courses) {
+  let classHolder =  document.getElementById("main-schedule");
+
+  let holderContents = `
   <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
     <legend > ${semester} ${year}</legend>
-    <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">
+      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">`;
+
+//for loop through all the student's courses_to_add
+  courses.forEach((course, index) => {
+    holderContents += `<div class="col-6 drag_box">
+            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)"><div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);">
+              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
+              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
+              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
+            </div></div>
+        </div>`
+      });
+
+    holderContents += `
         <div class="col-6 drag_box">
             <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
     </div>
   </fieldset>`;
+
+  classHolder.innerHTML +=holderContents
 }
 
 function setUpStudentScheduleContainers(studentData) {
   year = studentData.enrolled_year;
-
+  console.log(StudentCourses);
   while (year <= studentData.grad_year){
     counter = 0;
+
     for (i = 0; i < 6; i++) {
 
       if ((year === studentData.enrolled_year)&&(i === 0)&&(counter === 0)){
         i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester);
         counter = counter + 1;
       }
-      addClassHolder(ALL_SEMESTERS[i], year, 0);
+      //create list of the student's courses in that semester
+      let currentSemesterCourses = []
+
+      StudentCourses.forEach((course, index) => {
+        if(course.year == year){
+          if(course.semester == ALL_SEMESTERS[i]){
+            //add course to currentSemesterCourses
+            currentSemesterCourses.push(course);
+          }
+        }
+      });
+      console.log(currentSemesterCourses);
+
+
+      addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses);
       if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
         year ++;
         break;
@@ -173,4 +205,12 @@ function revert_drag_locations(event) {
 
 
 //------------------------------------------------------------------------------
+/*$.getJSON($SCRIPT_ROOT + '/studentData', {
 
+}, function (data) {
+    studentData = data;
+    console.log(studentData);
+    // set up student schedule containers
+    setUpStudentScheduleContainers(studentData);
+
+})*/

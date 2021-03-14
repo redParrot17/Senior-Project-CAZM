@@ -224,8 +224,8 @@ class Database:
         cursor = self.db.cursor(buffered=True)
 
         # Prepare the SQL query
-        sql_query = 'SELECT CREDITS, NAME FROM COURSE WHERE COURSE_CODE=%s AND YEAR=%s AND SEMESTER=%s;'
-        arguments = (course_code, year, semester,)
+        sql_query = 'SELECT CREDITS, NAME FROM COURSE WHERE COURSE_CODE=%s AND SEMESTER=%s;'
+        arguments = (course_code, semester,)
 
         # Execute the SQL query
         cursor.execute(sql_query, arguments)
@@ -408,7 +408,7 @@ class Database:
 
         # Parse the result into a schedule object
         if result is not None and result[0] != 0:
-            schedule = Schedule(student_id=student_id, status=result[0])
+            schedule = Schedule(student_id=student_id, status=result[0], courses=[])
 
             ### Fetch the schedule's course identifiers ###
 
@@ -423,11 +423,12 @@ class Database:
         cursor.close()
 
         ### Fetch the course information for each course identifier ###
-
+        print("HERE!!!!!!!!!!!!!!",course_identifiers)
         if schedule is not None:
             for course_code, year, semester in course_identifiers:
                 course = self.get_course(course_code, year, semester)
                 if course is not None:
+                    print("GETTING HERE", course)
                     schedule.courses.append(course)
 
         return schedule

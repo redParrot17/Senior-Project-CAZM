@@ -18,6 +18,7 @@
 
   <script type=text/javascript>
     var listOfCourses = {{ listOfCourses|tojson|safe}};
+    var StudentCourses = {{ StudentCourses|tojson|safe}};
   </script>
 
   <!-- font/icons -->
@@ -165,7 +166,7 @@
 
 
 <!-- Javascript -->
-<script src="/static/js/js-snackbar.js"></script> 
+<script src="/static/js/js-snackbar.js"></script>
 <script src="/static/js/status-sheet.js" charset="utf-8"></script>
 <script src="/static/js/prereqs.js" charset="utf-8"></script>
 <script src="/static/js/createStudentSchedule.js" charset="utf-8"></script>

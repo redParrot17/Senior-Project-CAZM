@@ -453,6 +453,16 @@ def student_sch_review():
     with Database() as db:
         student = db.get_student(student_id)
         schedule = db.get_student_schedule(student_id)
+        print(student_id)
+        print(schedule)
+        courses = schedule.courses
+        print(courses)
+    json_courses = [{'course_code' : c.course_code,
+                     'name' : c.name,
+                     'year': c.year,
+                     'semester':c.semester
+                     }for c in courses]
+    print("LIST OF COURSES",json_courses)
 
     classes=["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
 
@@ -463,9 +473,9 @@ def student_sch_review():
     query_results = db.get_all_courses()
 
     list_of_courses = db.get_courses()
-    
+
     return render_template(
-        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses)
+        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses, StudentCourses = json_courses)
 
 
 ### UTILITY ENDPOINTS ###
@@ -507,7 +517,7 @@ def get_requirements():
 
     return jsonify(query_results)
 
-  
+
 @app.route('/getRequisites/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def get_requisites():
