@@ -1,10 +1,10 @@
 
 let $table = $('#table')
 
-const APPROVED = 1;
-const AWAITING_STUDENT_APPROVAL = 2;
-const AWAITING_STUDENT_CREATION = 3;
-const AWAITING_ADVISOR_APPROVAL = 4;
+const AWAITING_ADVISOR_APPROVAL = 1;
+const AWAITING_STUDENT_CREATION = 2;
+const AWAITING_STUDENT_APPROVAL = 3;
+const APPROVED = 4;
 const STATUS_MAP = {
     [APPROVED]: 'Approved',
     [AWAITING_STUDENT_APPROVAL]: 'Awaiting Student Approval',
@@ -95,7 +95,7 @@ function sortAdvisees(advisees) {
             return 0;
         });
     else if (selectedSortFilter === 'Status')
-        newAdvisees.sort(function(a, b){ a.status - b.status });
+        newAdvisees.sort(function(a, b){ return a.status - b.status });
     return newAdvisees;
 }
 
