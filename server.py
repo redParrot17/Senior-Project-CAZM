@@ -294,24 +294,25 @@ def advisor_sch_review():
         5) Check against pool for each class (User object? ask christian)
         """
 
-        # TODO: this cannot be a hardcoded value
         # TODO: make this page exist standalone from the student side
 
-        classes = [{'Semester': 'Fall', 'Year': 2020, 'Semester-Order': 0},
-                   {'Semester': 'Spring', 'Year': 2021, 'Semester-Order': 1},
-                   {'Semester': 'Fall', 'Year': 2021, 'Semester-Order': 2},
-                   {'Semester': 'Spring', 'Year': 2022, 'Semester-Order': 3}]
+      
 
         with Database() as db:
-            #status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+             # TODO: [SP-78] this cannot be a hardcoded value
+            status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
 
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
+
+            
+         
             classes=classes,
-            #statusSheet=status_sheet,
+
             allCourses=query_results,
             listOfCourses=list_of_courses)
 
@@ -547,9 +548,11 @@ def get_requirements():
     major_name = request.args.get('major_name', 0, type=str)
     major_year = request.args.get('major_year', 0, type=int)
 
+    print(major_name,major_year)
+
     with Database() as db:
         query_results = db.getRequirements(major_name, major_year)
-
+        print(query_results)
     return jsonify(query_results)
 
 
