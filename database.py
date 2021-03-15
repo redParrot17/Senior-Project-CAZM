@@ -433,6 +433,25 @@ class Database:
 
         return schedule
 
+
+    def clearStudentSchedule(self, student_id:int):
+        cursor = self.db.cursor(buffered=True)
+        sql_query = 'DELETE FROM SCHEDULE_COURSES WHERE STUDENT_ID=%s;'
+        arguments = (student_id,)
+        cursor.execute(sql_query, arguments)
+        cursor.close()
+        # commit the changes to the database
+        self.db.commit()
+
+    def addCourseToStudentSchedule(self, student_id, course_code, semester, year):
+        cursor = self.db.cursor(buffered=True)
+        sql_query = 'INSERT INTO SCHEDULE_COURSES (STUDENT_ID, COURSE_CODE, YEAR, SEMESTER) VALUES (%s, %s, %s, %s);'
+        arguments = (student_id, course_code, year, semester)
+        cursor.execute(sql_query, arguments)
+        cursor.close()
+        # commit the changes to the database
+        self.db.commit()
+
     def update_student_schedule(self, schedule: Schedule, remove_stale_courses=True, *, suppress_commit=False):
         """ Creates or updates a student's schedule in the database.
 
