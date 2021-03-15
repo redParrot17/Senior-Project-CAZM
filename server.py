@@ -478,6 +478,19 @@ def student_sch_review():
         'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses, StudentCourses = json_courses)
 
 
+@app.route('/studentSchReview/', methods=["POST"])
+@flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_students  # you must be a student to view this page
+def student_sch_review_post():
+    courses = request.json
+    student_id = flask_login.current_user.id
+    with Database() as db:
+        db.clearStudentSchedule(student_id)
+        for course in courses:
+            db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
+            print("\nLINE:", student_id, course)
+    return jsonify({"success":1}), 200
+
 ### UTILITY ENDPOINTS ###
 
 @app.route('/searchClasses/')
