@@ -24,18 +24,18 @@ class Schedule:
     @classmethod
     def status_int_to_str(cls, status: int) -> str:
         return {
-            1: 'Approved',
-            2: 'Awaiting Student Approval',
-            3: 'Awaiting Student Creation',
-            4: 'Awaiting Advisor Approval'
+            1: 'Awaiting Advisor Approval',
+            2: 'Awaiting Student Creation',
+            3: 'Awaiting Student Approval',
+            4: 'Approved'
         }.get(status, 'Unknown')
 
     @classmethod
     def status_str_to_int(cls, status: str) -> int:
         key = status.lower().replace(' ', '')
         return {
-            'approved': 1,
-            'awaitingstudentapproval': 2,
-            'awaitingstudentcreation': 3,
-            'awaitingadvisorapproval': 4
+            'awaitingadvisorapproval': 1,
+            'awaitingstudentcreation': 2,
+            'awaitingstudentapproval': 3,
+            'approved': 4
         }.get(key)
