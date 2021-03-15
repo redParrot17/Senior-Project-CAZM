@@ -93,28 +93,67 @@ class Database:
                     courses[course_code][type] = {group: [requisite_code]}
         return courses
 
+    def get_courses_by_cluster(self, cluster_id):
+        cursor = self.db.cursor(buffered=True)
+        args = (cluster_id,)
+        sql = """
+       SELECT CLUSTER_ID, REQUIRED_CREDITS from CLUSTERS where REQUIREMENT_ID = %s
+            """
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+        cluster=[]
+        for course_code in results:
+            cluster.append(course_code)
+        return cluster
+
+    def get_clusters_by_requirement(self, requirement_id):
+
+        cursor = self.db.cursor(buffered=True)
+        args = (requirement_id,)
+        sql = """
+       SELECT CLUSTER_ID, REQUIRED_CREDITS from CLUSTERS where REQUIREMENT_ID = %s
+            """
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+         
+        group = []
+        for cluster_id, required_credits in results:
+            courses = self.get_courses_by_cluster(cluster_id)
+            group.append({
+                "courses" : courses,
+                "credits" : required_credits
+            })
+        
+            
+        return group
+
 
     def getRequirements(self, major_name, major_year):
         cursor = self.db.cursor(buffered=True)
         args = (major_name, major_year,)
         sql = """
-        SELECT
-        REQUIREMENT_ID, TITLE, REQUIRED_CREDITS, ALTERNATE_REQUIREMENTS
+        SELECT  TITLE,  REQUIREMENT_ID , SPECIAL
         FROM MAJOR_REQUIREMENTS INNER JOIN REQUIREMENT
         ON REQUIREMENT.REQUIREMENT_ID = MAJOR_REQUIREMENTS.MAJOR_REQUIREMENT_ID
-        WHERE MAJOR_NAME=%s AND MAJOR_YEAR=%s;
+        WHERE MAJOR_NAME=%s AND MAJOR_YEAR=%s
+
             """
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
 
         req_info = {}
-        for requirement_id, title, required_credits, alternate_requirements in results:
+        for title, requirement_id, special in results:
             req_info[requirement_id] = {
-                "alternate_requirements": alternate_requirements,
-                "required_credits": required_credits,
+                
                 "title": title,
-                "classes": self.getRequirementClasses(requirement_id, title)
+                "clusters": self.get_clusters_by_requirement(requirement_id),
+                "special": special
+
             }
 
         return req_info

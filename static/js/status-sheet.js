@@ -7,12 +7,12 @@ curSemester = {
 
 /* Gets number of credits for a coursecode */
 function getCredits(code) {
-	
+
 	var returnedCredits = -1;
 
 	let found = false;
 	var courseIndex = 0;
-	
+
 	while (!found && courseIndex < listOfCourses.length) {
 		let searchedCourse = listOfCourses[courseIndex];
 
@@ -23,7 +23,7 @@ function getCredits(code) {
 		courseIndex++;
 	}
 
-	
+
 	return returnedCredits;
 }
 
@@ -36,6 +36,7 @@ function loadStatusSheet(reqs) {
 	for (let key of keys) {
 		let value = reqs[key]
 
+
 		let fieldset = document.createElement("fieldset")
 		fieldset.classList = "statusSheetSectionContainer container rounded"
 
@@ -45,13 +46,22 @@ function loadStatusSheet(reqs) {
 
 		fieldset.appendChild(legend)
 
+	
+
 		let container = document.getElementById("req-list")
 		container.appendChild(fieldset)
 
 		let courselist = document.createElement("ul")
 		courselist.className = "fa-ul"
-		var courseAry = value.classes
 
+		if (value.special !== "") {
+			let message = value.special;
+			let p = document.createElement("p");
+			p.innerHTML = message;
+			courselist.appendChild(p)
+
+		}
+		var courseAry = value.classes
 		for (let i in courseAry) {
 
 
@@ -62,20 +72,16 @@ function loadStatusSheet(reqs) {
 			li.innerHTML = code
 
 
+
 			/*Requirement Credits*/
-			let creditSpan = document.createElement("span") ;
+			let creditSpan = document.createElement("span");
 			let creds = getCredits(code)
-			if(creds !== -1){
+			if (creds !== -1) {
 				creditSpan.innerText = " - " + creds + " Credits";
 			}
-			else{
+			else {
 				creditSpan.innerText = " - Course Unavailable!";
 			}
-
-
-
-
-
 
 
 			/* Checkbox */
@@ -107,7 +113,7 @@ function loadStatusSheet(reqs) {
 
 			let altCourselist = document.createElement("ul")
 			altCourselist.className = "fa-ul"
-		
+
 
 			for (let i in altCourseAry) {
 
@@ -121,13 +127,13 @@ function loadStatusSheet(reqs) {
 				let creditSpan = document.createElement("span");
 
 				let creds = getCredits(code)
-				if(creds !== -1){
+				if (creds !== -1) {
 					creditSpan.innerText = " - " + creds + " Credits";
 				}
-				else{
+				else {
 					creditSpan.innerText = "Course Unavailable!";
 				}
-	
+
 
 
 
