@@ -33,7 +33,7 @@ function approveBtn(ev){
         data: JSON.stringify(data),
         success: function (data) {
           //alert("Data: " + data);
-          // do something here
+          window.location.href='/studentLanding';
 
         }
     })
