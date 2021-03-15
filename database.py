@@ -452,6 +452,15 @@ class Database:
         # commit the changes to the database
         self.db.commit()
 
+    def setStudentStatus(self, student_id, status):
+        cursor = self.db.cursor(buffered=True)
+        sql_query = 'UPDATE STUDENTS SET SCHEDULE_STATUS = %s WHERE STUDENT_ID =%s;'
+        arguments = (status, student_id)
+        cursor.execute(sql_query, arguments)
+        cursor.close()
+        # commit the changes to the database
+        self.db.commit()
+
     def update_student_schedule(self, schedule: Schedule, remove_stale_courses=True, *, suppress_commit=False):
         """ Creates or updates a student's schedule in the database.
 

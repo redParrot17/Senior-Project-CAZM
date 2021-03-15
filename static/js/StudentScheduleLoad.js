@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", function () {
     }, function (data) {
         studentData = data;
 
-        $.getJSON($SCRIPT_ROOT + '/getRequirements', {
+        /*$.getJSON($SCRIPT_ROOT + '/getRequirements', {
             major_name: studentData.major_name,
             major_year: studentData.major_year
         }, function (data) {
@@ -19,13 +19,13 @@ window.addEventListener("DOMContentLoaded", function () {
             console.log(studentData.major_year)
             reqs = data;
             loadStatusSheet(reqs);
-    
-        })
+
+        })*/
 
         console.log(studentData);
         // set up student schedule containers
         setUpStudentScheduleContainers(studentData);
-    
+
     })
 
     $.getJSON($SCRIPT_ROOT + '/getRequisites', {
@@ -39,7 +39,7 @@ window.addEventListener("DOMContentLoaded", function () {
     console.log(studentData)
 
 
-    
+
 
     let search = document.getElementById("search-button");
     console.log(search)

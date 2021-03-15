@@ -4,6 +4,8 @@ function approveBtn(ev){
   let newSchedule = container.querySelectorAll(".drag_item_fill");
   //console.log(newSchedule);
 
+  let changed = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);
+
   let myCourses = [];
 
   newSchedule.forEach((item, index) => {
@@ -16,6 +18,10 @@ function approveBtn(ev){
 
   });
 
+  let data = {
+    "changed": changed,
+    "courses":myCourses
+  }
   $.ajax
     ({
         type: "POST",
@@ -24,12 +30,44 @@ function approveBtn(ev){
         dataType: 'json',
         contentType: "application/json",
         //json object to sent to the authentication url
-        data: JSON.stringify(myCourses),
+        data: JSON.stringify(data),
         success: function (data) {
           //alert("Data: " + data);
+          // do something here
 
-
-          console.log("Made it through ajax");
         }
     })
 }
+
+
+function setApproveBtnText() {
+  let approveBtn = document.getElementById("approveBtn");
+
+  if (studentStatus == 1 && scheduleChanged == false){
+    approveBtn.classList.add("itemInvisible");
+  }
+  else if (studentStatus == 1 && scheduleChanged == true){
+    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.classList.remove("itemInvisible");
+  }
+  else if (studentStatus == 2){
+    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.classList.remove("itemInvisible");
+  }
+  else if (studentStatus == 3 && scheduleChanged == false){
+    approveBtn.innerHTML = "Approve Schedule";
+    approveBtn.classList.remove("itemInvisible");
+  }
+  else if (studentStatus == 3 && scheduleChanged == true){
+    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.classList.remove("itemInvisible");
+  }
+  else if (studentStatus == 4 && scheduleChanged == false){
+    approveBtn.classList.add("itemInvisible");
+  }
+  else{// (studentStatus == 4 && scheduleChanged = true){
+    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.classList.remove("itemInvisible");
+  }
+}
+setApproveBtnText();
