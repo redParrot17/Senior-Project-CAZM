@@ -7,10 +7,10 @@ class Schedule:
 
     Status Keys::
 
-        1 = Approved
-        2 = Awaiting Student Approval
-        3 = Awaiting Student Creation
-        4 = Awaiting Advisor Approval
+        1 = Awaiting Advisor Approval
+        2 = Awaiting Student Creation
+        3 = Awaiting Student Approval
+        4 = Approved
     """
 
     student_id: int

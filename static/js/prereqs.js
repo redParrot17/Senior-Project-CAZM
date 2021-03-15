@@ -10,7 +10,7 @@ function setWarnings(code, semester, year, element){
                     position: "bc",
                     status: "warning"
                 });
-                
+
     }
     else{
         element.parentElement.style.backgroundColor = ""
@@ -80,7 +80,7 @@ function checkRequisites(code, semester, year) {
                                 reqmet = true
                             }
                         }
-                       
+
 
                     }
 
@@ -90,7 +90,7 @@ function checkRequisites(code, semester, year) {
                 groupNum++;
             }
 
-            
+
             return (found)
         }
 

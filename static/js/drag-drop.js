@@ -74,7 +74,6 @@ function drop(ev) {
 
 
 
-
     // add dragged item to drag_container
     let clone = courseNode.cloneNode(true);
     targetNode.appendChild(clone);     // add the item transfered to the target element
@@ -90,10 +89,19 @@ function drop(ev) {
     }
     //console.log(document.getElementById(id).childNodes);
     clone.classList.add("drag_item_fill");
-   let newID = clone.getAttribute("courseCode")+"-"+targetNodeContainer.id;
+    let newID = clone.getAttribute("courseCode")+"-"+targetNodeContainer.id;
     clone.id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
     // create a new (drag_box > drag_container) div
 
+    //add dragged item to list of changed courses on Schedule
+    if(scheduleChangesRemoved.includes(clone.id)){
+      scheduleChangesRemoved = scheduleChangesRemoved.filter(function(e) { return e != clone.id});
+    }
+    else{
+      scheduleChangesAdded.push(clone.id);
+    }
+    scheduleChanged = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);
+    setApproveBtnText();
 
     createDiv(targetNodeContainer);                          // create a new div for elements to be dragged to
 
@@ -124,6 +132,17 @@ function removeDragItem(ev) {
       removeDiv(parentNode);                               // if a valid item to remove remove the item
       // zconsole.log("div removed")
   }
+
+  let idCheck = ev.target.parentElement.id;
+
+  if(scheduleChangesAdded.includes(idCheck)){
+    scheduleChangesAdded = scheduleChangesAdded.filter(function(e) { return e != idCheck});
+  }
+  else{
+    scheduleChangesRemoved.push(idCheck);
+  }
+  scheduleChanged = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);
+  setApproveBtnText();
 
   // get data
   //let targetNode = ev.target;                              // get the target node (drag_container)
