@@ -14,10 +14,10 @@ window.addEventListener("DOMContentLoaded", function () {
         $.getJSON($SCRIPT_ROOT + '/getRequirements', {
             major_name: studentData.major_name,
             major_year: studentData.major_year
-        }, function (data) {
-            console.log(studentData.major_name)
-            console.log(studentData.major_year)
-            reqs = data;
+        }, function (reqData) {
+
+            reqs = reqData;
+            console.log(reqs)
             loadStatusSheet(reqs);
     
         })
@@ -30,8 +30,8 @@ window.addEventListener("DOMContentLoaded", function () {
 
     $.getJSON($SCRIPT_ROOT + '/getRequisites', {
 
-    }, function (data) {
-        requisites = data;
+    }, function (requisiteData) {
+        requisites = requisiteData;
         console.log(requisites);
 
     })
@@ -42,7 +42,7 @@ window.addEventListener("DOMContentLoaded", function () {
     
 
     let search = document.getElementById("search-button");
-    console.log(search)
+
     search.addEventListener("click", searchClasses);
     addClassestoPools();
 

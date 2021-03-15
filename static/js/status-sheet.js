@@ -100,7 +100,6 @@ function loadStatusSheet(reqs) {
 
 function updateStatusSheet(selectedCourses){
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
-	console.log(selectedCourses)
 	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
 	for(let courseNum = 0; courseNum < statusSheetCourses.length; courseNum++){
 		let ssCourse = statusSheetCourses[courseNum];
@@ -110,8 +109,6 @@ function updateStatusSheet(selectedCourses){
 				let year = selectedClasses[classNum].getAttribute("year")
 				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClasses[classNum].getAttribute("semester"))
 				if( ( year < curSemester.year) || (year === curSemester.year && semesterIndex <=  ALL_SEMESTERS.indexOf(curSemester.semester) ) ){
-					console.log(year)
-					console.log(year)
 					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
 					ssCourse.childNodes[1].childNodes[0].style = "color: green;"
 				}
@@ -120,7 +117,7 @@ function updateStatusSheet(selectedCourses){
 					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
 					ssCourse.childNodes[1].childNodes[0].style = "color: blue;"
 				}
-				console.log(ssCourse.childNodes)
+
 
 	
 			}
