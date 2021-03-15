@@ -93,11 +93,28 @@ class Database:
                     courses[course_code][type] = {group: [requisite_code]}
         return courses
 
+
+    def get_alternates_by_cluster(self, cluster_id):
+        cursor = self.db.cursor(buffered=True)
+
+        args = (cluster_id,)
+        sql = '''
+        select ALT_CLUSTER from ALT_CLUSTERS where CLUSTER_ID  = %s;
+        '''
+        cursor.execute(sql, args)
+        results = cursor.fetchall()
+        cursor.close()
+
+        course_info = []
+        for course_code in results:
+            course_info.append(course_code)
+        return course_info
+
     def get_courses_by_cluster(self, cluster_id):
         cursor = self.db.cursor(buffered=True)
         args = (cluster_id,)
         sql = """
-       SELECT CLUSTER_ID, REQUIRED_CREDITS from CLUSTERS where REQUIREMENT_ID = %s
+            Select COURSE_CODE from CLUSTER_COURSES where CLUSTER_ID = %s ;
             """
         cursor.execute(sql, args)
         results = cursor.fetchall()
@@ -113,20 +130,21 @@ class Database:
         cursor = self.db.cursor(buffered=True)
         args = (requirement_id,)
         sql = """
-       SELECT CLUSTER_ID, REQUIRED_CREDITS from CLUSTERS where REQUIREMENT_ID = %s
+       SELECT CLUSTER_ID, REQUIRED_CREDITS from CLUSTERS where REQUIREMENT_ID = %s;
             """
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
 
          
-        group = []
+        group = {}
         for cluster_id, required_credits in results:
             courses = self.get_courses_by_cluster(cluster_id)
-            group.append({
+            group[cluster_id] = {
                 "courses" : courses,
-                "credits" : required_credits
-            })
+                "credits" : required_credits,
+                "alternate_clusters": self.get_alternates_by_cluster(cluster_id)
+            }
         
             
         return group
@@ -157,6 +175,7 @@ class Database:
             }
 
         return req_info
+
 
     def search_course_codes(self, argument1):
         cursor = self.db.cursor(buffered=True)
