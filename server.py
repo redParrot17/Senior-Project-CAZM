@@ -299,17 +299,20 @@ def advisor_sch_review():
       
 
         with Database() as db:
-            
              # TODO: [SP-78] this cannot be a hardcoded value
             status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
 
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
+
             
-            statusSheet=status_sheet,
+         
+            classes=classes,
+
             allCourses=query_results,
             listOfCourses=list_of_courses)
 
@@ -451,30 +454,65 @@ def student_sch_review():
     with Database() as db:
         student = db.get_student(student_id)
         schedule = db.get_student_schedule(student_id)
-        print(student_id)
-        print(schedule)
+        status = schedule.status
         courses = schedule.courses
-        print(courses)
     json_courses = [{'course_code' : c.course_code,
                      'name' : c.name,
                      'year': c.year,
                      'semester':c.semester
                      }for c in courses]
-    print("LIST OF COURSES",json_courses)
 
     classes=["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
 
     db = Database()
 
-    status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+    #status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
 
     query_results = db.get_all_courses()
 
     list_of_courses = db.get_courses()
 
     return render_template(
-        'advisorStudentScheduleReview.html', classes=classes, statusSheet=status_sheet, allCourses=query_results, listOfCourses=list_of_courses, StudentCourses = json_courses)
+        'advisorStudentScheduleReview.html',
+        classes=classes,
+        #statusSheet=status_sheet,
+        allCourses=query_results,
+        studentStatus=status,
+        listOfCourses=list_of_courses,
+        StudentCourses = json_courses)
 
+
+@app.route('/studentSchReview/', methods=["POST"])
+@flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_students  # you must be a student to view this page
+def student_sch_review_post():
+    data = request.json
+    print("\n\n",data)
+    changed = data["changed"]
+    courses = data["courses"]
+    student_id = flask_login.current_user.id
+
+    with Database() as db:
+        schedule = db.get_student_schedule(student_id)
+        if(schedule.status == 4):
+            db.setStudentStatus(student_id, 1)
+        elif(schedule.status == 3):
+            if(changed):
+                db.setStudentStatus(student_id, 1)
+            else:
+                db.setStudentStatus(student_id, 4)
+        elif(schedule.status == 2):
+            db.setStudentStatus(student_id, 1)
+        elif(schedule.status == 1):
+            db.setStudentStatus(student_id, 1)
+        else:
+            db.setStudentStatus(student_id, 2)
+
+        db.clearStudentSchedule(student_id)
+        for course in courses:
+            db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
+            print("\nLINE:", student_id, course)
+    return jsonify({"success":1}), 200
 
 ### UTILITY ENDPOINTS ###
 

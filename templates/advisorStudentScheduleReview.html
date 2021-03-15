@@ -19,6 +19,10 @@
   <script type=text/javascript>
     var listOfCourses = {{ listOfCourses|tojson|safe}};
     var StudentCourses = {{ StudentCourses|tojson|safe}};
+    var scheduleChangesAdded = [];
+    var scheduleChangesRemoved = [];
+    var studentStatus = {{ studentStatus }};
+    var scheduleChanged = false;
   </script>
 
   <!-- font/icons -->
@@ -71,7 +75,7 @@
     <div class="col paddingTen" id="middle">
       <div class="row">
         <div class="col-11">
-          <button class="btn approvebtn shaddow btn-lg btn-secondary" type="button">Approve Schedule</button>
+          <button class="btn approvebtn shaddow btn-lg btn-secondary itemInvisible" id="approveBtn" type="button" onclick="approveBtn(event)">Approve Schedule</button>
         </div>
         <div class="ml-auto" id="toggleBtn" onclick="toggleSideBar(event)">
 
@@ -167,6 +171,7 @@
 
 <!-- Javascript -->
 <script src="/static/js/js-snackbar.js"></script>
+<script src="/static/js/approveSchedule.js"></script>
 <script src="/static/js/status-sheet.js" charset="utf-8"></script>
 <script src="/static/js/prereqs.js" charset="utf-8"></script>
 <script src="/static/js/createStudentSchedule.js" charset="utf-8"></script>
