@@ -12,6 +12,8 @@ import security
 # data collection utilities
 import webscraping.adviseescraper as advisee_scraper
 from webscraping.components.student import Student
+from webscraping.components.schedule import Schedule
+from webscraping.components.course import Course
 from webscraping.mygcc import MyGcc
 import webscraping.errors as errors
 from webscraping.backoff import exponential_backoff
@@ -429,18 +431,50 @@ def student_landing_page():
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
 
-    current_year = 2021
-    current_semester = 'Spring'
-    schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
+        if not schedule.courses:
+            # load and save template schedule
+            student_majors = db.get_student_majors(student_id)
+            
+            major_name, major_year = student_majors[0]
 
-    if schedule is not None:
-        for course in schedule.courses:
-            if course.semester == current_semester and course.year == current_year:
-                if course.course_code not in schedule_data['classes']:
-                    schedule_data['classes'].append(course.course_code)
+            major_code = db.get_major_code(major_name, major_year)
+
+            template = db.get_template(major_code[0])
+
+            # status 3 = Awaiting Student Creation
+            schedule = Schedule(student_id=student_id, status=3, courses=[])
+
+            for semester in template:
+                for course_code in semester["classes"]:
+                    schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+
+            # save schedule to db
+            db.update_student_schedule(schedule)
+
+    schedule_data = []
+
+    for course in schedule.courses:
+        # check if schedule for course's semester already exists
+        schedule_found = False
+        if schedule_data:
+            for schedule in schedule_data:
+                if schedule['semester'] == course.semester and schedule['year'] == course.year:
+                    schedule['classes'].append(course.course_code)
+                    schedule_found = True
+                    break
+        
+        # add new semester if not found
+        if schedule_found == False:
+            schedule_data.append({'semester': course.semester, 'year': course.year, 'classes': [course.course_code]})
+
+    # if schedule is not None:
+    #     for course in schedule.courses:
+    #         if course.semester == current_semester and course.year == current_year:
+    #             if course.course_code not in schedule_data['classes']:
+    #                 schedule_data['classes'].append(course.course_code)
 
     # Serve the formatted landing page to the student requesting this endpoint
-    return render_template('studentLanding.html', student=data, studentSchedule=[schedule_data])
+    return render_template('studentLanding.html', student=data, studentSchedule=schedule_data)
 
 
 @app.route('/studentSchReview/')

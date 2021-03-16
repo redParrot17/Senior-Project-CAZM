@@ -184,7 +184,23 @@ class Database:
             course_info.append({"courseCode": course_code, "year":year, "semester":semester, "credits": credits})
         return course_info
 
-    def get_template(self, major_code):
+    def get_major_code(self, major_name, major_year):
+        cursor = self.db.cursor(buffered=True)
+
+        args = (major_name, major_year,)
+        sql = 'SELECT STUDENT_ID FROM STUDENTS WHERE FIRST LIKE %s AND GRAD_YEAR=%s;'
+        cursor.execute(sql, args)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result is not None:
+            major_code = result
+        
+        return major_code
+
+
+
+    def get_template(self, major_code: int):
         cursor = self.db.cursor(buffered=True)
 
         args = (major_code,)
@@ -192,11 +208,11 @@ class Database:
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
-
+        
         template = []
         courses = []
-        current_semester = "Spring"
-        current_year = "2021"
+        current_semester = results[0][1]
+        current_year = str(results[0][2])
         for course_code, semester, year in results:
             if courses and semester + str(year) != current_semester + current_year:
                 template.append({'semester': current_semester, 'year':current_year, 'classes': courses}) #append semester schedule to template
@@ -204,6 +220,9 @@ class Database:
                 current_semester = semester
                 current_year = str(year)
             courses.append(course_code)
+
+        # append final semester to template
+        template.append({'semester': current_semester, 'year': current_year, 'classes': courses})
 
         return template
 
@@ -230,7 +249,6 @@ class Database:
         # Execute the SQL query
         cursor.execute(sql_query, arguments)
         result = cursor.fetchone()
-
         # Parse the result into a course object
         if result is not None:
             credit_hours, name = result
@@ -476,7 +494,7 @@ class Database:
 
         courses_in_schedule = set(
             (student_id, course.course_code, course.year, course.semester,)
-            for course in schedule.courses)
+            for course in schedule.courses if course is not None)
 
         courses_to_add = courses_in_schedule - courses_in_database
         courses_to_del = courses_in_database - courses_in_schedule
