@@ -308,11 +308,6 @@ def advisor_sch_review():
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
-
-            
-         
-            classes=classes,
-
             allCourses=query_results,
             listOfCourses=list_of_courses)
 
@@ -466,7 +461,7 @@ def student_sch_review():
 
     db = Database()
 
-    #status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+    status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
 
     query_results = db.get_all_courses()
 
