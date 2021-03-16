@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", function () {
     }, function (data) {
         studentData = data;
 
-        /*$.getJSON($SCRIPT_ROOT + '/getRequirements', {
+        $.getJSON($SCRIPT_ROOT + '/getRequirements', {
             major_name: studentData.major_name,
             major_year: studentData.major_year
         }, function (reqData) {
@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", function () {
             console.log(reqs)
             loadStatusSheet(reqs);
 
-        })*/
+        })
 
         console.log(studentData);
         // set up student schedule containers

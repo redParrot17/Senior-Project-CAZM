@@ -134,58 +134,58 @@ function loadStatusSheet(reqs) {
 				 fieldset.appendChild(courselist)
 				
 
-				for(let i = 0; i < alts.length; i++){
+				// for(let i = 0; i < alts.length; i++){
 		
-					// let altcourselist = document.createElement("ul")
-					// let alt = alts[i];
+				// 	// let altcourselist = document.createElement("ul")
+				// 	// let alt = alts[i];
 
-					// let alternate_creds = clusters[alt].credits;
-					// let alternate_courses = clusters[alt].courses;
-					// if (alternate_creds !== null) {
-					// 	let altcredMsg = "Select " + alternatecreds + " credits";
-					// 	let altmsg = document.createElement("p");
-					// 	msg.innerHTML = altcredMsg;
-					// 	fieldset.appendChild(msg)
-					// }
+				// 	// let alternate_creds = clusters[alt].credits;
+				// 	// let alternate_courses = clusters[alt].courses;
+				// 	// if (alternate_creds !== null) {
+				// 	// 	let altcredMsg = "Select " + alternatecreds + " credits";
+				// 	// 	let altmsg = document.createElement("p");
+				// 	// 	msg.innerHTML = altcredMsg;
+				// 	// 	fieldset.appendChild(msg)
+				// 	// }
 
-					// for (let altcourse = 0; altcourse < alternate_courses.length; altcourse++) {
-					// 	// console.log(courses[course])
-					// 	let currentAltCourse = alternate_courses[altcourse];
-					// 	let li = document.createElement("li")
-					// 	li.classList = "requirement-list-course"
-					// 	li.innerHTML = currentAltCourse;
+				// 	// for (let altcourse = 0; altcourse < alternate_courses.length; altcourse++) {
+				// 	// 	// console.log(courses[course])
+				// 	// 	let currentAltCourse = alternate_courses[altcourse];
+				// 	// 	let li = document.createElement("li")
+				// 	// 	li.classList = "requirement-list-course"
+				// 	// 	li.innerHTML = currentAltCourse;
 	
-					// 	//Add Credits
-					// 	let altcreditSpan = document.createElement("span");
-					// 	let altcreds = getCredits(currentAltCourse)
-					// 	if (altcreds !== -1) {
-					// 		altcreditSpan.innerText = " - " + altcreds + " Credits";
-					// 	}
-					// 	else {
-					// 		altcreditSpan.innerText = " - Course Unavailable!";
-					// 	}
+				// 	// 	//Add Credits
+				// 	// 	let altcreditSpan = document.createElement("span");
+				// 	// 	let altcreds = getCredits(currentAltCourse)
+				// 	// 	if (altcreds !== -1) {
+				// 	// 		altcreditSpan.innerText = " - " + altcreds + " Credits";
+				// 	// 	}
+				// 	// 	else {
+				// 	// 		altcreditSpan.innerText = " - Course Unavailable!";
+				// 	// 	}
 	
-					// 	let altspan = document.createElement("span")
-					// 	altspan.innerHTML = '<i class="far fa-square" style="color: red;"></i>'
-					// 	altspan.className = "fa-li"
-					// 	li.appendChild(altspan)
-					// 	li.appendChild(altcreditSpan)
-					// 	altcourselist.appendChild(li)
+				// 	// 	let altspan = document.createElement("span")
+				// 	// 	altspan.innerHTML = '<i class="far fa-square" style="color: red;"></i>'
+				// 	// 	altspan.className = "fa-li"
+				// 	// 	li.appendChild(altspan)
+				// 	// 	li.appendChild(altcreditSpan)
+				// 	// 	altcourselist.appendChild(li)
 	
-					// }
-					//fieldset.appendChild(altcourselist)
+				// 	// }
+				// 	//fieldset.appendChild(altcourselist)
 					
-					// for (let k in keys) {
+				// 	// for (let k in keys) {
 
-				 	// 	if (keys[k] == alt_req_key) {
+				//  	// 	if (keys[k] == alt_req_key) {
 
-					// 		keys.splice(k, 1);
-					// 	}
+				// 	// 		keys.splice(k, 1);
+				// 	// 	}
 
-				 	// }
+				//  	// }
 
 				
-				}
+				// }
 
 
 

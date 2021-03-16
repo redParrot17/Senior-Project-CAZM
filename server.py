@@ -280,19 +280,15 @@ def advisor_sch_review():
         with Database() as db:
             student = db.get_student(student_id, advisor_id)
             schedule = db.get_student_schedule(student_id)
+            major_name, major_year = student.majors[0] 
+
 
         # Make sure the advisor has access to this student's schedule
         if student is None:
             return login_manager.unauthorized()
 
-        """
-        TODO
-        1) get Prereqs from server
-        2) Build prereq hierarchy with dataset attributes
-        3) Special js function for first semester
-        4) Build Pool of Prereqs met (include year standing)
-        5) Check against pool for each class (User object? ask christian)
-        """
+
+
 
         # TODO: make this page exist standalone from the student side
 
@@ -300,7 +296,7 @@ def advisor_sch_review():
 
         with Database() as db:
              # TODO: [SP-78] this cannot be a hardcoded value
-            status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+            status_sheet = db.getRequirements(major_name, major_year)
 
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
@@ -308,11 +304,6 @@ def advisor_sch_review():
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
-
-            
-         
-            classes=classes,
-
             allCourses=query_results,
             listOfCourses=list_of_courses)
 
@@ -450,12 +441,12 @@ def student_landing_page():
 def student_sch_review():
 
     student_id = flask_login.current_user.id
-
     with Database() as db:
         student = db.get_student(student_id)
         schedule = db.get_student_schedule(student_id)
         status = schedule.status
         courses = schedule.courses
+        major_name, major_year = student.majors[0]
     json_courses = [{'course_code' : c.course_code,
                      'name' : c.name,
                      'year': c.year,
@@ -466,7 +457,7 @@ def student_sch_review():
 
     db = Database()
 
-    #status_sheet = db.getRequirements("COMPUTER SCIENCE", "2020")
+    status_sheet = db.getRequirements(major_name, major_year)
 
     query_results = db.get_all_courses()
 
