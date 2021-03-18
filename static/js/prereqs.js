@@ -4,6 +4,8 @@ var pools;
 
 function setWarnings(code, semester, year, element){
     if(!checkRequisites(code, semester, year)){
+
+        
         element.parentElement.style.backgroundColor = "#ff9800";
         new SnackBar({
                     message: "Warning: Prerequisites for " + code + " not met.",

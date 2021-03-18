@@ -2,7 +2,7 @@
 
 let ALL_SEMESTERS = ["January", "Spring", "May", "Summer", "Fall", "Winter Online"];
 let invalidCombos = [];
-var studentData
+// var studentData
 
 
 

@@ -22,21 +22,25 @@ window.addEventListener("DOMContentLoaded", function () {
 
         })
 
-        console.log(studentData);
+        // console.log(studentData);
         // set up student schedule containers
         setUpStudentScheduleContainers(studentData);
 
+
+        $.getJSON($SCRIPT_ROOT + '/getRequisites', {
+
+        }, function (requisiteData) {
+            requisites = requisiteData;
+            addClassestoPools();
+            // console.log(requisites);
+    
+        })
+
     })
 
-    $.getJSON($SCRIPT_ROOT + '/getRequisites', {
+   
 
-    }, function (requisiteData) {
-        requisites = requisiteData;
-        console.log(requisites);
-
-    })
-
-    console.log(studentData)
+    // console.log(studentData)
 
 
 
@@ -44,6 +48,5 @@ window.addEventListener("DOMContentLoaded", function () {
     let search = document.getElementById("search-button");
 
     search.addEventListener("click", filterCourses);
-    addClassestoPools();
 
 });
