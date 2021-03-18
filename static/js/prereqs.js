@@ -12,9 +12,9 @@ var pools;
 
 /**
  * Sets warnings on the element passed in
- * @param {*} courseID
+ * @param {String} courseID
  * ID forCourse Box that will have warnings set on it if necessary
- * @param {*} showSnack 
+ * @param {Boolean} showSnack 
  * `true` if the warning should include a snackbar popup
  */
 function setWarnings(courseID, showSnack) {
@@ -29,16 +29,18 @@ function setWarnings(courseID, showSnack) {
     //If requisites bad, set the warning, otherwise set to no warnings
     if (!checkRequisites(code, semester, year)) {
 
-        courseElement.parentElement.classList = "drag_container rounded border warning"
+        
 
         //only show snackbar if required
-        if (showSnack) {
+        if (showSnack && courseElement.parentElement.classList == "drag_container rounded border") {
             new SnackBar({
                 message: "Warning: Prerequisites for " + code + " not met.",
                 position: "bc",
                 status: "warning"
             });
+           
         }
+        courseElement.parentElement.classList = "drag_container rounded border warning"
 
     }
     //no warnings
