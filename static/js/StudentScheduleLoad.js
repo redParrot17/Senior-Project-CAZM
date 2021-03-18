@@ -11,38 +11,35 @@ window.addEventListener("DOMContentLoaded", function () {
     }, function (data) {
         studentData = data;
 
+        //Get requirements list for student's major
         $.getJSON($SCRIPT_ROOT + '/getRequirements', {
             major_name: studentData.major_name,
             major_year: studentData.major_year
         }, function (reqData) {
 
             reqs = reqData;
-            console.log(reqs)
+
             loadStatusSheet(reqs);
 
         })
 
-        // console.log(studentData);
+        
         // set up student schedule containers
         setUpStudentScheduleContainers(studentData);
 
 
+        //Get requisite list for each course
         $.getJSON($SCRIPT_ROOT + '/getRequisites', {
 
         }, function (requisiteData) {
             requisites = requisiteData;
             addClassestoPools();
-            // console.log(requisites);
+            console.log("Page load checking")
+            checkPools(false);
     
         })
 
     })
-
-   
-
-    // console.log(studentData)
-
-
 
 
     let search = document.getElementById("search-button");

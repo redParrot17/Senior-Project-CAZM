@@ -39,7 +39,7 @@ function addClassHolder(semester, year, semesterOrder, courses) {
 
 function setUpStudentScheduleContainers(studentData) {
   year = studentData.enrolled_year;
-  console.log(StudentCourses);
+  // console.log(StudentCourses);
   while (year <= studentData.grad_year){
     counter = 0;
 
@@ -60,7 +60,7 @@ function setUpStudentScheduleContainers(studentData) {
           }
         }
       });
-      console.log(currentSemesterCourses);
+      // console.log(currentSemesterCourses);
 
 
       addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses);
@@ -151,7 +151,7 @@ function set_valid_drag_locations(event) {
     let dropContainer = document.getElementById(item1);
 
     let checkId = dragItemId + "-" + item1;
-    console.log(checkId);
+    // console.log(checkId);
 
     let hasCourse = dropContainer.querySelectorAll(".drag_item_fill");
 

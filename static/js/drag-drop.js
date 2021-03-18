@@ -111,15 +111,17 @@ function drop(ev) {
 
     // remove the (drag_box > drag_container) div the node was dragged from
     let parentNode = document.getElementById("CurrentDrag"); // Select the node previous to the drop
-    console.log("MOVING:" + parentNode);
+    // console.log("MOVING:" + parentNode);
     if( parentNode != null && parentNode.classList.contains("drag_box") ) {
         removeDiv(parentNode);                               // if a valid item to remove remove the item
         // zconsole.log("div removed")
     }
 
+    // setWarnings(clone.getAttribute("coursecode"), clone.getAttribute("semester"), clone.getAttribute("year"), clone,true)
 
     addClassestoPools();
-
+    // console.log("Drag drop checking")
+    checkPools(true);
     updateStatusSheet(pools);
 
     //Refilter courses in case hide duplicates is checked
@@ -148,7 +150,7 @@ function removeDragItem(ev) {
   setApproveBtnText();
 
   addClassestoPools();
-
+  checkPools(true);
   updateStatusSheet(pools);
 
   //Refilter courses in case hide duplicates is checked

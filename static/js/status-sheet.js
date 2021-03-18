@@ -35,7 +35,7 @@ function loadStatusSheet(reqs) {
 
 	for (let key of keys) {
 		let value = reqs[key]
-		console.log(value)
+		// console.log(value)
 
 
 		let fieldset = document.createElement("fieldset")
@@ -258,7 +258,7 @@ function updateStatusSheet(selectedCourses) {
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
 	console
 	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
-	console.log(statusSheetCourses)
+	// console.log(statusSheetCourses)
 
 	// console.log (selectedClasses)
 
@@ -267,15 +267,15 @@ function updateStatusSheet(selectedCourses) {
 		let ssCode = ssCourse.innerText;
 		// console.log(ssCode)
 		for (let classNum = 0; classNum < selectedClasses.length; classNum++) {
-			console.log("sscode: ", ssCode)
-			console.log("other : ", selectedClasses[classNum].getAttribute("coursecode"))
+			// console.log("sscode: ", ssCode)
+			// console.log("other : ", selectedClasses[classNum].getAttribute("coursecode"))
 
 			if (ssCode.includes(selectedClasses[classNum].getAttribute("coursecode"))) {
 				let year = selectedClasses[classNum].getAttribute("year")
 				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClasses[classNum].getAttribute("semester"))
 				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester))) {
-					console.log(year)
-					console.log(year)
+					// console.log(year)
+					// console.log(year)
 					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
 					ssCourse.childNodes[1].childNodes[0].style = "color: green;"
 				}
@@ -284,7 +284,7 @@ function updateStatusSheet(selectedCourses) {
 					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
 					ssCourse.childNodes[1].childNodes[0].style = "color: blue;"
 				}
-				console.log(ssCourse.childNodes)
+				// console.log(ssCourse.childNodes)
 
 
 			}
