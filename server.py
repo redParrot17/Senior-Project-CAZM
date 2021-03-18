@@ -443,6 +443,9 @@ def student_landing_page():
             # save schedule to db
             db.update_student_schedule(schedule)
 
+            # save schedule status to db
+            db.setStudentStatus(student_id, 3)
+
     schedule_data = []
 
     for course in schedule.courses:
