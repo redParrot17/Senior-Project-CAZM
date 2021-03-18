@@ -121,6 +121,9 @@ function drop(ev) {
     addClassestoPools();
 
     updateStatusSheet(pools);
+
+    //Refilter courses in case hide duplicates is checked
+    filterCourses()
 }
 
 //when the trash can is clicked remove the item from it's semester container
@@ -143,6 +146,13 @@ function removeDragItem(ev) {
   }
   scheduleChanged = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);
   setApproveBtnText();
+
+  addClassestoPools();
+
+  updateStatusSheet(pools);
+
+  //Refilter courses in case hide duplicates is checked
+  filterCourses()
 
   // get data
   //let targetNode = ev.target;                              // get the target node (drag_container)
