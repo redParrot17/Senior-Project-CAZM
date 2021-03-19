@@ -254,41 +254,47 @@ function loadStatusSheet(reqs) {
 	}
 }
 
-function updateStatusSheet(selectedCourses) {
+function updateStatusSheet() {
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
 	console
 	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
-	// console.log(statusSheetCourses)
 
-	// console.log (selectedClasses)
 
 	for (let courseNum = 0; courseNum < statusSheetCourses.length; courseNum++) {
-		let ssCourse = statusSheetCourses[courseNum];
-		let ssCode = ssCourse.innerText;
-		// console.log(ssCode)
-		for (let classNum = 0; classNum < selectedClasses.length; classNum++) {
-			// console.log("sscode: ", ssCode)
-			// console.log("other : ", selectedClasses[classNum].getAttribute("coursecode"))
 
-			if (ssCode.includes(selectedClasses[classNum].getAttribute("coursecode"))) {
-				let year = selectedClasses[classNum].getAttribute("year")
-				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClasses[classNum].getAttribute("semester"))
+
+		//Set checkboxes as default
+		let statusSheetCourse = statusSheetCourses[courseNum];
+		let statusSheetCourseCode = statusSheetCourse.childNodes[0].nodeValue;
+		statusSheetCourse.childNodes[1].childNodes[0].classList = "far fa-square"
+		statusSheetCourse.childNodes[1].childNodes[0].style = "color: red;"
+
+
+		for (let classNum = 0; classNum < selectedClasses.length; classNum++) {
+			
+			let selectedClass = selectedClasses[classNum];
+			let selectedCode = selectedClass.getAttribute("coursecode");
+
+
+
+			if (statusSheetCourseCode === selectedCode) {
+				let year = selectedClass.getAttribute("year")
+				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClass.getAttribute("semester"))
+
+				
 				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester))) {
-					// console.log(year)
-					// console.log(year)
-					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
-					ssCourse.childNodes[1].childNodes[0].style = "color: green;"
+				
+					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
+					statusSheetCourse.childNodes[1].childNodes[0].style = "color: green;"
 				}
 				else {
 
-					ssCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
-					ssCourse.childNodes[1].childNodes[0].style = "color: blue;"
+					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
+					statusSheetCourse.childNodes[1].childNodes[0].style = "color: blue;"
 				}
-				// console.log(ssCourse.childNodes)
 
 
 			}
-			// let selectedSemester = ALL_SEMESTERS.indexOf(selectedClasses[classNum].getAttribute("semester"))
 
 
 		}
