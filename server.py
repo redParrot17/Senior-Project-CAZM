@@ -443,25 +443,22 @@ def student_landing_page():
             # save schedule to db
             db.update_student_schedule(schedule)
 
-            # save schedule status to db
+            # save schedule status "awaiting student creation" to db
             db.setStudentStatus(student_id, 3)
-
+    
+    semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
 
-    for course in schedule.courses:
-        # check if schedule for course's semester already exists
-        schedule_found = False
-        if schedule_data:
-            for schedule in schedule_data:
-                if schedule['semester'] == course.semester and schedule['year'] == course.year:
-                    schedule['classes'].append(course.course_code)
-                    schedule_found = True
-                    break
-        
-        # add new semester if not found
-        if schedule_found == False:
-            schedule_data.append({'semester': course.semester, 'year': course.year, 'classes': [course.course_code]})
+    for year in range(data['enrolled_year'], data['grad_year'] + 1):
+        for sem in semesters:
+            classes = []
+            for course in schedule.courses:
+                if course.semester.lower() == sem.lower() and course.year == year:
+                    classes.append(course.course_code)
 
+            if classes:
+                schedule_data.append({'semester': sem, 'year': year, 'classes': classes})
+                
     # if schedule is not None:
     #     for course in schedule.courses:
     #         if course.semester == current_semester and course.year == current_year:
