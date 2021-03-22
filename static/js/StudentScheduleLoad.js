@@ -21,24 +21,31 @@ window.addEventListener("DOMContentLoaded", function () {
 
             loadStatusSheet(reqs);
 
-        })
+        });
+      
+            // set up student schedule containers
+            setUpStudentScheduleContainers(studentData);
+            addClassestoPools();
+            updateStatusSheet();
 
+            //Get requisite list for each course
+            $.getJSON($SCRIPT_ROOT + '/getRequisites', {
 
-        // set up student schedule containers
-        setUpStudentScheduleContainers(studentData);
-
-
-        //Get requisite list for each course
-        $.getJSON($SCRIPT_ROOT + '/getRequisites', {
+            }, function (requisiteData) {
+                requisites = requisiteData;
+                checkPools(false);
+            })
 
         }, function (requisiteData) {
             requisites = requisiteData;
             addClassestoPools();
             checkPools(false);
+        });
 
-        })
 
-    })
+
+
+    });
 
 
     /**

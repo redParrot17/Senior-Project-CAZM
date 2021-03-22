@@ -20,7 +20,7 @@ var pools;
 function setWarnings(courseID, showSnack) {
 
     let courseElement = document.getElementById(courseID)
-    console.log(courseElement)
+    // console.log(courseElement)
     let code = courseElement.getAttribute("coursecode");
 
     let semester = courseElement.getAttribute("semester");

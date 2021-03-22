@@ -515,7 +515,7 @@ def student_sch_review():
 @security.restrict_to_students  # you must be a student to view this page
 def student_sch_review_post():
     data = request.json
-    print("\n\n",data)
+    # print("\n\n",data)
     changed = data["changed"]
     courses = data["courses"]
     student_id = flask_login.current_user.id
@@ -539,7 +539,7 @@ def student_sch_review_post():
         db.clearStudentSchedule(student_id)
         for course in courses:
             db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
-            print("\nLINE:", student_id, course)
+            # print("\nLINE:", student_id, course)
     return jsonify({"success":1}), 200
 
 ### UTILITY ENDPOINTS ###
@@ -576,11 +576,11 @@ def get_requirements():
     major_name = request.args.get('major_name', 0, type=str)
     major_year = request.args.get('major_year', 0, type=int)
 
-    print(major_name,major_year)
+    # print(major_name,major_year)
 
     with Database() as db:
         query_results = db.getRequirements(major_name, major_year)
-        print(query_results)
+        # print(query_results)
     return jsonify(query_results)
 
 

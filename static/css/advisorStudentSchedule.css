@@ -425,6 +425,17 @@ color: white !important;
   height : 10%;
 }
 
+
 .itemInvisible{
   display: none;
 }
+
+.or{
+  width: 100%;
+  text-align: center;
+}
+.select-txt{
+  font-weight: bold;
+  margin-bottom: .5em ;
+}
+

@@ -104,11 +104,8 @@ class Database:
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
-
-        course_info = []
-        for course_code in results:
-            course_info.append(course_code)
-        return course_info
+        print("Results: ", results)
+        return results
 
     def get_courses_by_cluster(self, cluster_id):
         cursor = self.db.cursor(buffered=True)
@@ -123,6 +120,8 @@ class Database:
         cluster=[]
         for course_code in results:
             cluster.append(course_code)
+
+        
         return cluster
 
     def get_clusters_by_requirement(self, requirement_id):
@@ -499,12 +498,12 @@ class Database:
         cursor.close()
 
         ### Fetch the course information for each course identifier ###
-        print("HERE!!!!!!!!!!!!!!",course_identifiers)
+        # print("HERE!!!!!!!!!!!!!!",course_identifiers)
         if schedule is not None:
             for course_code, year, semester in course_identifiers:
                 course = self.get_course(course_code, year, semester)
                 if course is not None:
-                    print("GETTING HERE", course)
+                    # print("GETTING HERE", course)
                     schedule.courses.append(course)
 
         return schedule
