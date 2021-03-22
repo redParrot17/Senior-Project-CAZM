@@ -21,23 +21,24 @@ window.addEventListener("DOMContentLoaded", function () {
 
             loadStatusSheet(reqs);
 
-        })
-
-        
-        // set up student schedule containers
-        setUpStudentScheduleContainers(studentData);
-
-
-        //Get requisite list for each course
-        $.getJSON($SCRIPT_ROOT + '/getRequisites', {
-
-        }, function (requisiteData) {
-            requisites = requisiteData;
+            // set up student schedule containers
+            setUpStudentScheduleContainers(studentData);
             addClassestoPools();
-            console.log("Page load checking")
-            checkPools(false);
-    
+            updateStatusSheet()
+       
+
+            //Get requisite list for each course
+            $.getJSON($SCRIPT_ROOT + '/getRequisites', {
+
+            }, function (requisiteData) {
+                requisites = requisiteData;
+                checkPools(false);
+            })
+
         })
+
+
+
 
     })
 
