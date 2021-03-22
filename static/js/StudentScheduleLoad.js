@@ -34,7 +34,6 @@ window.addEventListener("DOMContentLoaded", function () {
         }, function (requisiteData) {
             requisites = requisiteData;
             addClassestoPools();
-            console.log("Page load checking")
             checkPools(false);
 
         })
