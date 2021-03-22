@@ -424,3 +424,7 @@ color: white !important;
 .navbar{
   height : 10%;
 }
+
+.itemInvisible{
+  display: none;
+}

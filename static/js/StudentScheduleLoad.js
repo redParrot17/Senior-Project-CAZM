@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
         })
 
-        
+
         // set up student schedule containers
         setUpStudentScheduleContainers(studentData);
 
@@ -36,14 +36,27 @@ window.addEventListener("DOMContentLoaded", function () {
             addClassestoPools();
             console.log("Page load checking")
             checkPools(false);
-    
+
         })
 
     })
 
 
-    let search = document.getElementById("search-button");
+    /**
+    FOR SEARCH FILTER ON SIDEBAR
+    */
+    // Get the input field
+    let input = document.getElementById("search-bar");
+    // Execute a function when the user releases a key on the keyboard
+    input.addEventListener("keyup", function(event) {
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        document.getElementById("search-button").click();
+      }
+    });
 
-    search.addEventListener("click", filterCourses);
 
 });

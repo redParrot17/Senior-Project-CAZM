@@ -36,7 +36,7 @@
 <body>
 
   <!-- Navigation Bar -->
-  <nav class="navbar shaddow navbar-dark" id="nav" style="background-color: #B0002A;">
+  <nav class="navbar shaddow navbar-dark" id="nav" style="background-color: #960000 ;">
       <div class="container">
           <a class="navbar-brand">HBCAZM</a>
           <form class="form-inline" action="/logout" method="post">
@@ -77,7 +77,7 @@
         <div class="col-11">
           <button class="btn approvebtn shaddow btn-lg btn-secondary itemInvisible" id="approveBtn" type="button" onclick="approveBtn(event)">Approve Schedule</button>
         </div>
-        <div class="ml-auto" id="toggleBtn" onclick="toggleSideBar(event)">
+        <div class="ml-auto mt-1 mb-1" id="toggleBtn" onclick="toggleSideBar(event)">
 
         <i class="openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle"></i>
 
@@ -92,15 +92,25 @@
     </div>
   </div>
 
+<!--
+  <div class="form-group row">
+      <div class="col search">
+          <input type="search" id="search-text" class="rounded-left searchTerm" placeholder="Filter (name or student id)" aria-label="Search">
+          <button type="button" id="search-btn" class="searchButton rounded-right"><i class="fa fa-search"></i></button>
+      </div>
+  </div>
 
-
+  <form id="search">
+  <input type='text' id='searchText' />
+  <input type='submit' value='Search' />
+</form> -->
 
 
 <div id="mySidebar" class="sidebar sidebar-container">
   <div class="row mb-1 mt-1">
     <div class="search m-2">
       <input type="text" id="search-bar" class="rounded-left searchTerm" placeholder="Search">
-      <button  type="submit" id="search-button" class="searchButton rounded-right">
+      <button  id="search-button" class="searchButton rounded-right" onclick="filterCourses();">
         <i class="fa fa-search"></i>
      </button>
    </div>
@@ -124,16 +134,11 @@
           <input type="checkbox" id="duplicates-checkbox" onchange="filterCourses()">
           <span class="checkmark"></span>
         </label>
-
-        <label class="Checkcontainer">Show Intersessions
-          <input type="checkbox">
-          <span class="checkmark"></span>
-        </label>
       </div>
       <div class="container searchContainer p-0 rounded overflow-hidden" >
         <div class="row rowDropDown">
-          <div class="form-group  col-7 p-0">
-            <select class="form-control form-border-semester dropdown topLeftRounded" id="semester-dropdown" onchange="filterCourses()">
+          <div class="form-group col p-0">
+            <select class="form-control form-border-semester dropdown topLeftRounded topRightRounded" id="semester-dropdown" onchange="filterCourses()">
               <option value=-1>Semester:</option>
               <option value="Fall">Fall</option>
               <option value="Spring">Spring</option>
@@ -141,16 +146,6 @@
               <option value="January">January</option>
               <option value="May">May</option>
               <option value="Summer">Summer</option>
-            </select>
-          </div>
-          <div class="form-group  col-5 p-0">
-            <select class="form-control form-border-year dropdown topRightRounded">
-              <option value="Year">Year:</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
             </select>
           </div>
         </div>
