@@ -57,7 +57,9 @@
                         <p>Credits Completed: {{ student.get("credits") }}</p>
                         <p>Enrolled Semester:  {{ student.get("enrolled_semester_combined") }}</p>
                         <p>Graduation Semester: {{ student.get("grad_semester_combined") }}</p>
-                        <p>Major: {{ student.get("major") }}</p>
+                        {%for major in student.get("majors")%}
+                            <p>Major: {{major['major_name']}} {{major['major_year']}}</p>
+                        {%endfor%}
                         <p>Schedule Status: {{ student.get("status") }}</p>
                     </div>
                 </div>
