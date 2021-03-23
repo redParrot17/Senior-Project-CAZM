@@ -19,13 +19,13 @@ window.addEventListener("DOMContentLoaded", function () {
             reqs = reqData;
 
             loadStatusSheet(reqs);
-
+            
         });
       
             // set up student schedule containers
             setUpStudentScheduleContainers(studentData);
             addClassestoPools();
-            updateStatusSheet();
+            // updateStatusSheet();
 
             //Get requisite list for each course
             $.getJSON($SCRIPT_ROOT + '/getRequisites', {

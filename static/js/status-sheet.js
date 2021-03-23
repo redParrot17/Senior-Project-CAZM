@@ -29,12 +29,63 @@ function getCredits(code) {
 
 
 
+
+
+function updateStatusSheet() {
+	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
+	
+	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
+
+
+	for (let courseNum = 0; courseNum < statusSheetCourses.length; courseNum++) {
+
+
+		//Set checkboxes as default
+		let statusSheetCourse = statusSheetCourses[courseNum];
+		let statusSheetCourseCode = statusSheetCourse.childNodes[0].nodeValue;
+		statusSheetCourse.childNodes[1].childNodes[0].classList = "far fa-square"
+		statusSheetCourse.childNodes[1].childNodes[0].style = "color: red;"
+
+
+		for (let classNum = 0; classNum < selectedClasses.length; classNum++) {
+
+			let selectedClass = selectedClasses[classNum];
+			let selectedCode = selectedClass.getAttribute("coursecode");
+
+
+
+			if (statusSheetCourseCode === selectedCode) {
+				let year = selectedClass.getAttribute("year")
+				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClass.getAttribute("semester"))
+
+
+				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester))) {
+
+					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
+					statusSheetCourse.childNodes[1].childNodes[0].style = "color: green;"
+				}
+				else {
+
+					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
+					statusSheetCourse.childNodes[1].childNodes[0].style = "color: blue;"
+				}
+
+
+			}
+
+
+		}
+
+	}
+}
+
+
 /**
  * Loads the status sheet into the DOM
  * @param {Object} reqs
  * JSON dictionary of requirement info to build the status sheet from
  */
-function loadStatusSheet(reqs) {
+ function loadStatusSheet(reqs) {
 
 	/**
 	 * Array of requirement IDs
@@ -227,52 +278,5 @@ function loadStatusSheet(reqs) {
 		}
 
 	}
-}
-
-function updateStatusSheet() {
-	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
-	
-	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
-
-
-	for (let courseNum = 0; courseNum < statusSheetCourses.length; courseNum++) {
-
-
-		//Set checkboxes as default
-		let statusSheetCourse = statusSheetCourses[courseNum];
-		let statusSheetCourseCode = statusSheetCourse.childNodes[0].nodeValue;
-		statusSheetCourse.childNodes[1].childNodes[0].classList = "far fa-square"
-		statusSheetCourse.childNodes[1].childNodes[0].style = "color: red;"
-
-
-		for (let classNum = 0; classNum < selectedClasses.length; classNum++) {
-
-			let selectedClass = selectedClasses[classNum];
-			let selectedCode = selectedClass.getAttribute("coursecode");
-
-
-
-			if (statusSheetCourseCode === selectedCode) {
-				let year = selectedClass.getAttribute("year")
-				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClass.getAttribute("semester"))
-
-
-				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester))) {
-
-					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
-					statusSheetCourse.childNodes[1].childNodes[0].style = "color: green;"
-				}
-				else {
-
-					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-hourglass-start"
-					statusSheetCourse.childNodes[1].childNodes[0].style = "color: blue;"
-				}
-
-
-			}
-
-
-		}
-
-	}
+	updateStatusSheet();
 }
