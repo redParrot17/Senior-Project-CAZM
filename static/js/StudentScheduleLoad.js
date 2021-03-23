@@ -41,9 +41,6 @@ window.addEventListener("DOMContentLoaded", function () {
             checkPools(false);
         });
 
-
-
-
     });
 
 
