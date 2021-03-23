@@ -300,45 +300,47 @@ def get_advisers_students(adviser_id: int, username: str, password: str,
         scraped_results = _scrape_adviser_students(username, password)
 
         for scraped_result in scraped_results:
+            try:
+                # Student information
 
-            # Student information
+                student_id = scraped_result.pop('user_id')
+                student_name = scraped_result.pop('name')
+                last_name, first_name = student_name.split(', ', 2)
+                first_name = first_name.split(' ')[0]
+                email = scraped_result.pop('email')
+                classification = scraped_result.pop('classification')
 
-            student_id = scraped_result.pop('user_id')
-            student_name = scraped_result.pop('name')
-            last_name, first_name = student_name.split(', ', 2)
-            first_name = first_name.split(' ')[0]
-            email = scraped_result.pop('email')
-            classification = scraped_result.pop('classification')
+                planned_grad = scraped_result.pop('planned_grad')
+                grad_semester, grad_year = date_to_semester_year(planned_grad)
 
-            planned_grad = scraped_result.pop('planned_grad')
-            grad_semester, grad_year = date_to_semester_year(planned_grad)
+                # Major information
 
-            # Major information
+                major = scraped_result.pop('major')
+                enrolled_date = scraped_result.pop('enrolled_date')
+                enrolled_semester, enrolled_year = date_to_semester_year(enrolled_date)
 
-            major = scraped_result.pop('major')
-            enrolled_date = scraped_result.pop('enrolled_date')
-            enrolled_semester, enrolled_year = date_to_semester_year(enrolled_date)
+                # Build the student
 
-            # Build the student
+                student = Student(
+                    student_id=student_id,
+                    advisor_id=adviser_id,
+                    firstname=first_name,
+                    lastname=last_name,
+                    email=email,
+                    majors=[(major, enrolled_year)],
+                    classification=classification,
+                    graduation_year=grad_year,
+                    graduation_semester=grad_semester,
+                    enrolled_year=enrolled_year,
+                    enrolled_semester=enrolled_semester
+                )
 
-            student = Student(
-                student_id=student_id,
-                advisor_id=adviser_id,
-                firstname=first_name,
-                lastname=last_name,
-                email=email,
-                majors=[(major, enrolled_year)],
-                classification=classification,
-                graduation_year=grad_year,
-                graduation_semester=grad_semester,
-                enrolled_year=enrolled_year,
-                enrolled_semester=enrolled_semester
-            )
+                # Update the database
+                if update_database:
+                    database.create_new_student(student)
 
-            # Update the database
-            if update_database:
-                database.create_new_student(student)
-
-            students.append(student)
+                students.append(student)
+            except Exception:
+                traceback.print_exc()
 
     return students
