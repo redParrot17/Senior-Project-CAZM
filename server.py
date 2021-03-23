@@ -487,7 +487,7 @@ def student_sch_review():
         schedule = db.get_student_schedule(student_id)
         status = schedule.status
         courses = schedule.courses
-        major_name, major_year = student.majors[0]
+        
     json_courses = [{'course_code' : c.course_code,
                      'name' : c.name,
                      'year': c.year,
