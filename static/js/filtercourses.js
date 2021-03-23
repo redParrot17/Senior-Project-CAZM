@@ -1,7 +1,6 @@
 
 function createCourseDiv(course) {
     let name = course.course_code;
-    // console.log(course)
     let courseID = name;
     let div = document.createElement("div");
     div.id = courseID;
@@ -15,7 +14,6 @@ function createCourseDiv(course) {
     div.setAttribute("data-toggle", "tooltip");
     div.setAttribute("data-placement", "left");
     
-    console.log(div.getAttribute("credits"))
     div.setAttribute("data-delay", 0);
    
     div.setAttribute("title", course.name);

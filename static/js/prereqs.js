@@ -162,7 +162,6 @@ function checkRequisites(code, semester, year) {
                             let activePool = pools[p]; //currently checked pool
                             for (let q = 0; q < activePool.length; q++) {
                                 let checkedCourse = document.getElementById(activePool[q])
-                                console.log("checked course: " + checkedCourse);
 
 
                                 if (checkedCourse.getAttribute("coursecode").includes(compareCode)) {
