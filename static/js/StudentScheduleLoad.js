@@ -13,8 +13,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
         //Get requirements list for student's major
         $.getJSON($SCRIPT_ROOT + '/getRequirements', {
-            major_name: studentData.major_name,
-            major_year: studentData.major_year
+            'id' : studentData.id
         }, function (reqData) {
 
             reqs = reqData;
@@ -63,6 +62,3 @@ window.addEventListener("DOMContentLoaded", function () {
         document.getElementById("search-button").click();
       }
     });
-
-
-});

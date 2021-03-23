@@ -298,7 +298,7 @@ def advisor_sch_review():
 
         with Database() as db:
              # TODO: [SP-78] this cannot be a hardcoded value
-            status_sheet = db.getRequirements(major_name, major_year)
+            # status_sheet = db.getRequirements(major_name, major_year)
 
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
@@ -390,10 +390,17 @@ def get_student_data():
         'grad_year': student.graduation_year,
         'enrolled_semester_combined': f'{student.enrolled_semester} {student.enrolled_year}',
         'grad_semester_combined': f'{student.graduation_semester} {student.graduation_year}',
-        'major_name': student.majors[0][0],
-        'major_year': student.majors[0][1],
-        'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
+        'majors': [],
+        # 'major_name': student.majors[0][0],
+        # 'major_year': student.majors[0][1],
+        # 'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
     }
+
+    for major in student.majors:
+        data['majors'].append({
+            'major_name': major[0],
+            'major_year': major[1]
+        })
 
     return data
 
@@ -490,20 +497,15 @@ def student_sch_review():
                      'semester':c.semester
                      }for c in courses]
 
-    classes=["Fall 2021", "Spring 2022", "Fall 2022", "Spring 2021"]
-
     db = Database()
 
-    status_sheet = db.getRequirements(major_name, major_year)
-
+   
     query_results = db.get_all_courses()
 
     list_of_courses = db.get_courses()
 
     return render_template(
-        'advisorStudentScheduleReview.html',
-        classes=classes,
-        #statusSheet=status_sheet,
+        'advisorStudentScheduleReview.html',        
         allCourses=query_results,
         studentStatus=status,
         listOfCourses=list_of_courses,
@@ -573,13 +575,12 @@ def filter_semester():
 @app.route('/getRequirements/')
 @flask_login.login_required     # you must be logged in to access this endpoint
 def get_requirements():
-    major_name = request.args.get('major_name', 0, type=str)
-    major_year = request.args.get('major_year', 0, type=int)
+    student_id = request.args.get('id', 0, type=str)
 
     # print(major_name,major_year)
 
     with Database() as db:
-        query_results = db.getRequirements(major_name, major_year)
+        query_results = db.getRequirements(student_id)
         # print(query_results)
     return jsonify(query_results)
 

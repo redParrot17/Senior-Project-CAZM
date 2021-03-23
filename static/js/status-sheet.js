@@ -79,10 +79,10 @@ function loadStatusSheet(reqs) {
 		else {
 
 			var clusters = value.clusters
-			console.log(clusters)
+	
 			let clusterKeys = Object.keys(clusters);
 
-
+			console.log(clusters)
 			//Examine each cluster
 			var count = 0
 			for (let clusterKey of clusterKeys) {
@@ -104,11 +104,9 @@ function loadStatusSheet(reqs) {
 				let courselist = document.createElement("ul")
 				courselist.className = "fa-ul"
 				for (let course = 0; course < courses.length; course++) {
-					// console.log(courses[course])
 					let currentCourse = courses[course];
 					let li = document.createElement("li");
 					li.classList = "requirement-list-course";
-					// console.log(currentCourse)
 					li.innerText = currentCourse;
 
 					//Add Credits
@@ -211,10 +209,9 @@ function loadStatusSheet(reqs) {
 
 					requirementContainer.appendChild(altcourselist)
 
-					// console.log(clusterKeys)
+
 					for (let k in clusterKeys) {
-						console.log("alt_key: ",alt_key);
-						console.log("k: ",k);
+
 						if (clusterKeys[k] == alt_key)
 							clusterKeys.splice(k,1);
 					}
@@ -234,7 +231,7 @@ function loadStatusSheet(reqs) {
 
 function updateStatusSheet() {
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
-	console
+	
 	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
 
 

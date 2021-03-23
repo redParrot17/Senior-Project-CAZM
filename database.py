@@ -149,16 +149,15 @@ class Database:
         return group
 
 
-    def getRequirements(self, major_name, major_year):
+    def getRequirements(self, student_id):
         cursor = self.db.cursor(buffered=True)
-        args = (major_name, major_year,)
+        args = (student_id,)
         sql = """
-        SELECT  TITLE,  REQUIREMENT_ID , SPECIAL
-        FROM MAJOR_REQUIREMENTS INNER JOIN REQUIREMENT
-        ON REQUIREMENT.REQUIREMENT_ID = MAJOR_REQUIREMENTS.MAJOR_REQUIREMENT_ID
-        WHERE MAJOR_NAME=%s AND MAJOR_YEAR=%s
-
-            """
+       SELECT TITLE, REQUIREMENT_ID, SPECIAL from
+        (SELECT MAJOR_REQUIREMENT_ID FROM STUDENT_MAJOR  INNER JOIN  MAJOR_REQUIREMENTS USING (MAJOR_NAME, MAJOR_YEAR) 
+        where STUDENT_ID = %s) as reqID
+        INNER JOIN REQUIREMENT ON reqID.MAJOR_REQUIREMENT_ID = REQUIREMENT.REQUIREMENT_ID 
+        """
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
