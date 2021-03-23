@@ -252,7 +252,7 @@ def date_to_semester_year(date: str) -> tuple:
     :return: tuple of the ('Semester', year)
     """
     month, day, year = date.split('/')
-    semester = 'Spring' if month < 7 else 'Fall'
+    semester = 'Spring' if int(month) < 7 else 'Fall'
     return semester, int(year)
 
 
