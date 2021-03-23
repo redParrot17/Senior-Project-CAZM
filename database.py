@@ -250,6 +250,7 @@ class Database:
         result = cursor.fetchone()
         cursor.close()
 
+        major_code = None
         if result is not None:
             major_code = result
         
@@ -899,12 +900,14 @@ class Database:
         cursor = self.db.cursor(buffered=True)
 
         sql_query = 'INSERT INTO STUDENTS (STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, ' \
-                    'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER) VALUES (%s, %s, %s, %s, ' \
-                    '%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE STUDENT_ID=VALUES(STUDENT_ID), ' \
-                    'ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), LAST=VALUES(LAST), ' \
-                    'EMAIL=VALUES(EMAIL), CLASSIFICATION=VALUES(CLASSIFICATION), GRAD_YEAR=VALUES(GRAD_YEAR), ' \
-                    'GRAD_SEMESTER=VALUES(GRAD_SEMESTER), ENROLLED_YEAR=VALUES(ENROLLED_YEAR), ' \
-                    'ENROLLED_SEMESTER=VALUES(ENROLLED_SEMESTER);'
+                    'GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER, SCHEDULE_STATUS, ' \
+                    'HIDE_INTERCESSIONS, TUTORIAL_VIEWED) VALUES ' \
+                    '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE ' \
+                    'STUDENT_ID=VALUES(STUDENT_ID), ADVISOR_ID=VALUES(ADVISOR_ID), FIRST=VALUES(FIRST), ' \
+                    'LAST=VALUES(LAST), EMAIL=VALUES(EMAIL), CLASSIFICATION=VALUES(CLASSIFICATION), ' \
+                    'GRAD_YEAR=VALUES(GRAD_YEAR), GRAD_SEMESTER=VALUES(GRAD_SEMESTER), ' \
+                    'ENROLLED_YEAR=VALUES(ENROLLED_YEAR), ENROLLED_SEMESTER=VALUES(ENROLLED_SEMESTER);'
+
         arguments = (
             student.student_id,
             student.advisor_id,
@@ -915,7 +918,11 @@ class Database:
             student.graduation_year,
             student.graduation_semester,
             student.enrolled_year,
-            student.enrolled_semester,)
+            student.enrolled_semester,
+            Schedule.status_str_to_int('Awaiting Student Creation'),
+            0,
+            0,
+        )
 
         cursor.execute(sql_query, arguments)
         cursor.close()
