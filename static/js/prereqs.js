@@ -114,7 +114,6 @@ function checkPools(update) {
  * @returns {Boolean} Requisites met
  */
 function checkRequisites(code, semester, year) {
-    var index;
 
     //Get code prereq dictionary
     let codeReqs = requisites[code]
@@ -122,16 +121,11 @@ function checkRequisites(code, semester, year) {
 
     //! CHECK PREREQS
     if (codeReqs !== undefined) {
-        console.log(code, ":", codeReqs)
+       
         //Get target semester #
-
         //Find the semester number of semesters before this class
-        for (let s = 0; s < semesters.length; s++) {
-            let sem = semesters[s].dataset;
-            if (sem.year === year && sem.semester === semester) {
-                index = s;
-            }
-        }
+        
+        var index = getTargetIndex(year, semester);
         var special = codeReqs[0]
         var prereqs = codeReqs[1]
         var coreqs = codeReqs[2]
@@ -253,3 +247,32 @@ function checkRequisites(code, semester, year) {
     //No Requisites, automatically true
     return true;
 }
+
+
+
+function getTargetIndex(year, semester) {
+    var index;
+    for (let s = 0; s < semesters.length; s++) {
+        let sem = semesters[s].dataset;
+        if (sem.year === year && sem.semester === semester) {
+            index = s;
+        }
+    }
+    return index;
+}
+
+
+let totalCreds = () =>{
+    var credits = 0;
+    let index = getTargetIndex(curSemester.year, curSemester.semester);
+    for(let sem = 0; sem <= index; sem++){
+        let pool = pools[sem];
+        for(let course in pool){
+            let code = pool[course].split("-")[0];
+
+            credits += getCreditsForSum(code);
+        }
+    }
+    return credits;
+}
+

@@ -7,7 +7,7 @@ function approveBtn(ev){
   let changed = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);
 
   let myCourses = [];
-
+  let creds = totalCreds();
   newSchedule.forEach((item, index) => {
     let elements = (item.id).split("-");
     let course_code = elements[0];
@@ -20,7 +20,8 @@ function approveBtn(ev){
 
   let data = {
     "changed": changed,
-    "courses":myCourses
+    "courses":myCourses,
+    "newCredits": creds
   }
   $.ajax
     ({
