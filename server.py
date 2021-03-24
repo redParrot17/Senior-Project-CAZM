@@ -267,7 +267,9 @@ def advisor_viewing_student():
             db.update_student_schedule(schedule)
 
             # save schedule status "awaiting student creation" to db
-            db.setStudentStatus(student_id, 3)
+            db.setStudentStatus(student_id, 2)
+            schedule = db.get_student_schedule(student_id)
+
 
     # Ensure the advisor has access to this student within the database
     if student is not None:
@@ -581,7 +583,9 @@ def student_landing_page():
             db.update_student_schedule(schedule)
 
             # save schedule status "awaiting student creation" to db
-            db.setStudentStatus(student_id, 3)
+            db.setStudentStatus(student_id, 2)
+            schedule = db.get_student_schedule(student_id)
+
     
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
