@@ -195,20 +195,7 @@ def advisor_landing_page():
 
     # Fetch all of the student's this advisor is responsible for
     advisor = flask_login.current_user
-    
-    #!ADVISOR DUMMY
-    if advisor.username == "advisor":
-        
-        advisor_students = [Student(999999, 888888, "Adam", "Accounting", "AccountingAE18@gcc.edu","Accounting 2018", "Junior", 2022, "Spring", 2018, "Fall")]
-
-
-    else:
-    #! END DUMMY
-        advisor_students = advisee_scraper.get_advisers_students(advisor.id, advisor.username, advisor.password)
-
-
-
-
+    advisor_students = advisee_scraper.get_advisers_students(advisor.id, advisor.username, advisor.password)
 
     # Format all the user data into something we can pass into the html template
     with Database() as db:
