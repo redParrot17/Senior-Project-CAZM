@@ -102,7 +102,7 @@ def login_post():
 
     #! DUMMY LOGIN FOR TESTING
     #! DO NOT LEAVE IN AFTER PRODUCTION
-    print(username, password)
+    
     if username == "accounting" and password == "1234":
         user_id = 999999
         is_advisor = False
@@ -195,7 +195,7 @@ def advisor_landing_page():
 
     # Fetch all of the student's this advisor is responsible for
     advisor = flask_login.current_user
-    print(advisor)
+    
     #!ADVISOR DUMMY
     if advisor.username == "advisor":
         
@@ -464,7 +464,7 @@ def get_student_data():
     # Fetch the information about this student
     with Database() as db:
         student = db.get_student(student_id)
-        print(student)
+        
         schedule = db.get_student_schedule(student_id)
 
     # Fetch the information from the college if not cached
