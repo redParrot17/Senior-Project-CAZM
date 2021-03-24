@@ -133,7 +133,6 @@ function updateStatusSheet() {
 	
 			let clusterKeys = Object.keys(clusters);
 
-			console.log(clusters)
 			//Examine each cluster
 			var count = 0
 			for (let clusterKey of clusterKeys) {

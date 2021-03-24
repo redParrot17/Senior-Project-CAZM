@@ -29,16 +29,16 @@ function setWarnings(courseID, showSnack) {
     //If requisites bad, set the warning, otherwise set to no warnings
     if (!checkRequisites(code, semester, year)) {
 
-        
+
 
         //only show snackbar if required
         if (showSnack && courseElement.parentElement.classList == "drag_container rounded border") {
             new SnackBar({
-                message: "Warning: Prerequisites for " + code + " not met.",
+                message: "Warning: Prerequisites or Corequisites for " + code + " not met.",
                 position: "bc",
                 status: "warning"
             });
-           
+
         }
         courseElement.parentElement.classList = "drag_container rounded border warning"
 
@@ -111,7 +111,7 @@ function checkPools(update) {
  * the semester of the class being examined
  * @param {Integer} year 
  * the year of the class being examined
- * @returns {Boolean}
+ * @returns {Boolean} Requisites met
  */
 function checkRequisites(code, semester, year) {
     var index;
@@ -122,6 +122,7 @@ function checkRequisites(code, semester, year) {
 
     //! CHECK PREREQS
     if (codeReqs !== undefined) {
+        console.log(code, ":", codeReqs)
         //Get target semester #
 
         //Find the semester number of semesters before this class
@@ -131,17 +132,74 @@ function checkRequisites(code, semester, year) {
                 index = s;
             }
         }
-
+        var special = codeReqs[0]
         var prereqs = codeReqs[1]
+        var coreqs = codeReqs[2]
 
+        //TODO handle prohibited courses correctly
+        // var prohibited = codeReqs[4]
+        var found = false;
+
+
+
+        //! Corequisites exist
+        if (coreqs !== undefined) {
+
+            //Check Coreqs
+            coreqs = Object.values(coreqs)
+
+            var groupNum = 0;
+
+            //Check each group until one of them is met
+            while (!found && groupNum < coreqs.length) {
+
+
+
+                let group = coreqs[groupNum] //group of requisites (only 1 required to be completed)
+                console.log("coreq group:", group)
+                var reqmet = true;
+                var req = 0
+
+                //Try group
+                while (reqmet && req < group.length) {
+
+                    reqmet = false;
+                    let compareCode = group[req]; //individual requirement in the major
+                    console.log("comparing: ",compareCode)
+                    //Check if all semesters up to target semester contain the required courses
+                    for (let p = 0; p <= index; p++) {
+
+                        let activePool = pools[p]; //currently checked pool
+
+                        for (let q = 0; q < activePool.length; q++) {
+                            let checkedCourse = document.getElementById(activePool[q])
+                            if (checkedCourse.getAttribute("coursecode").includes(compareCode)) {
+                                reqmet = true;
+                            }
+                        }
+
+                    }
+
+                    found = reqmet;
+                    console.log("found? :", found)
+                    req++;
+                }//done with group
+                groupNum++;
+            }//next group
+
+        }
+
+        // console.log(code,":",found)
         //! Prerequisites exist
-        if (prereqs !== undefined) {
+        if (!found && prereqs !== undefined) {
             //Check Prereqs
             if (index > 0) {
 
                 prereqs = Object.values(prereqs)
-                var found = false;
+
                 var groupNum = 0;
+
+                //Check each group until one of them is met
                 while (!found && groupNum < prereqs.length) {
 
 
@@ -173,10 +231,10 @@ function checkRequisites(code, semester, year) {
 
                         found = reqmet;
                         req++;
-                    }
+                    }//done with group
                     groupNum++;
-                }
-                return (found);
+                }//next group
+                
             }
 
             //class in first semester has prereqs, fails by default
@@ -185,13 +243,13 @@ function checkRequisites(code, semester, year) {
             }
 
         }
+        return(found)
 
-
-        //TODO Check Coreqs
         //TODO Check Prohibited
 
 
     }
+
     //No Requisites, automatically true
     return true;
 }
