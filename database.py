@@ -111,7 +111,7 @@ class Database:
         cursor = self.db.cursor(buffered=True)
         args = (cluster_id,)
         sql = """
-            Select COURSE_CODE from CLUSTER_COURSES where CLUSTER_ID = %s ;
+            Select COURSE_CODE from CLUSTER_COURSES where CLUSTER_ID = %s ORDER BY COURSE_CODE ;
             """
         cursor.execute(sql, args)
         results = cursor.fetchall()
