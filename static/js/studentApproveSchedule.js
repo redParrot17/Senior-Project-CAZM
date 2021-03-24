@@ -33,9 +33,7 @@ function approveBtn(ev){
         //json object to sent to the authentication url
         data: JSON.stringify(data),
         success: function (data) {
-          //alert("Data: " + data);
-          window.location.href='/studentLanding';
-
+          document.getElementById("studentBackBtn").click();
         }
     })
 }

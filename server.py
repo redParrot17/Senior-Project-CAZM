@@ -322,16 +322,16 @@ def advisor_sch_review_post():
 
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
-        if(schedule.status == 4):
+        if schedule.status == 4:
             db.setStudentStatus(student_id, 3)
-        elif(schedule.status == 1):
-            if(changed):
+        elif schedule.status == 1:
+            if changed:
                 db.setStudentStatus(student_id, 3)
             else:
                 db.setStudentStatus(student_id, 4)
-        elif(schedule.status == 2):
+        elif schedule.status == 2:
             db.setStudentStatus(student_id, 3)
-        elif(schedule.status == 3):
+        elif schedule.status == 3:
             db.setStudentStatus(student_id, 3)
         else:
             db.setStudentStatus(student_id, 2)
@@ -339,8 +339,8 @@ def advisor_sch_review_post():
         db.clearStudentSchedule(student_id)
         for course in courses:
             db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
-            # print("\nLINE:", student_id, course)
-    return jsonify({"success":1}), 200
+
+    return jsonify({"success": 1}), 200
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -519,18 +519,15 @@ def student_sch_review():
         status = schedule.status
         courses = schedule.courses
 
-    json_courses = [{'course_code' : c.course_code,
-                     'name' : c.name,
+    json_courses = [{'course_code': c.course_code,
+                     'name': c.name,
                      'year': c.year,
-                     'semester':c.semester
-                     }for c in courses]
+                     'semester': c.semester
+                     } for c in courses]
 
-    db = Database()
-
-
-    query_results = db.get_all_courses()
-
-    list_of_courses = db.get_courses()
+    with Database() as db:
+        query_results = db.get_all_courses()
+        list_of_courses = db.get_courses()
 
     return render_template(
         'advisorStudentScheduleReview.html',
@@ -556,16 +553,16 @@ def student_sch_review_post():
 
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
-        if(schedule.status == 4):
+        if schedule.status == 4:
             db.setStudentStatus(student_id, 1)
-        elif(schedule.status == 3):
-            if(changed):
+        elif schedule.status == 3:
+            if changed:
                 db.setStudentStatus(student_id, 1)
             else:
                 db.setStudentStatus(student_id, 4)
-        elif(schedule.status == 2):
+        elif schedule.status == 2:
             db.setStudentStatus(student_id, 1)
-        elif(schedule.status == 1):
+        elif schedule.status == 1:
             db.setStudentStatus(student_id, 1)
         else:
             db.setStudentStatus(student_id, 2)
@@ -573,9 +570,9 @@ def student_sch_review_post():
         db.clearStudentSchedule(student_id)
         for course in courses:
             db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
-            # print("\nLINE:", student_id, course)
         db.setCredits(student_id, newCredits)
-    return jsonify({"success":1}), 200
+
+    return jsonify({"success": 1}), 200
 
 ### UTILITY ENDPOINTS ###
 
