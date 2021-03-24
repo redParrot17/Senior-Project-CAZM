@@ -21,7 +21,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -296,7 +296,7 @@ def advisor_sch_review():
         json_courses = [{
             'course_code': c.course_code,
             'name': c.name,
-            'year': c.name,
+            'year': c.year,
             'semester': c.semester
         } for c in courses]
 
@@ -304,9 +304,43 @@ def advisor_sch_review():
             'advisorStudentScheduleReview.html',
             student_id=student_id,
             allCourses=query_results,
+            studentStatus=status,
             listOfCourses=list_of_courses,
             StudentCourses=json_courses,
             advisor_view=True)
+
+@app.route('/advisorSchReviewPost/', methods=["POST"])
+@flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_advisors  # you must be a student to view this page
+def advisor_sch_review_post():
+    data = request.json
+    # print("\n\n",data)
+    changed = data["changed"]
+    courses = data["courses"]
+    student_id = data["student_id"]
+
+
+    with Database() as db:
+        schedule = db.get_student_schedule(student_id)
+        if(schedule.status == 4):
+            db.setStudentStatus(student_id, 3)
+        elif(schedule.status == 1):
+            if(changed):
+                db.setStudentStatus(student_id, 3)
+            else:
+                db.setStudentStatus(student_id, 4)
+        elif(schedule.status == 2):
+            db.setStudentStatus(student_id, 3)
+        elif(schedule.status == 3):
+            db.setStudentStatus(student_id, 3)
+        else:
+            db.setStudentStatus(student_id, 2)
+
+        db.clearStudentSchedule(student_id)
+        for course in courses:
+            db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
+            # print("\nLINE:", student_id, course)
+    return jsonify({"success":1}), 200
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -405,7 +439,6 @@ def get_student_data():
 
 @app.route('/studentData')
 @flask_login.login_required     # you must be logged in to view this page
-@security.restrict_to_students  # you must be a student to view this page
 def get_student_info_json():
     """
     Returns Student info JSON for logged in student
@@ -431,7 +464,7 @@ def student_landing_page():
         if not schedule.courses:
             # load and save template schedule
             student_majors = db.get_student_majors(student_id)
-            
+
             major_name, major_year = student_majors[0]
 
             major_code = db.get_major_code(major_name, major_year)
@@ -450,7 +483,7 @@ def student_landing_page():
 
             # save schedule status "awaiting student creation" to db
             db.setStudentStatus(student_id, 3)
-    
+
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
 
@@ -463,7 +496,7 @@ def student_landing_page():
 
             if classes:
                 schedule_data.append({'semester': sem, 'year': year, 'classes': classes})
-                
+
     # if schedule is not None:
     #     for course in schedule.courses:
     #         if course.semester == current_semester and course.year == current_year:
@@ -485,7 +518,7 @@ def student_sch_review():
         schedule = db.get_student_schedule(student_id)
         status = schedule.status
         courses = schedule.courses
-        
+
     json_courses = [{'course_code' : c.course_code,
                      'name' : c.name,
                      'year': c.year,
@@ -494,7 +527,7 @@ def student_sch_review():
 
     db = Database()
 
-   
+
     query_results = db.get_all_courses()
 
     list_of_courses = db.get_courses()
@@ -509,7 +542,7 @@ def student_sch_review():
         advisor_view=False)
 
 
-@app.route('/studentSchReview/', methods=["POST"])
+@app.route('/studentSchReviewPost/', methods=["POST"])
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_students  # you must be a student to view this page
 def student_sch_review_post():
@@ -518,6 +551,7 @@ def student_sch_review_post():
     changed = data["changed"]
     courses = data["courses"]
     student_id = flask_login.current_user.id
+
 
     with Database() as db:
         schedule = db.get_student_schedule(student_id)

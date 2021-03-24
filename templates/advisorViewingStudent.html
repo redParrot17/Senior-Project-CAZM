@@ -37,28 +37,29 @@
     <div class="row">
 
       <!--   Button callback to return to advisor home   -->
-      <div class="col-3">
+      <div class="col-4">
         <form action="/advisorHomePreview/" method="get">
           <button type="submit" class="btn btn-lg shaddow btn-secondary" id="backButton">Back</button>
         </form>
       </div>
+      <div class="col ml-4">
+        <div class="row">
+          <div class="col-4 pl-4 pr-0">
+            <button class="btn btn-lg shaddow btn-secondary" id="messageStudentBtn">Message Student</button>
+          </div>
 
-      <div class="col"></div>
+          <div class="col-4 pr-4 pl-4">
+            <button type="button" class="btn btn-lg shaddow btn-secondary" id="printScheduleBtn">Print Schedule</button>
+          </div>
 
-      <div class="col">
-        <button class="btn btn-lg shaddow btn-secondary" id="messageStudentBtn">Message Student</button>
-      </div>
-
-      <div class="col">
-        <button type="button" class="btn btn-lg shaddow btn-secondary" id="printScheduleBtn">Print Schedule</button>
-      </div>
-
-      <!--   Button callback to edit the schedule   -->
-      <div class="col">
-        <form action="/advisorSchReview/" method="post">
-          <input type="hidden" name="student_id" value="{{student.get('id')}}">
-          <button type="submit" class="btn btn-lg shaddow btn-secondary" id="editScheduleBtn">Edit Schedule</button>
-        </form>
+          <!--   Button callback to edit the schedule   -->
+          <div class="col-4 pl-4 pl-0">
+            <form action="/advisorSchReview/" method="post">
+              <input type="hidden" name="student_id" value="{{student.get('id')}}">
+              <button type="submit" class="btn btn-lg shaddow btn-secondary" id="editScheduleBtn">Approve/Edit Schedule</button>
+            </form>
+          </div>
+        </div>
       </div>
 
     </div>

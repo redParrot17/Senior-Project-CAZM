@@ -26,7 +26,7 @@ function approveBtn(ev){
     ({
         type: "POST",
         //the url where you want to sent the userName and password to
-        url: '/studentSchReview/',
+        url: '/studentSchReviewPost/',
         dataType: 'json',
         contentType: "application/json",
         //json object to sent to the authentication url
@@ -48,12 +48,12 @@ function setApproveBtnText() {
     //approveBtn.classList.add("itemInvisible");
   }
   else if (studentStatus == 1 && scheduleChanged == true){
-    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
     //approveBtn.classList.remove("itemInvisible");
   }
   else if (studentStatus == 2){
-    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
     //approveBtn.classList.remove("itemInvisible");
   }
@@ -63,7 +63,7 @@ function setApproveBtnText() {
     //approveBtn.classList.remove("itemInvisible");
   }
   else if (studentStatus == 3 && scheduleChanged == true){
-    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
     //approveBtn.classList.remove("itemInvisible");
   }
@@ -72,7 +72,7 @@ function setApproveBtnText() {
     //approveBtn.classList.add("itemInvisible");
   }
   else{// (studentStatus == 4 && scheduleChanged = true){
-    approveBtn.innerHTML = "Save and Submit for Approval";
+    approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
     //approveBtn.classList.remove("itemInvisible");
   }
