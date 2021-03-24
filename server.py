@@ -21,7 +21,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -200,7 +200,7 @@ def advisor_landing_page():
     if advisor.username == "advisor":
         
         advisor_students = [Student(999999, 888888, "Adam", "Accounting", "AccountingAE18@gcc.edu","Accounting 2018", "Junior", 2022, "Spring", 2018, "Fall")]
-        
+
 
     else:
     #! END DUMMY
