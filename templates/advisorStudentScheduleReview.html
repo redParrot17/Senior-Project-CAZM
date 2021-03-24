@@ -19,7 +19,7 @@
   <script type=text/javascript>
     var listOfCourses = {{ listOfCourses|tojson|safe}};
     var allCourses = {{ allCourses|tojson|safe}};
-
+    var student_id = {{student_id}};
     var StudentCourses = {{ StudentCourses|tojson|safe}};
     var scheduleChangesAdded = [];
     var scheduleChangesRemoved = [];
@@ -55,11 +55,14 @@
         <div class="row">
 
           <!--  Back button callback  -->
-<!--          <form action="/studentProfile/" method="post">-->
-<!--            <input type="hidden" name="student_id" value="{{student_id}}">-->
-<!--            <button type="submit" class="btn btn-lg shaddow btn-secondary">Back</button>-->
-<!--          </form>-->
-          <button class="btn btn-lg shaddow btn-secondary" onclick="window.location.href='/studentLanding'">Back</button>
+          {% if advisor_view %}
+            <form action="/studentProfile/" method="post">
+              <input type="hidden" name="student_id" value="{{student_id}}">
+              <button type="submit" id="advisorBackBtn" class="btn btn-lg shaddow btn-secondary">Back</button>
+            </form>
+          {% else %}
+            <button class="btn btn-lg shaddow btn-secondary" onclick="window.location.href='/studentLanding'">Back</button>
+          {% endif %}
 
         </div>
       <!-- </div>
@@ -168,7 +171,11 @@
 
 <!-- Javascript -->
 <script src="/static/js/js-snackbar.js"></script>
-<script src="/static/js/approveSchedule.js"></script>
+{% if advisor_view %}
+  <script src="/static/js/advisorApproveSchedule.js"></script>
+{% else %}
+  <script src="/static/js/studentApproveSchedule.js"></script>
+{% endif %}
 <script src="/static/js/status-sheet.js" charset="utf-8"></script>
 <script src="/static/js/prereqs.js" charset="utf-8"></script>
 <script src="/static/js/createStudentSchedule.js" charset="utf-8"></script>
