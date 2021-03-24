@@ -102,7 +102,7 @@ def login_post():
 
     #! DUMMY LOGIN FOR TESTING
     #! DO NOT LEAVE IN AFTER PRODUCTION
-    print(username, password)
+    
     if username == "accounting" and password == "1234":
         user_id = 999999
         is_advisor = False
@@ -195,7 +195,7 @@ def advisor_landing_page():
 
     # Fetch all of the student's this advisor is responsible for
     advisor = flask_login.current_user
-    print(advisor)
+    
     #!ADVISOR DUMMY
     if advisor.username == "advisor":
         
@@ -464,7 +464,7 @@ def get_student_data():
     # Fetch the information about this student
     with Database() as db:
         student = db.get_student(student_id)
-        print(student)
+        
         schedule = db.get_student_schedule(student_id)
 
     # Fetch the information from the college if not cached
@@ -527,30 +527,31 @@ def student_landing_page():
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
 
-        # if not schedule.courses:
-        #     # load and save template schedule
-        #     student_majors = db.get_student_majors(student_id)
+        if not schedule.courses:
+            # load and save template schedule
+            student_majors = db.get_student_majors(student_id)
             
-        #     major_name, major_year = student_majors[0]
+            major_name, major_year = student_majors[0]
 
-        #     major_code = db.get_major_code(major_name, major_year)
+            major_code = db.get_major_code(major_name, major_year)
 
-        #     template = db.get_template(major_code[0])
+            template = db.get_template(major_code[0])
+            
 
-        #     # status 3 = Awaiting Student Creation
-        #     schedule = Schedule(student_id=student_id, status=3, courses=[])
+            # status 3 = Awaiting Student Creation
+            schedule = Schedule(student_id=student_id, status=3, courses=[])
 
-        #     for semester in template:
-        #         for course_code in semester["classes"]:
-        #             schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+            for semester in template:
+                for course_code in semester["classes"]:
 
-            # # save schedule to db
-            # db.update_student_schedule(schedule)
+                    schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+
+            # save schedule to db
+            db.update_student_schedule(schedule)
 
             # save schedule status "awaiting student creation" to db
-
-            # db.setStudentStatus(student_id, 3)
-
+            db.setStudentStatus(student_id, 3)
+    
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
 
