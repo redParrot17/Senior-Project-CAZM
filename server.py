@@ -21,7 +21,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -222,6 +222,29 @@ def advisor_viewing_student():
     with Database() as db:
         student = db.get_student(student_id, advisor_id)
         schedule = db.get_student_schedule(student_id)
+        
+        if not schedule.courses:
+            # load and save template schedule
+            student_majors = db.get_student_majors(student_id)
+            
+            major_name, major_year = student_majors[0]
+
+            major_code = db.get_major_code(major_name, major_year)
+
+            template = db.get_template(major_code[0])
+
+            # status 3 = Awaiting Student Creation
+            schedule = Schedule(student_id=student_id, status=3, courses=[])
+
+            for semester in template:
+                for course_code in semester["classes"]:
+                    schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+
+            # save schedule to db
+            db.update_student_schedule(schedule)
+
+            # save schedule status "awaiting student creation" to db
+            db.setStudentStatus(student_id, 3)
 
     # Ensure the advisor has access to this student within the database
     if student is not None:
@@ -235,25 +258,31 @@ def advisor_viewing_student():
             'status': schedule.status_str if schedule else 'Awaiting Student Creation',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'major': None if not student.majors else student.majors[0][0],
+            'enrolled_year': student.enrolled_year,
+            'grad_year': student.graduation_year
         }
-
-        # TODO: needs review
-        current_year = 2021
-        current_semester = 'Spring'
-        schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
-
-        if schedule is not None:
-            for course in schedule.courses:
-                if course.semester == current_semester and course.year == current_year:
-                    if course.course_code not in schedule_data['classes']:
-                        schedule_data['classes'].append(course.course_code)
-
-        # Serve the student overview page to the advisor performing the request
-        return render_template('advisorViewingStudent.html', student=data, studentSchedule=[schedule_data])
 
     # Redirect to the unauthorized page since the advisor does not have access to the requested student
     else:
         return login_manager.unauthorized()
+
+    semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
+    schedule_data = []
+
+    for year in range(data['enrolled_year'], data['grad_year'] + 1):
+        for sem in semesters:
+            classes = []
+            for course in schedule.courses:
+                if course.semester.lower() == sem.lower() and course.year == year:
+                    classes.append(course.course_code)
+
+            if classes:
+                schedule_data.append({'semester': sem, 'year': year, 'classes': classes})
+
+    # Serve the student overview page to the advisor performing the request
+    return render_template('advisorViewingStudent.html', student=data, studentSchedule=schedule_data)
+
+    
 
 
 @app.route('/advisorSchReview/', methods=['POST'])

@@ -512,6 +512,7 @@ class Database:
 
         # Parse the result into a schedule object
         if result is not None and result[0] != 0:
+            print("result is not none")
             schedule = Schedule(student_id=student_id, status=result[0], courses=[])
 
             ### Fetch the schedule's course identifiers ###
@@ -529,6 +530,7 @@ class Database:
         ### Fetch the course information for each course identifier ###
         # print("HERE!!!!!!!!!!!!!!",course_identifiers)
         if schedule is not None:
+            print("schedule is not none")
             for course_code, year, semester in course_identifiers:
                 course = self.get_course(course_code, year, semester)
                 if course is not None:
