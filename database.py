@@ -104,14 +104,13 @@ class Database:
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
-        print("Results: ", results)
         return results
 
     def get_courses_by_cluster(self, cluster_id):
         cursor = self.db.cursor(buffered=True)
         args = (cluster_id,)
         sql = """
-            Select COURSE_CODE from CLUSTER_COURSES where CLUSTER_ID = %s ;
+            Select COURSE_CODE from CLUSTER_COURSES where CLUSTER_ID = %s ORDER BY COURSE_CODE ;
             """
         cursor.execute(sql, args)
         results = cursor.fetchall()
@@ -461,6 +460,32 @@ class Database:
 
         cursor.close()
         return result is not None
+
+    def setCredits(self,  student_id: int, newCredits: int, suppress_commit=False):
+        """ Updates a student's completed credit count.
+
+        :param student_id: student's unique identifier
+        :param newCredits: student's new credit count
+
+        """
+        print("running")
+        print("credits: ", newCredits)
+        print("id: ", student_id)
+        cursor = self.db.cursor(buffered=True)
+
+        # Prepare the SQL query
+        sql_query = '''UPDATE STUDENTS SET CREDITS_COMPLETED = %s WHERE STUDENT_ID = %s ;'''
+
+        arguments = (newCredits, student_id,)
+
+        # Execute the SQL query
+        cursor.execute(sql_query, arguments)
+        
+
+        cursor.close()
+        if not suppress_commit and self.autocommit:
+            self.db.commit()
+
 
     def get_student_schedule(self, student_id: int) -> Schedule:
         """ Retrieves information stored for a student's schedule in the database.

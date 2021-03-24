@@ -517,6 +517,7 @@ def student_sch_review_post():
     # print("\n\n",data)
     changed = data["changed"]
     courses = data["courses"]
+    newCredits = data["newCredits"]
     student_id = flask_login.current_user.id
 
     with Database() as db:
@@ -539,6 +540,7 @@ def student_sch_review_post():
         for course in courses:
             db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
             # print("\nLINE:", student_id, course)
+        db.setCredits(student_id, newCredits)
     return jsonify({"success":1}), 200
 
 ### UTILITY ENDPOINTS ###
