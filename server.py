@@ -310,7 +310,6 @@ def advisor_sch_review():
             listOfCourses=list_of_courses)
 
 
-
 ### STUDENT SPECIFIC ENDPOINTS ###
 
 # Exponential backoff required due to an occasional domain resolution failure.
