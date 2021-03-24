@@ -21,7 +21,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -99,6 +99,29 @@ def login_post():
     if not username or not password:
         return flask.redirect(flask.url_for('login_get'))
 
+
+    #! DUMMY LOGIN FOR TESTING
+    #! DO NOT LEAVE IN AFTER PRODUCTION
+    print(username, password)
+    if username == "accounting" and password == "1234":
+        user_id = 999999
+        is_advisor = False
+        user = User(user_id, is_advisor, username, password)
+        users[user.get_id()] = user
+        flask_login.login_user(user)
+        return flask.redirect(flask.url_for("student_landing_page"))
+    
+    if username == "advisor" and password == "1234":
+        user_id = 888888
+        is_advisor = True
+        user = User(user_id, is_advisor, username, password)
+        users[user.get_id()] = user
+        flask_login.login_user(user)
+        return flask.redirect(flask.url_for("advisor_landing_page"))
+    #! DUMMY DONE
+       
+
+
     # Interface with https://my.gcc.edu/ICS/
     portal = MyGcc(username, password)
 
@@ -172,7 +195,20 @@ def advisor_landing_page():
 
     # Fetch all of the student's this advisor is responsible for
     advisor = flask_login.current_user
-    advisor_students = advisee_scraper.get_advisers_students(advisor.id, advisor.username, advisor.password)
+    print(advisor)
+    #!ADVISOR DUMMY
+    if advisor.username == "advisor":
+        
+        advisor_students = [Student(999999, 888888, "Adam", "Accounting", "AccountingAE18@gcc.edu","Accounting 2018", "Junior", 2022, "Spring", 2018, "Fall")]
+        
+
+    else:
+    #! END DUMMY
+        advisor_students = advisee_scraper.get_advisers_students(advisor.id, advisor.username, advisor.password)
+
+
+
+
 
     # Format all the user data into something we can pass into the html template
     with Database() as db:
@@ -367,6 +403,7 @@ def get_student_data():
     # Fetch the information about this student
     with Database() as db:
         student = db.get_student(student_id)
+        print(student)
         schedule = db.get_student_schedule(student_id)
 
     # Fetch the information from the college if not cached
@@ -430,28 +467,28 @@ def student_landing_page():
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
 
-        if not schedule.courses:
-            # load and save template schedule
-            student_majors = db.get_student_majors(student_id)
+        # if not schedule.courses:
+        #     # load and save template schedule
+        #     student_majors = db.get_student_majors(student_id)
             
-            major_name, major_year = student_majors[0]
+        #     major_name, major_year = student_majors[0]
 
-            major_code = db.get_major_code(major_name, major_year)
+        #     major_code = db.get_major_code(major_name, major_year)
 
-            template = db.get_template(major_code[0])
+        #     template = db.get_template(major_code[0])
 
-            # status 3 = Awaiting Student Creation
-            schedule = Schedule(student_id=student_id, status=3, courses=[])
+        #     # status 3 = Awaiting Student Creation
+        #     schedule = Schedule(student_id=student_id, status=3, courses=[])
 
-            for semester in template:
-                for course_code in semester["classes"]:
-                    schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+        #     for semester in template:
+        #         for course_code in semester["classes"]:
+        #             schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
 
-            # save schedule to db
-            db.update_student_schedule(schedule)
+            # # save schedule to db
+            # db.update_student_schedule(schedule)
 
             # save schedule status "awaiting student creation" to db
-            db.setStudentStatus(student_id, 3)
+            # db.setStudentStatus(student_id, 3)
     
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
