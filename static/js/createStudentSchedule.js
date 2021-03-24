@@ -77,7 +77,7 @@ function setUpStudentScheduleContainers(studentData) {
 
       StudentCourses.forEach((course, index) => {
         if(course.year == year){
-          if(course.semester == ALL_SEMESTERS[i]){
+          if(course.semester.toLowerCase() == ALL_SEMESTERS[i].toLowerCase()){
             //add course to currentSemesterCourses
             currentSemesterCourses.push(course);
           }
