@@ -318,8 +318,6 @@ def advisor_viewing_student():
     # Serve the student overview page to the advisor performing the request
     return render_template('advisorViewingStudent.html', student=data, studentSchedule=schedule_data)
 
-    
-
 
 @app.route('/advisorSchReview/', methods=['POST'])
 @flask_login.login_required     # you must be logged in to view this page
@@ -374,6 +372,7 @@ def advisor_sch_review():
             StudentCourses=json_courses,
             advisor_view=True)
 
+
 @app.route('/advisorSchReviewPost/', methods=["POST"])
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_advisors  # you must be a student to view this page
@@ -406,6 +405,52 @@ def advisor_sch_review_post():
             db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
 
     return jsonify({"success": 1}), 200
+
+
+@app.route('/adviseeData')
+@flask_login.login_required
+@security.restrict_to_advisors
+def get_advisee_data():
+    advisor_id = flask_login.current_user.id
+    student_id = request.args.get('student_id')
+
+    if student_id is not None:
+        with Database() as db:
+            student = db.get_student(student_id, advisor_id)
+            schedule = db.get_student_schedule(student_id)
+
+        if student is not None:
+            # Format the student data into something that can be passed to the html page
+            data = {
+                'id': student.student_id,
+                'name': f'{student.firstname} {student.lastname}',
+                'credits': student.credits_completed,
+                'status': schedule.status_str if schedule else 'Awaiting Student Creation',
+                'enrolled_semester': student.enrolled_semester,
+                'enrolled_year': student.enrolled_year,
+                'grad_semester': student.graduation_semester,
+                'grad_year': student.graduation_year,
+                'enrolled_semester_combined': f'{student.enrolled_semester} {student.enrolled_year}',
+                'grad_semester_combined': f'{student.graduation_semester} {student.graduation_year}',
+                'majors': [],
+                # 'major_name': student.majors[0][0],
+                # 'major_year': student.majors[0][1],
+                # 'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
+            }
+
+            for major in student.majors:
+                data['majors'].append({
+                    'major_name': major[0],
+                    'major_year': major[1]
+                })
+
+            return jsonify(data)
+
+        else:
+            # The advisor is not allowed to access this user
+            return login_manager.unauthorized()
+
+    return jsonify({})
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -464,7 +509,6 @@ def get_student_data():
     # Fetch the information about this student
     with Database() as db:
         student = db.get_student(student_id)
-        
         schedule = db.get_student_schedule(student_id)
 
     # Fetch the information from the college if not cached

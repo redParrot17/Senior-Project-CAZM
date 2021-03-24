@@ -174,13 +174,15 @@
 <script src="/static/js/js-snackbar.js"></script>
 {% if advisor_view %}
   <script src="/static/js/advisorApproveSchedule.js"></script>
+  <script src="/static/js/AdviseeScheduleLoad.js" charset="utf-8"></script>
+  <script>createEventListeners(JSON.parse('{{student_id}}'));</script>
 {% else %}
   <script src="/static/js/studentApproveSchedule.js"></script>
+  <script src="/static/js/StudentScheduleLoad.js" charset="utf-8"></script>
 {% endif %}
 <script src="/static/js/status-sheet.js" charset="utf-8"></script>
 <script src="/static/js/prereqs.js" charset="utf-8"></script>
 <script src="/static/js/createStudentSchedule.js" charset="utf-8"></script>
-<script src="/static/js/StudentScheduleLoad.js" charset="utf-8"></script>
 <script src="/static/js/drag-drop.js" charset="utf-8"></script>
 <script src="/static/js/side-bar.js" charset="utf-8"></script>
 <script src="/static/js/filtercourses.js" charset="utf-8"></script>
