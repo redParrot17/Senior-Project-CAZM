@@ -28,6 +28,29 @@ function getCredits(code) {
 }
 
 
+/* Gets number of credits for a coursecode */
+function getCreditsForSum(code) {
+
+	var returnedCredits = -1;
+
+	let found = false;
+	var courseIndex = 0;
+
+	while (!found && courseIndex < listOfCourses.length) {
+		let searchedCourse = listOfCourses[courseIndex];
+
+		if (searchedCourse.courseCode === code) {
+			found = true;
+			returnedCredits = searchedCourse.credits;
+		}
+		courseIndex++;
+	}
+
+
+	return returnedCredits;
+}
+
+
 
 
 
@@ -133,7 +156,6 @@ function updateStatusSheet() {
 	
 			let clusterKeys = Object.keys(clusters);
 
-			console.log(clusters)
 			//Examine each cluster
 			var count = 0
 			for (let clusterKey of clusterKeys) {
@@ -183,7 +205,7 @@ function updateStatusSheet() {
 
 				if (count > 0) {
 					let and = document.createElement("h3");
-					and.classList = "fa-ul";
+					and.classList = "fa-ul status-h3";
 					and.innerText = "[AND]"
 					requirementContainer.appendChild(and)
 				}
@@ -244,8 +266,8 @@ function updateStatusSheet() {
 
 					}
 					let or = document.createElement("h3");
-					or.classList = "or"
-					or.innerText = "[------ OR ------]";
+					or.classList = "or status-h3"
+					or.innerText = "[~~~ OR ~~~]";
 					requirementContainer.appendChild(or);
 	
 					if (alternate_creds !== null) {

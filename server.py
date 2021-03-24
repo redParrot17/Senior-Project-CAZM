@@ -21,7 +21,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -258,6 +258,29 @@ def advisor_viewing_student():
     with Database() as db:
         student = db.get_student(student_id, advisor_id)
         schedule = db.get_student_schedule(student_id)
+        
+        if not schedule.courses:
+            # load and save template schedule
+            student_majors = db.get_student_majors(student_id)
+            
+            major_name, major_year = student_majors[0]
+
+            major_code = db.get_major_code(major_name, major_year)
+
+            template = db.get_template(major_code[0])
+
+            # status 3 = Awaiting Student Creation
+            schedule = Schedule(student_id=student_id, status=3, courses=[])
+
+            for semester in template:
+                for course_code in semester["classes"]:
+                    schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+
+            # save schedule to db
+            db.update_student_schedule(schedule)
+
+            # save schedule status "awaiting student creation" to db
+            db.setStudentStatus(student_id, 3)
 
     # Ensure the advisor has access to this student within the database
     if student is not None:
@@ -271,25 +294,31 @@ def advisor_viewing_student():
             'status': schedule.status_str if schedule else 'Awaiting Student Creation',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'major': None if not student.majors else student.majors[0][0],
+            'enrolled_year': student.enrolled_year,
+            'grad_year': student.graduation_year
         }
-
-        # TODO: needs review
-        current_year = 2021
-        current_semester = 'Spring'
-        schedule_data = {'semester': current_semester, 'year': current_year, 'classes': []}
-
-        if schedule is not None:
-            for course in schedule.courses:
-                if course.semester == current_semester and course.year == current_year:
-                    if course.course_code not in schedule_data['classes']:
-                        schedule_data['classes'].append(course.course_code)
-
-        # Serve the student overview page to the advisor performing the request
-        return render_template('advisorViewingStudent.html', student=data, studentSchedule=[schedule_data])
 
     # Redirect to the unauthorized page since the advisor does not have access to the requested student
     else:
         return login_manager.unauthorized()
+
+    semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
+    schedule_data = []
+
+    for year in range(data['enrolled_year'], data['grad_year'] + 1):
+        for sem in semesters:
+            classes = []
+            for course in schedule.courses:
+                if course.semester.lower() == sem.lower() and course.year == year:
+                    classes.append(course.course_code)
+
+            if classes:
+                schedule_data.append({'semester': sem, 'year': year, 'classes': classes})
+
+    # Serve the student overview page to the advisor performing the request
+    return render_template('advisorViewingStudent.html', student=data, studentSchedule=schedule_data)
+
+    
 
 
 @app.route('/advisorSchReview/', methods=['POST'])
@@ -318,33 +347,65 @@ def advisor_sch_review():
         with Database() as db:
             student = db.get_student(student_id, advisor_id)
             schedule = db.get_student_schedule(student_id)
-            major_name, major_year = student.majors[0] 
-
 
         # Make sure the advisor has access to this student's schedule
         if student is None:
             return login_manager.unauthorized()
 
-
-
-
-        # TODO: make this page exist standalone from the student side
-
-      
-
         with Database() as db:
-             # TODO: [SP-78] this cannot be a hardcoded value
-            # status_sheet = db.getRequirements(major_name, major_year)
-
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
+
+        status = schedule.status
+        courses = schedule.courses
+        json_courses = [{
+            'course_code': c.course_code,
+            'name': c.name,
+            'year': c.year,
+            'semester': c.semester
+        } for c in courses]
 
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
             allCourses=query_results,
-            listOfCourses=list_of_courses)
+            studentStatus=status,
+            listOfCourses=list_of_courses,
+            StudentCourses=json_courses,
+            advisor_view=True)
 
+@app.route('/advisorSchReviewPost/', methods=["POST"])
+@flask_login.login_required     # you must be logged in to view this page
+@security.restrict_to_advisors  # you must be a student to view this page
+def advisor_sch_review_post():
+    data = request.json
+    # print("\n\n",data)
+    changed = data["changed"]
+    courses = data["courses"]
+    student_id = data["student_id"]
+
+
+    with Database() as db:
+        schedule = db.get_student_schedule(student_id)
+        if schedule.status == 4:
+            db.setStudentStatus(student_id, 3)
+        elif schedule.status == 1:
+            if changed:
+                db.setStudentStatus(student_id, 3)
+            else:
+                db.setStudentStatus(student_id, 4)
+        elif schedule.status == 2:
+            db.setStudentStatus(student_id, 3)
+        elif schedule.status == 3:
+            db.setStudentStatus(student_id, 3)
+        else:
+            db.setStudentStatus(student_id, 2)
+
+        db.clearStudentSchedule(student_id)
+        for course in courses:
+            db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
+
+    return jsonify({"success": 1}), 200
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -444,7 +505,6 @@ def get_student_data():
 
 @app.route('/studentData')
 @flask_login.login_required     # you must be logged in to view this page
-@security.restrict_to_students  # you must be a student to view this page
 def get_student_info_json():
     """
     Returns Student info JSON for logged in student
@@ -490,7 +550,7 @@ def student_landing_page():
             db.update_student_schedule(schedule)
 
             # save schedule status "awaiting student creation" to db
-        db.setStudentStatus(student_id, 3)
+            db.setStudentStatus(student_id, 3)
     
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
@@ -504,7 +564,7 @@ def student_landing_page():
 
             if classes:
                 schedule_data.append({'semester': sem, 'year': year, 'classes': classes})
-                
+
     # if schedule is not None:
     #     for course in schedule.courses:
     #         if course.semester == current_semester and course.year == current_year:
@@ -526,29 +586,28 @@ def student_sch_review():
         schedule = db.get_student_schedule(student_id)
         status = schedule.status
         courses = schedule.courses
-        
-    json_courses = [{'course_code' : c.course_code,
-                     'name' : c.name,
+
+    json_courses = [{'course_code': c.course_code,
+                     'name': c.name,
                      'year': c.year,
-                     'semester':c.semester
-                     }for c in courses]
+                     'semester': c.semester
+                     } for c in courses]
 
-    db = Database()
-
-   
-    query_results = db.get_all_courses()
-
-    list_of_courses = db.get_courses()
+    with Database() as db:
+        query_results = db.get_all_courses()
+        list_of_courses = db.get_courses()
 
     return render_template(
-        'advisorStudentScheduleReview.html',        
+        'advisorStudentScheduleReview.html',
+        student_id=student_id,
         allCourses=query_results,
         studentStatus=status,
         listOfCourses=list_of_courses,
-        StudentCourses = json_courses)
+        StudentCourses=json_courses,
+        advisor_view=False)
 
 
-@app.route('/studentSchReview/', methods=["POST"])
+@app.route('/studentSchReviewPost/', methods=["POST"])
 @flask_login.login_required     # you must be logged in to view this page
 @security.restrict_to_students  # you must be a student to view this page
 def student_sch_review_post():
@@ -556,20 +615,22 @@ def student_sch_review_post():
     # print("\n\n",data)
     changed = data["changed"]
     courses = data["courses"]
+    newCredits = data["newCredits"]
     student_id = flask_login.current_user.id
+
 
     with Database() as db:
         schedule = db.get_student_schedule(student_id)
-        if(schedule.status == 4):
+        if schedule.status == 4:
             db.setStudentStatus(student_id, 1)
-        elif(schedule.status == 3):
-            if(changed):
+        elif schedule.status == 3:
+            if changed:
                 db.setStudentStatus(student_id, 1)
             else:
                 db.setStudentStatus(student_id, 4)
-        elif(schedule.status == 2):
+        elif schedule.status == 2:
             db.setStudentStatus(student_id, 1)
-        elif(schedule.status == 1):
+        elif schedule.status == 1:
             db.setStudentStatus(student_id, 1)
         else:
             db.setStudentStatus(student_id, 2)
@@ -577,8 +638,9 @@ def student_sch_review_post():
         db.clearStudentSchedule(student_id)
         for course in courses:
             db.addCourseToStudentSchedule(student_id, course["course_code"], course["semester"], course["year"])
-            # print("\nLINE:", student_id, course)
-    return jsonify({"success":1}), 200
+        db.setCredits(student_id, newCredits)
+
+    return jsonify({"success": 1}), 200
 
 ### UTILITY ENDPOINTS ###
 
