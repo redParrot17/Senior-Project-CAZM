@@ -476,7 +476,7 @@ def student_landing_page():
             major_code = db.get_major_code(major_name, major_year)
 
             template = db.get_template(major_code[0])
-            print(template)
+            
 
             # status 3 = Awaiting Student Creation
             schedule = Schedule(student_id=student_id, status=3, courses=[])
