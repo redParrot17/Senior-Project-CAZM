@@ -205,7 +205,7 @@ function updateStatusSheet() {
 
 				if (count > 0) {
 					let and = document.createElement("h3");
-					and.classList = "fa-ul";
+					and.classList = "fa-ul status-h3";
 					and.innerText = "[AND]"
 					requirementContainer.appendChild(and)
 				}
@@ -266,8 +266,8 @@ function updateStatusSheet() {
 
 					}
 					let or = document.createElement("h3");
-					or.classList = "or"
-					or.innerText = "[------ OR ------]";
+					or.classList = "or status-h3"
+					or.innerText = "[~~~ OR ~~~]";
 					requirementContainer.appendChild(or);
 	
 					if (alternate_creds !== null) {
