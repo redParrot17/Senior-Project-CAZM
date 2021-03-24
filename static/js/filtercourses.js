@@ -121,6 +121,18 @@ function filterCourses() {
     }, function (data, status) {
         filteredCourses = data
 
+        //Filter major
+        if (document.getElementById("major-checkbox").checked) {
+            var majorReqs = [...document.getElementsByClassName("requirement-list-course")].map(e=>e.childNodes[0].textContent)
+            filteredCourses = $.grep(filteredCourses, function (n, i) {
+                for(c in majorReqs) {
+                    if(n.course_code === majorReqs[c])
+                        return true
+                }
+                return false
+            });
+        }
+
         //Filter duplicates
         if (document.getElementById("duplicates-checkbox").checked) {
             filteredCourses = $.grep(filteredCourses, function (n, i) {
