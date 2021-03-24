@@ -217,7 +217,7 @@ def advisor_landing_page():
         for student in advisor_students:
             # Fetches the student's schedule status and defaults to awaiting creation
             schedule = db.get_student_schedule(student.student_id)
-            schedule_status = schedule.status if schedule else 3
+            schedule_status = schedule.status if schedule else 2
 
             data.append({
                 'id': student.student_id,
