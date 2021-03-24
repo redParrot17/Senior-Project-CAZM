@@ -21,7 +21,7 @@ from requests.exceptions import RequestException
 
 
 ### FOR DEBUG PURPOSES ONLY ###
-OVERRIDE_IS_ADVISOR = None  # overrides the is_advisor login check (True|False|None)
+OVERRIDE_IS_ADVISOR = True  # overrides the is_advisor login check (True|False|None)
                             # set the value to None to disable the override
 
 
@@ -282,32 +282,31 @@ def advisor_sch_review():
         with Database() as db:
             student = db.get_student(student_id, advisor_id)
             schedule = db.get_student_schedule(student_id)
-            major_name, major_year = student.majors[0] 
-
 
         # Make sure the advisor has access to this student's schedule
         if student is None:
             return login_manager.unauthorized()
 
-
-
-
-        # TODO: make this page exist standalone from the student side
-
-      
-
         with Database() as db:
-             # TODO: [SP-78] this cannot be a hardcoded value
-            # status_sheet = db.getRequirements(major_name, major_year)
-
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
+
+        status = schedule.status
+        courses = schedule.courses
+        json_courses = [{
+            'course_code': c.course_code,
+            'name': c.name,
+            'year': c.name,
+            'semester': c.semester
+        } for c in courses]
 
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
             allCourses=query_results,
-            listOfCourses=list_of_courses)
+            listOfCourses=list_of_courses,
+            StudentCourses=json_courses,
+            advisor_view=True)
 
 
 ### STUDENT SPECIFIC ENDPOINTS ###
@@ -501,11 +500,13 @@ def student_sch_review():
     list_of_courses = db.get_courses()
 
     return render_template(
-        'advisorStudentScheduleReview.html',        
+        'advisorStudentScheduleReview.html',
+        student_id=student_id,
         allCourses=query_results,
         studentStatus=status,
         listOfCourses=list_of_courses,
-        StudentCourses = json_courses)
+        StudentCourses=json_courses,
+        advisor_view=False)
 
 
 @app.route('/studentSchReview/', methods=["POST"])
