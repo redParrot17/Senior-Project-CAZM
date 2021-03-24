@@ -1,6 +1,9 @@
 from webscraping.scraperutils import ScraperUtils
 import webscraping.errors as errors
 
+from webscraping.backoff import exponential_backoff
+from requests.exceptions import RequestException
+
 
 class ProfileInformation:
     PROFILEURL = 'https://my.gcc.edu/ICS/'
@@ -40,6 +43,8 @@ class ProfileInformation:
     ### ABOUT ME ###
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def user_id(self):
         if self.__user_id is None:
             header = self._span_template('AboutMeView', 'CP_V_ViewHeader_SiteManagerLabel')
@@ -47,6 +52,8 @@ class ProfileInformation:
         return self.__user_id
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def photo(self):
         if self.__photo is None:
             self._ensure_screen('AboutMeView')
@@ -56,6 +63,8 @@ class ProfileInformation:
         return self.__photo
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def name(self):
         if self.__name is None:
             self._ensure_screen('AboutMeView')
@@ -99,24 +108,32 @@ class ProfileInformation:
         return self.__name
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def birthday(self):
         if self.__birthday is None:
             self.__birthday = self._span_template('AboutMeView', 'CP_V_StaticDateOfBirth')
         return self.__birthday
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def gender(self):
         if self.__gender is None:
             self.__gender = self._span_template('AboutMeView', 'CP_V_StaticGenderValue')
         return self.__gender
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def ethnicity(self):
         if self.__ethnicity is None:
             self.__ethnicity = self._span_template('AboutMeView', 'CP_V_StaticEthnicityValue')
         return self.__ethnicity
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def marital_status(self):
         if self.__marital_status is None:
             self.__marital_status = self._span_template('AboutMeView', 'CP_V_StaticMaritalStatus')
@@ -127,72 +144,96 @@ class ProfileInformation:
     ### ACADEMIC INFORMATION ###
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def major(self):
         if self.__major is None:
             self.__major = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl00_InformationItemsRepeater_ctl00_Value')
         return self.__major
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def minor(self):
         if self.__minor is None:
             self.__minor = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl00_InformationItemsRepeater_ctl01_Value')
         return self.__minor
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def certification(self):
         if self.__certification is None:
             self.__certification = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl00_InformationItemsRepeater_ctl02_Value')
         return self.__certification
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def concentration(self):
         if self.__concentration is None:
             self.__concentration = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl00_InformationItemsRepeater_ctl03_Value')
         return self.__concentration
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def degree_honor(self):
         if self.__degree_honor is None:
             self.__degree_honor = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl00_InformationItemsRepeater_ctl04_Value')
         return self.__degree_honor
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def course_of_study(self):
         if self.__course_of_study is None:
             self.__course_of_study = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl00_Value')
         return self.__course_of_study
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def classification(self):
         if self.__classification is None:
             self.__classification = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl01_Value')
         return self.__classification
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def division(self):
         if self.__division is None:
             self.__division = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl02_Value')
         return self.__division
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def academic_status(self):
         if self.__academic_status is None:
             self.__academic_status = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl03_Value')
         return self.__academic_status
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def enrolled_date(self):
         if self.__enrolled_date is None:
             self.__enrolled_date = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl04_Value')
         return self.__enrolled_date
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def planned_graduation(self):
         if self.__planned_grad is None:
             self.__planned_grad = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl05_Value')
         return self.__planned_grad
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def max_credits(self):
         if self.__max_credits is None:
             value = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl01_InformationItemsRepeater_ctl06_Value')
@@ -200,12 +241,16 @@ class ProfileInformation:
         return self.__max_credits
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def social_security_benefits(self):
         if self.__ss_benefits is None:
             self.__ss_benefits = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl02_InformationItemsRepeater_ctl00_Value')
         return self.__ss_benefits
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def veterans_benefits(self):
         if self.__vet_benefits is None:
             self.__vet_benefits = self._span_template('AcademicInformationView', 'CP_V_AcademicInformationCards_ctl00_AcademicInformationCard_InformationSetsRepeater_ctl02_InformationItemsRepeater_ctl01_Value')
@@ -242,6 +287,8 @@ class AdvisingInformation:
         self.__is_advisor = None
 
     @property
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def is_advisor(self):
         if self.__is_advisor is None:
             try:
@@ -266,6 +313,8 @@ class MyGcc:
         self.__profile = None
         self.__advising = None
 
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def login(self):
         dc = self._dc
         dc.perform_login(self.__username, self.__password)
@@ -273,6 +322,8 @@ class MyGcc:
         self._logged_in = True
         return True
 
+    # Exponential backoff required due to an occasional domain resolution failure.
+    @exponential_backoff(RequestException, retries=5, timeslot=0.5)
     def logout(self):
         dc = self._dc
         if self._logged_in:
