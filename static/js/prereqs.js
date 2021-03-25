@@ -52,7 +52,9 @@ function setWarnings(courseID, showSnack) {
             new SnackBar({
                 message: "Warning: Prerequisites or Corequisites for " + code + " not met.",
                 position: "bc",
-                status: "warning"
+                timeout: 10000,
+                status: "warning",
+                width: "100%"
             });
 
         }

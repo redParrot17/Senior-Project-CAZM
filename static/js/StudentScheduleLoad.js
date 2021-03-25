@@ -19,11 +19,12 @@ window.addEventListener("DOMContentLoaded", function () {
             reqs = reqData;
 
             loadStatusSheet(reqs);
-            
+            document.getElementById("status-sheet-spinner").innerHTML = "";
         });
       
             // set up student schedule containers
             setUpStudentScheduleContainers(studentData);
+            document.getElementById("schedule-spinner").innerHTML = "";
             addClassestoPools();
             // updateStatusSheet();
 
