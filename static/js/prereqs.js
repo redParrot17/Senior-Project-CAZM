@@ -10,6 +10,23 @@ let semesters = document.getElementsByClassName("scheduleContainer")
  */
 var pools;
 
+
+
+let getTargetIndex = (year, semester) => {
+   
+    for (let s = 0; s < semesters.length; s++) {
+        let sem = semesters[s].dataset;
+
+        if (sem.year == year && sem.semester.toUpperCase() == semester.toUpperCase()) {
+            var index = s;
+
+        }
+    }
+
+    return index;
+}
+
+
 /**
  * Sets warnings on the element passed in
  * @param {String} courseID
@@ -20,15 +37,14 @@ var pools;
 function setWarnings(courseID, showSnack) {
 
     let courseElement = document.getElementById(courseID)
-    // console.log(courseElement)
     let code = courseElement.getAttribute("coursecode");
 
     let semester = courseElement.getAttribute("semester");
     let year = courseElement.getAttribute("year");
+    
 
     //If requisites bad, set the warning, otherwise set to no warnings
     if (!checkRequisites(code, semester, year)) {
-
 
 
         //only show snackbar if required
@@ -36,7 +52,9 @@ function setWarnings(courseID, showSnack) {
             new SnackBar({
                 message: "Warning: Prerequisites or Corequisites for " + code + " not met.",
                 position: "bc",
-                status: "warning"
+                timeout: 10000,
+                status: "warning",
+                width: "100%"
             });
 
         }
@@ -83,11 +101,12 @@ function checkPools(update) {
         let currentSemester = pools[semester];
         //check warnings for each course
         for (let course = 0; course < currentSemester.length; course++) {
-            // console.log("Course " + course)
+
             let checkedCourse = currentSemester[course];
 
             //element has no warnings and has already been checked, so the the most recent change had a side effect of 
             //changing the warnings of this class -> show a snackbar
+
             if (update) {
                 setWarnings(checkedCourse, true);
             }
@@ -121,14 +140,16 @@ function checkRequisites(code, semester, year) {
 
     //! CHECK PREREQS
     if (codeReqs !== undefined) {
-       
+
         //Get target semester #
         //Find the semester number of semesters before this class
-        
-        var index = getTargetIndex(year, semester);
+
+        let targetindex = getTargetIndex(year, semester);
         var special = codeReqs[0]
         var prereqs = codeReqs[1]
         var coreqs = codeReqs[2]
+
+
 
         //TODO handle prohibited courses correctly
         // var prohibited = codeReqs[4]
@@ -150,7 +171,7 @@ function checkRequisites(code, semester, year) {
 
 
                 let group = coreqs[groupNum] //group of requisites (only 1 required to be completed)
-                console.log("coreq group:", group)
+
                 var reqmet = true;
                 var req = 0
 
@@ -159,9 +180,9 @@ function checkRequisites(code, semester, year) {
 
                     reqmet = false;
                     let compareCode = group[req]; //individual requirement in the major
-                    console.log("comparing: ",compareCode)
+
                     //Check if all semesters up to target semester contain the required courses
-                    for (let p = 0; p <= index; p++) {
+                    for (let p = 0; p <= targetindex; p++) {
 
                         let activePool = pools[p]; //currently checked pool
 
@@ -175,7 +196,7 @@ function checkRequisites(code, semester, year) {
                     }
 
                     found = reqmet;
-                    console.log("found? :", found)
+
                     req++;
                 }//done with group
                 groupNum++;
@@ -183,11 +204,11 @@ function checkRequisites(code, semester, year) {
 
         }
 
-        // console.log(code,":",found)
+
         //! Prerequisites exist
         if (!found && prereqs !== undefined) {
             //Check Prereqs
-            if (index > 0) {
+            if (targetindex > 0) {
 
                 prereqs = Object.values(prereqs)
 
@@ -209,15 +230,15 @@ function checkRequisites(code, semester, year) {
                         let compareCode = group[req]; //individual requirement in the major
 
                         //Check if all semesters before target semester contain the required courses
-                        for (let p = 0; p < index; p++) {
+                        for (let p = 0; p < targetindex; p++) {
 
                             let activePool = pools[p]; //currently checked pool
                             for (let q = 0; q < activePool.length; q++) {
                                 let checkedCourse = document.getElementById(activePool[q])
 
-
                                 if (checkedCourse.getAttribute("coursecode").includes(compareCode)) {
                                     reqmet = true;
+
                                 }
                             }
 
@@ -228,7 +249,7 @@ function checkRequisites(code, semester, year) {
                     }//done with group
                     groupNum++;
                 }//next group
-                
+
             }
 
             //class in first semester has prereqs, fails by default
@@ -237,7 +258,7 @@ function checkRequisites(code, semester, year) {
             }
 
         }
-        return(found)
+        return (found)
 
         //TODO Check Prohibited
 
@@ -250,24 +271,12 @@ function checkRequisites(code, semester, year) {
 
 
 
-function getTargetIndex(year, semester) {
-    var index;
-    for (let s = 0; s < semesters.length; s++) {
-        let sem = semesters[s].dataset;
-        if (sem.year === year && sem.semester === semester) {
-            index = s;
-        }
-    }
-    return index;
-}
-
-
-let totalCreds = () =>{
+let totalCreds = () => {
     var credits = 0;
-    let index = getTargetIndex(curSemester.year, curSemester.semester);
-    for(let sem = 0; sem <= index; sem++){
+    let credindex = getTargetIndex(curSemester.year, curSemester.semester);
+    for (let sem = 0; sem <= credindex; sem++) {
         let pool = pools[sem];
-        for(let course in pool){
+        for (let course in pool) {
             let code = pool[course].split("-")[0];
 
             credits += getCreditsForSum(code);

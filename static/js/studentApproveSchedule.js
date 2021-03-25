@@ -2,6 +2,12 @@
 function approveBtn(ev){
   let container = document.getElementById("main-schedule");
   let newSchedule = container.querySelectorAll(".drag_item_fill");
+  let approve = document.getElementById("approveBtn")
+  approve.innerHTML = `<div id="status-sheet-spinner" class="d-flex justify-content-center">
+                      <div class="spinner-border text-light" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>`
   //console.log(newSchedule);
 
   let changed = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);

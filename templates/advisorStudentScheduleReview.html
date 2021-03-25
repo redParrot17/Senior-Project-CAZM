@@ -72,6 +72,11 @@
           <div class="SSheaderText rounded p-2">
             <h4> Status Sheet </h4>
           </div>
+          <div id="status-sheet-spinner" class="d-flex justify-content-center">
+            <div class="spinner-border text-danger" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
         </div>
       <!-- </div> -->
 
@@ -81,7 +86,7 @@
     <div class="col paddingTen" id="middle">
       <div class="row">
         <div class="col-11">
-          <button class="btn approvebtn shaddow btn-lg btn-secondary itemInvisible" id="approveBtn" type="button" onclick="approveBtn(event)">Approve Schedule</button>
+          <button class="btn approvebtn shaddow btn-lg btn-secondary itemInvisible" id="approveBtn" style="background-color: green;" type="button" onclick="approveBtn(event)">Approve Schedule</button>
         </div>
         <div class="ml-auto mt-1 mb-1" id="toggleBtn" onclick="toggleSideBar(event)">
 
@@ -93,6 +98,11 @@
       <div class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle" id= "main-schedule">
         <div class="SSheaderText rounded p-2">
           <h4> Student Schedule </h4>
+        </div>
+        <div id="schedule-spinner" class="d-flex justify-content-center">
+          <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
         </div>
       </div>
     </div>

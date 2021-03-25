@@ -55,6 +55,7 @@ function getCreditsForSum(code) {
 
 
 function updateStatusSheet() {
+	
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
 	
 	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
