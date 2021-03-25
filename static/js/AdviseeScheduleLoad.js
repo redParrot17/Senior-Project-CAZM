@@ -16,12 +16,16 @@ function createEventListeners(studentID) {
             }, function (reqData) {
                 reqs = reqData;
                 loadStatusSheet(reqs);
+                document.getElementById("status-sheet-spinner").innerHTML = "";
+
             });
 
             // set up student schedule containers
             setUpStudentScheduleContainers(studentData);
+            document.getElementById("schedule-spinner").innerHTML = "";
+
             addClassestoPools();
-            // updateStatusSheet();
+            
 
             //Get requisite list for each course
             $.getJSON($SCRIPT_ROOT + '/getRequisites', {
