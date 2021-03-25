@@ -63,7 +63,7 @@ def login_get():
         return flask.redirect(flask.url_for('advisor_landing_page'))
 
     # If the user is logged in as a student, redirect them to the student home page.
-    if user.is_authenticated and hasattr(user, 'is_student') and not user.is_student:
+    if user.is_authenticated and hasattr(user, 'is_student') and user.is_student:
         return flask.redirect(flask.url_for('student_landing_page'))
 
     # Since the user is not logged in, we'll serve them the login page.
