@@ -1,5 +1,5 @@
 var classes;
-
+document.getElementById("toggleBtn").click();
 function toggleSideBar(event){
   let btn=document.getElementById("toggleBtn");
   if(btn.classList.contains("selected")){

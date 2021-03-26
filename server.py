@@ -1,6 +1,6 @@
 # flask utilities
 import flask
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, flash
 import flask_login
 
 # internal utilities
@@ -102,7 +102,7 @@ def login_post():
 
     #! DUMMY LOGIN FOR TESTING
     #! DO NOT LEAVE IN AFTER PRODUCTION
-    
+
     if username == "accounting" and password == "1234":
         user_id = 999999
         is_advisor = False
@@ -110,7 +110,7 @@ def login_post():
         users[user.get_id()] = user
         flask_login.login_user(user)
         return flask.redirect(flask.url_for("student_landing_page"))
-    
+
     if username == "advisor" and password == "1234":
         user_id = 888888
         is_advisor = True
@@ -119,7 +119,7 @@ def login_post():
         flask_login.login_user(user)
         return flask.redirect(flask.url_for("advisor_landing_page"))
     #! DUMMY DONE
-       
+
 
 
     # Interface with https://my.gcc.edu/ICS/
@@ -158,6 +158,8 @@ def login_post():
 
     except errors.LoginError:
         # Redirect to login page if the supplied credentials were invalid
+        flash("Invalid username or password")
+        print("wrong credentials")
         return flask.redirect(flask.url_for('login_get'))
 
 
@@ -245,11 +247,11 @@ def advisor_viewing_student():
     with Database() as db:
         student = db.get_student(student_id, advisor_id)
         schedule = db.get_student_schedule(student_id)
-        
+
         if not schedule.courses:
             # load and save template schedule
             student_majors = db.get_student_majors(student_id)
-            
+
             major_name, major_year = student_majors[0]
 
             major_code = db.get_major_code(major_name, major_year)
@@ -563,13 +565,13 @@ def student_landing_page():
         if not schedule.courses:
             # load and save template schedule
             student_majors = db.get_student_majors(student_id)
-            
+
             major_name, major_year = student_majors[0]
 
             major_code = db.get_major_code(major_name, major_year)
 
             template = db.get_template(major_code[0])
-            
+
 
             # status 3 = Awaiting Student Creation
             schedule = Schedule(student_id=student_id, status=3, courses=[])
@@ -586,7 +588,7 @@ def student_landing_page():
             db.setStudentStatus(student_id, 2)
             schedule = db.get_student_schedule(student_id)
 
-    
+
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
 
