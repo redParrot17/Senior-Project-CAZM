@@ -156,6 +156,17 @@ input[type=password] {
     -webkit-border-radius: 5px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
 }
+.error {
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  margin-top:25px;
+  width: 85%;
+  border-radius: 5px 5px 5px 5px;
+}
 
 input[type=text]:focus {
     background-color: #fff;
