@@ -68,9 +68,11 @@
         </div>
       <!-- </div>
       <div class="row-2"> -->
-        <div id=req-list class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle" >
-          <div class="SSheaderText rounded p-2">
-            <h4> Status Sheet </h4>
+        <div id=req-list class="container outsideContainer mt-2 pb-2 pl-2 rounded overflow-auto Scrollstyle" >
+          <div class="whiteOutside sticky pt-2 pb-2">
+            <div class="SSheaderText rounded p-2 sticky">
+              <h4> Status Sheet </h4>
+            </div>
           </div>
           <div id="status-sheet-spinner" class="d-flex justify-content-center">
             <div class="spinner-border text-danger" role="status">
@@ -95,9 +97,15 @@
           <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
         </div>
       </div>
-      <div class="container outsideContainer mt-2 p-2 rounded overflow-auto Scrollstyle" id= "main-schedule">
-        <div class="SSheaderText rounded p-2">
-          <h4> Student Schedule </h4>
+      <div class="container outsideContainer mt-2 pl-2 pr-2 pb-2 rounded overflow-auto Scrollstyle" id= "main-schedule">
+        <div class="whiteOutside sticky pt-2 pb-2">
+          <div class="SSheaderText rounded p-2">
+            <h4> Student Schedule </h4>
+          </div>
+          <label class="Checkcontainer">Show Intesession Semeseters
+            <input type="checkbox" id="intersession-checkbox" onchange="displayIntersessionSemesters()">
+            <span class="checkmark"></span>
+          </label>
         </div>
         <div id="schedule-spinner" class="d-flex justify-content-center">
           <div class="spinner-border text-danger" role="status">
@@ -196,6 +204,7 @@
 <script src="/static/js/drag-drop.js" charset="utf-8"></script>
 <script src="/static/js/side-bar.js" charset="utf-8"></script>
 <script src="/static/js/filtercourses.js" charset="utf-8"></script>
+<script src="/static/js/displayingIntersessionSemesters.js" charset="utf-8"></script>
 
 
 </body>

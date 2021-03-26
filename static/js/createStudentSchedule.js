@@ -15,7 +15,7 @@ function getNameByCode(code) {
 	while (!found && courseIndex < listOfCourses.length) {
 		let searchedCourse = allCourses[courseIndex];
 
-	
+
 		if (searchedCourse.courseCode === code) {
 			found = true;
 
@@ -33,29 +33,57 @@ function getNameByCode(code) {
 
 function addClassHolder(semester, year, semesterOrder, courses) {
   let classHolder =  document.getElementById("main-schedule");
+	let holderContents = ``;
 
-  let holderContents = `
-  <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-    <legend > ${semester} ${year}</legend>
-      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">`;
+	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Summer" ){
+		holderContents = `
+	  <fieldset class="container scheduleContainer rounded itemInvisible" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+	    <legend > ${semester} ${year}</legend>
+	      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">`;
 
-//for loop through all the student's courses_to_add
-  courses.forEach((course, index) => {
-    holderContents += `<div class="col-6 drag_box">
-            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)"><div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
-              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
-              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
-              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
-            </div></div>
-        </div>`
-      });
+	//for loop through all the student's courses_to_add
+	  courses.forEach((course, index) => {
+	    holderContents += `<div class="col-6 drag_box">
+	            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)"><div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
+	              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
+	              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
+	              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
+	            </div></div>
+	        </div>`
+	      });
 
-    holderContents += `
-        <div class="col-6 drag_box">
-            <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-        </div>
-    </div>
-  </fieldset>`;
+	    holderContents += `
+	        <div class="col-6 drag_box">
+	            <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+	        </div>
+	    </div>
+	  </fieldset>`;
+	}
+	else{
+		holderContents = `
+	  <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+	    <legend > ${semester} ${year}</legend>
+	      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">`;
+
+	//for loop through all the student's courses_to_add
+	  courses.forEach((course, index) => {
+	    holderContents += `<div class="col-6 drag_box">
+	            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)"><div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
+	              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
+	              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
+	              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
+	            </div></div>
+	        </div>`
+	      });
+
+	    holderContents += `
+	        <div class="col-6 drag_box">
+	            <div class="drag_container rounded" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+	        </div>
+	    </div>
+	  </fieldset>`;
+	}
+
 
   classHolder.innerHTML +=holderContents
 }
