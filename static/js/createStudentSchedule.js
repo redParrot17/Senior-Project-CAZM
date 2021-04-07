@@ -84,6 +84,28 @@ function addClassHolder(semester, year, semesterOrder, courses) {
 	  </fieldset>`;
 	}
 
+	if(semester == curSemester.semester && year == curSemester.year){
+		holderContents += `
+			<div class = "row align-items-center">
+				<div class= "col-3 overflow-hidden p-0" style = "height:29px; text-align:center;">
+					<h6>
+						-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+					</h6>
+				</div>
+
+				<div class = "col-6 p-0" style = "text-align:center;">
+					<h6>
+						Courses for the Semesters below are aproximated
+					</h6>
+				</div>
+
+				<div class= "col-3 overflow-hidden p-0" style = "height:29px; text-align:center;">
+					<h6>
+						-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+					</h6>
+				</div>
+			</div>`;
+	}
 
   classHolder.innerHTML +=holderContents
 }
