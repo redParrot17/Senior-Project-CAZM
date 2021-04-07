@@ -206,6 +206,33 @@ def advisor_landing_page():
         for student in advisor_students:
             # Fetches the student's schedule status and defaults to awaiting creation
             schedule = db.get_student_schedule(student.student_id)
+
+            if not schedule.courses:
+                # load and save template schedule
+                student_majors = db.get_student_majors(student.student_id)
+
+                major_name, major_year = student_majors[0]
+
+                major_code = db.get_major_code(major_name, major_year)
+
+                template = db.get_template(major_code[0])
+
+
+                # status 3 = Awaiting Student Creation
+                schedule = Schedule(student_id=student.student_id, status=3, courses=[])
+
+                for semester in template:
+                    for course_code in semester["classes"]:
+
+                        schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
+
+                # save schedule to db
+                db.update_student_schedule(schedule)
+
+                # save schedule status "awaiting student creation" to db
+                db.setStudentStatus(student.student_id, 2)
+                schedule = db.get_student_schedule(student.student_id)
+
             schedule_status = schedule.status if schedule else 2
 
             data.append({
