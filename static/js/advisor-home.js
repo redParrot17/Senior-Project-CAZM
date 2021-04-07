@@ -131,8 +131,15 @@ function onClickLogout() {
 
 function onClickMessage() {
     let advisees = getFilteredAdvisees();
-    $('#emailModal').modal('show')
-    console.log('Email students')
+
+    let emailList = ""
+
+    advisees.forEach(a=>{ emailList += a.email + ";" })
+
+    location.href = "mailto:" + emailList
+    
+    // $('#emailModal').modal('show')
+    // console.log('Email students')
 }
 
 // TEMPLATES //
