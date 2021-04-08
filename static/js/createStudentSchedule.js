@@ -95,7 +95,7 @@ function addClassHolder(semester, year, semesterOrder, courses) {
 
 				<div class = "col-6 p-0" style = "text-align:center;">
 					<h6>
-						Courses for the Semesters below are aproximated
+						Future course offerings are not guaranteed to be accurate
 					</h6>
 				</div>
 
