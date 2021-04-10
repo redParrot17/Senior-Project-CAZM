@@ -381,6 +381,12 @@ def advisor_sch_review():
             'semester': c.semester
         } for c in courses]
 
+        major = ""
+        for key, value in student.majors:
+            major += key +", "
+        major = major[:-2]
+
+        name = student.firstname + " "+ student.lastname
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
@@ -388,7 +394,9 @@ def advisor_sch_review():
             studentStatus=status,
             listOfCourses=list_of_courses,
             StudentCourses=json_courses,
-            advisor_view=True)
+            advisor_view=True,
+            studentName = name,
+            studentMajor = major)
 
 
 @app.route('/advisorSchReviewPost/', methods=["POST"])
@@ -661,6 +669,12 @@ def student_sch_review():
         query_results = db.get_all_courses()
         list_of_courses = db.get_courses()
 
+    major = ""
+    for key, value in student.majors:
+        major += key +", "
+    major = major[:-2]
+    
+    name = student.firstname + " "+ student.lastname
     return render_template(
         'advisorStudentScheduleReview.html',
         student_id=student_id,
@@ -668,7 +682,9 @@ def student_sch_review():
         studentStatus=status,
         listOfCourses=list_of_courses,
         StudentCourses=json_courses,
-        advisor_view=False)
+        advisor_view=False,
+        studentName = name,
+        studentMajor = major)
 
 
 @app.route('/studentSchReviewPost/', methods=["POST"])

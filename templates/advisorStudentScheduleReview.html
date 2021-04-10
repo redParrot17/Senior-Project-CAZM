@@ -25,6 +25,8 @@
     var scheduleChangesRemoved = [];
     var studentStatus = {{ studentStatus }};
     var scheduleChanged = false;
+    var studentName = {{studentName|tojson|safe}};
+    var studentMajor = {{studentMajor|tojson|safe}};
   </script>
 
   <!-- font/icons -->
@@ -41,6 +43,7 @@
   <nav class="navbar shaddow navbar-dark" id="nav" style="background-color: #960000 ;">
       <div class="container">
           <a href="/" class="navbar-brand">HBCAZM</a>
+          <h4 style = "text-align:center;"> {{studentName}}: {{studentMajor}}</h4>
           <form class="form-inline" action="/logout" method="post">
               <button class="btn shaddow btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
           </form>
