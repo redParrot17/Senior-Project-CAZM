@@ -148,6 +148,13 @@ function filterCourses() {
             });
         }
 
+        //Filter prereq
+        if (document.getElementById("prereq-checkbox").checked) {
+            filteredCourses = $.grep(filteredCourses, function (n, i) {
+                      return checkRequisites(n.course_code, studentData["grad_semester"], studentData["grad_year"])
+            });
+        }
+
         //Filter semester
         var semesterDropdown = document.getElementById("semester-dropdown")
         if (semesterDropdown.value != -1) { //-1 if no semester selected
