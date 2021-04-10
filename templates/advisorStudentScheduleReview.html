@@ -74,6 +74,42 @@
               <h4> Status Sheet </h4>
             </div>
           </div>
+          <div>
+            <h5>Symbol Key</h5>
+            <div class = "row">
+              <div class = "col-1 p-0">
+                <h6 style = "text-align:center;"> <i class="fas fa-times" style="color: red;"></i> </h6>
+              </div>
+              <div class = "col-1 p-0">
+                <h6 style = "text-align:center;"> = </h6>
+              </div>
+              <div class = "col-10 p-0">
+                <h6> Course is Not Scheduled</h6>
+              </div>
+            </div>
+            <div class = "row">
+              <div class = "col-1 p-0">
+                <h6 style = "text-align:center;"> <i class="fas fa-check" style="color: green;"></i> </h6>
+              </div>
+              <div class = "col-1 p-0">
+                <h6 style = "text-align:center;"> = </h6>
+              </div>
+              <div class = "col-10 p-0">
+                <h6>Course has Been Taken </h6>
+              </div>
+            </div>
+            <div class = "row">
+              <div class = "col-1 p-0">
+                <h6 style = "text-align:center;"> <i class="fas fa-hourglass-start" style="color: blue;"></i> </h6>
+              </div>
+              <div class = "col-1 p-0">
+                <h6 style = "text-align:center;"> = </h6>
+              </div>
+              <div class = "col-10 p-0">
+                <h6> Course is Scheduled for the Future</h6>
+              </div>
+            </div>
+          </div>
           <div id="status-sheet-spinner" class="d-flex justify-content-center">
             <div class="spinner-border text-danger" role="status">
               <span class="sr-only">Loading...</span>
@@ -102,12 +138,15 @@
           <div class="SSheaderText rounded p-2">
             <h4> Student Schedule </h4>
           </div>
-          <h6 style = "text-align:center;">**Disclaimer: all course offerings are estimated based on available information**</h6>
+
+        <h6 style = "text-align:center;">**Disclaimer: all course offerings are estimated based on available information**</h6>
           <label class="Checkcontainer">Show Intersession Semesters
+
             <input type="checkbox" id="intersession-checkbox" onchange="displayIntersessionSemesters()">
             <span class="checkmark"></span>
           </label>
         </div>
+        <h6 style = "text-align:center;">**Disclaimer: all course offerings are estimated based on available information**</h6>
         <div id="schedule-spinner" class="d-flex justify-content-center">
           <div class="spinner-border text-danger" role="status">
             <span class="sr-only">Loading...</span>
@@ -155,7 +194,7 @@
           <span class="checkmark"></span>
         </label>
 
-        <label class="Checkcontainer">Hide Duplicate Courses
+        <label class="Checkcontainer">Hide Scheduled Courses
           <input type="checkbox" id="duplicates-checkbox" onchange="filterCourses()">
           <span class="checkmark"></span>
         </label>

@@ -1,6 +1,6 @@
 
 
-let ALL_SEMESTERS = ["January", "Spring", "May", "Summer", "Fall", "Winter Online"];
+let ALL_SEMESTERS = ["January", "Spring", "May", "Early Summer","Late Summer", "Fall", "Winter Online"];
 let invalidCombos = [];
 // var studentData
 
@@ -34,8 +34,8 @@ function getNameByCode(code) {
 function addClassHolder(semester, year, semesterOrder, courses) {
   let classHolder =  document.getElementById("main-schedule");
 	let holderContents = ``;
-
-	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Summer" ){
+	console.log(semester);
+	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Early Summer" || semester == "Late Summer"){
 		holderContents = `
 	  <fieldset class="container scheduleContainer rounded itemInvisible" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
 	    <legend > ${semester} ${year}</legend>
@@ -116,7 +116,7 @@ function setUpStudentScheduleContainers(studentData) {
   while (year <= studentData.grad_year){
     counter = 0;
 
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < 7; i++) {
 
       if ((year === studentData.enrolled_year)&&(i === 0)&&(counter === 0)){
         i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester);
@@ -141,7 +141,7 @@ function setUpStudentScheduleContainers(studentData) {
         year ++;
         break;
       }
-      if (i===5){
+      if (i===6){
         year++;
       }
     }
@@ -222,7 +222,9 @@ function set_valid_drag_locations(event) {
 
   combined.forEach((item1, index) => {
     let dropContainer = document.getElementById(item1);
-
+		console.log(combined);
+		console.log(item1);
+		console.log(dropContainer);
     let checkId = dragItemId + "-" + item1;
     // console.log(checkId);
 
