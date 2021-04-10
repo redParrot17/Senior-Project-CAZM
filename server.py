@@ -382,8 +382,19 @@ def advisor_sch_review():
         } for c in courses]
 
         major = ""
+        counter = 1
         for key, value in student.majors:
-            major += key +", "
+            print(len(student.majors))
+            print(student.majors)
+            if(len(student.majors)>1):
+                if (counter == len(student.majors)-1):
+                    major += key +" and "
+                else:
+                    major += key +", "
+            else:
+                major = key +", "
+            counter += 1
+
         major = major[:-2]
 
         name = student.firstname + " "+ student.lastname
@@ -670,10 +681,21 @@ def student_sch_review():
         list_of_courses = db.get_courses()
 
     major = ""
+    counter = 1
     for key, value in student.majors:
-        major += key +", "
+        print(len(student.majors))
+        print(student.majors)
+        if(len(student.majors)>1):
+            if (counter == len(student.majors)-1):
+                major += key +" and "
+            else:
+                major += key +", "
+        else:
+            major = key +", "
+        counter += 1
+
     major = major[:-2]
-    
+
     name = student.firstname + " "+ student.lastname
     return render_template(
         'advisorStudentScheduleReview.html',

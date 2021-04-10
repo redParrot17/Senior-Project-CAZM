@@ -453,3 +453,8 @@ color: white !important;
   width:100%;
   background-color: white;
 }
+
+
+.sr-only {
+  display: none;
+}
