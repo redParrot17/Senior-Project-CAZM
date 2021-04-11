@@ -61,6 +61,9 @@ function setWarnings(courseID, showSnack) {
         courseElement.parentElement.classList = "drag_container rounded border warning"
 
     }
+    else if(checkSpecial(code)){
+        courseElement.parentElement.classList = "drag_container rounded border special-warning"
+    }
 
     //no warnings
     else {
