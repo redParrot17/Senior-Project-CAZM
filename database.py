@@ -176,7 +176,7 @@ class Database:
 
     def search_course_codes(self, argument1):
         cursor = self.db.cursor(buffered=True)
-        arg1 = argument1 + "%"
+        arg1 = "%" + argument1 + "%"
         arg2 = arg1
         args = (arg1,arg2,)
         sql = 'SELECT COURSE_CODE, ANY_VALUE(NAME), ANY_VALUE(YEAR), ANY_VALUE(SEMESTER), ANY_VALUE(CREDITS) FROM COURSE WHERE COURSE_CODE LIKE %s OR NAME LIKE %s GROUP BY COURSE_CODE;'
