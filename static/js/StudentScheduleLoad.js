@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", function () {
             setUpStudentScheduleContainers(studentData);
             document.getElementById("schedule-spinner").innerHTML = "";
 
-            if(viewedTutorial==true){
+            if(viewedTutorial==false){
               setTimeout(() => {  introJs().setOptions({scrollToElement: false, disableInteraction: true}).start(); }, 200);
             }
             addClassestoPools();

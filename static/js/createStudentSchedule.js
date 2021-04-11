@@ -85,7 +85,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 
 				if(creditCount >17){
 					holderContents = `
-				  <fieldset data-step='3' data-intro = "This is a semester block you can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your shcedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+				  <fieldset data-title="Semester Block" data-step='3' data-intro = "This is a semester block. You can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your schedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
 				    <legend class = "mb-0"> ${semester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
@@ -94,7 +94,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				}
 				else if(creditCount < 12 ){
 					holderContents = `
-					<fieldset data-step='3' data-intro = "This is a semester block you can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your shcedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+					<fieldset data-title="Semester Block" data-step='3' data-intro = "This is a semester block. You can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your schedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
 						<legend class = "mb-0"> ${semester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
@@ -103,7 +103,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				}
 				else{
 					holderContents = `
-					<fieldset data-step='3' data-intro = "This is a semester block you can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your shcedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+					<fieldset data-title="Semester Block" data-step='3' data-intro = "This is a semester block. You can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your schedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
 						<legend class = "mb-0"> ${semester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits">  Scheduled Credits: ${creditCount} </h6>
@@ -112,6 +112,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				}
 			}
 			else{
+				console.log("Print")
 				if(creditCount >17){
 					holderContents = `
 				  <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
@@ -208,7 +209,6 @@ function setUpStudentScheduleContainers(studentData) {
 			else{
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,1);
 			}
-      addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses);
       if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
         year ++;
         break;
