@@ -16,7 +16,7 @@ let allAdvisees = [];   // A list of all advisee objects.
 let uniqueYears = [];   // A unique set of year values.
 
 // values used to filter and sort the listed results
-let selectedStatusFilter = $('#status-selector > label.active > input').val() || 'all';
+let selectedStatusFilter = 'all';
 let selectedYearFilter = $('#filterYearSelection').find('option:selected').text();
 let selectedSortFilter = $('#sortBySelection').find('option:selected').text();
 let searchBarText = $('#search-text').val();
@@ -45,8 +45,10 @@ function filterByStatus(advisees) {
         return advisees;
     else if (selectedStatusFilter === 'approved')
         return advisees.filter(a => a.status === APPROVED);
-    else if (selectedStatusFilter === 'awaiting-approval')
-        return advisees.filter(a => a.status === AWAITING_STUDENT_APPROVAL || a.status === AWAITING_ADVISOR_APPROVAL);
+    else if (selectedStatusFilter === 'awaiting-advisor-approval')
+        return advisees.filter(a => a.status === AWAITING_ADVISOR_APPROVAL);
+    else if (selectedStatusFilter === 'awaiting-student-approval')
+        return advisees.filter(a => a.status === AWAITING_STUDENT_APPROVAL);
     else if (selectedStatusFilter === 'awaiting-creation')
         return advisees.filter(a => a.status === AWAITING_STUDENT_CREATION);
     else return [];
@@ -179,9 +181,10 @@ function refreshYears() {
 }
 
 function addListeners() {
-    $('#status-selector input').click(function() {
-        selectedStatusFilter = $(this).val();
-        setEmailButtonText($(this).parent().text())
+    $('#filterStatusSelection').change(function() {
+        let selection = $(this).find('option:selected');
+        selectedStatusFilter = selection.val();
+        setEmailButtonText(selection.text())
         refreshTable();
     });
     $('#filterYearSelection').change(function() {
