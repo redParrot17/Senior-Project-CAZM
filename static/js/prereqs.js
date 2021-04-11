@@ -61,6 +61,7 @@ function setWarnings(courseID, showSnack) {
         courseElement.parentElement.classList = "drag_container rounded border warning"
 
     }
+
     //no warnings
     else {
 
@@ -132,6 +133,27 @@ function checkPools(update) {
  * the year of the class being examined
  * @returns {Boolean} Requisites met
  */
+function checkSpecial(code) {
+
+    //Get code prereq dictionary
+    let codeReqs = requisites[code]
+
+    if (codeReqs !== undefined) {
+        var special = codeReqs[0]
+    }
+
+    //special requisite exists
+    if(special !== undefined){
+        return true
+    }
+
+    //special requisite does not exist
+    return false
+    
+}
+
+
+
 function checkRequisites(code, semester, year) {
 
     //Get code prereq dictionary
@@ -144,8 +166,6 @@ function checkRequisites(code, semester, year) {
         //Find the semester number of semesters before this class
 
         let targetindex = getTargetIndex(year, semester);
-        console.log(targetindex)
-        var special = codeReqs[0]
         var prereqs = codeReqs[1]
         var coreqs = codeReqs[2]
 
@@ -268,6 +288,7 @@ function checkRequisites(code, semester, year) {
     //No Requisites, automatically true
     return true;
 }
+
 
 
 
