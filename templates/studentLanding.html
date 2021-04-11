@@ -112,11 +112,10 @@
         document.getElementById("printScheduleBtn").onclick = function () {
             var element1 = document.getElementById("StudentInfo");
             var element2 = document.getElementById("scrollbar");
-            element2.style.height = "auto";
-            html2pdf().set({ pagebreak: {avoid: '.schedule-semester'}}).from(element1).toPdf().get('pdf').then(function (pdf) {
-                pdf.addPage();
-            }).from(element2).toContainer().toCanvas().toPdf().save("schedule");
-            setTimeout(() => { element2.style.height = "500px"; }, 1000);
+            var elementToPrint = document.createElement('div');
+            elementToPrint.appendChild(element1.cloneNode(true));
+            elementToPrint.appendChild(element2.cloneNode(true));
+            html2pdf().set({ pagebreak: {avoid: '.schedule-semester'}, margin: 1}).from(elementToPrint).toContainer().toCanvas().toPdf().save('schedule');
         }
     </script>
 </body>
