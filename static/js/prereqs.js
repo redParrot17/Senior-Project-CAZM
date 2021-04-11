@@ -137,7 +137,6 @@ function checkRequisites(code, semester, year) {
     //Get code prereq dictionary
     let codeReqs = requisites[code]
 
-
     //! CHECK PREREQS
     if (codeReqs !== undefined) {
 
@@ -145,6 +144,7 @@ function checkRequisites(code, semester, year) {
         //Find the semester number of semesters before this class
 
         let targetindex = getTargetIndex(year, semester);
+        console.log(targetindex)
         var special = codeReqs[0]
         var prereqs = codeReqs[1]
         var coreqs = codeReqs[2]

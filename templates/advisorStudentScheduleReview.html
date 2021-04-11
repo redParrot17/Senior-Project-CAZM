@@ -138,7 +138,10 @@
           <div class="SSheaderText rounded p-2">
             <h4> Student Schedule </h4>
           </div>
-          <label class="Checkcontainer">Show Intesession Semeseters
+
+        <h6 style = "text-align:center;">**Disclaimer: all course offerings are estimated based on available information**</h6>
+          <label class="Checkcontainer">Show Intersession Semesters
+
             <input type="checkbox" id="intersession-checkbox" onchange="displayIntersessionSemesters()">
             <span class="checkmark"></span>
           </label>
@@ -181,10 +184,10 @@
         <div class="headerText rounded-top">
           Filters
         </div>
-        <!-- <label class="Checkcontainer">Pre-requisites Met
-          <input type="checkbox">
+        <label class="Checkcontainer">Requisites Met
+          <input type="checkbox" id="prereq-checkbox" onchange="filterCourses()">
           <span class="checkmark"></span>
-        </label> -->
+        </label>
 
         <label class="Checkcontainer">Major Requirement
           <input type="checkbox" id="major-checkbox" onchange="filterCourses()">
