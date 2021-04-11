@@ -1,6 +1,6 @@
 
 
-let ALL_SEMESTERS = ["January", "Spring", "May", "Early Summer","Late Summer", "Fall", "Winter Online"];
+let ALL_SEMESTERS = ["JANUARY", "SPRING", "MAY", "EARLY SUMMER","LATE SUMMER", "FALL", "WINTER ONLINE"];
 let invalidCombos = [];
 // var studentData
 
@@ -103,7 +103,7 @@ function addClassHolder(semester, year, semesterOrder, courses) {
 				<fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
 					<legend class = "mb-0"> ${semester} ${year}</legend>
 						<div class = "row">
-							<h6 class = "pl-3" id = "${semester}-${year}-credits">  class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
+							<h6 class = "pl-3" id = "${semester}-${year}-credits"> Scheduled Credits: ${creditCount} </h6>
 						</div>
 						<div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">` + holderContents;
 			}
@@ -153,7 +153,7 @@ function setUpStudentScheduleContainers(studentData) {
     for (i = 0; i < 7; i++) {
 
       if ((year === studentData.enrolled_year)&&(i === 0)&&(counter === 0)){
-        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester);
+        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester.toUpperCase());
         counter = counter + 1;
       }
       //create list of the student's courses in that semester
@@ -161,7 +161,7 @@ function setUpStudentScheduleContainers(studentData) {
 
       StudentCourses.forEach((course, index) => {
         if(course.year == year){
-          if(course.semester.toLowerCase() == ALL_SEMESTERS[i].toLowerCase()){
+          if(course.semester.toUpperCase() == ALL_SEMESTERS[i].toUpperCase()){
             //add course to currentSemesterCourses
             currentSemesterCourses.push(course);
           }
@@ -171,7 +171,7 @@ function setUpStudentScheduleContainers(studentData) {
 
 
       addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses);
-      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
+      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
         year ++;
         break;
       }
@@ -206,10 +206,10 @@ function set_valid_drag_locations(event) {
       years.push(year);
       validSemesters.push(semester);
       for (let year = studentData.enrolled_year; year <= studentData.grad_year; year++) {
-        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester)> ALL_SEMESTERS.indexOf(studentData.grad_semester))){
+        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester.toUpperCase())> ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
           //do nothing
         }
-        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester)< ALL_SEMESTERS.indexOf(studentData.enrolled_semester))){
+        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester.toUpperCase())< ALL_SEMESTERS.indexOf(studentData.enrolled_semester.toUpperCase()))){
           //do nothing
         }
         else{
