@@ -381,6 +381,23 @@ def advisor_sch_review():
             'semester': c.semester
         } for c in courses]
 
+        major = ""
+        counter = 1
+        for key, value in student.majors:
+            print(len(student.majors))
+            print(student.majors)
+            if(len(student.majors)>1):
+                if (counter == len(student.majors)-1):
+                    major += key +" and "
+                else:
+                    major += key +", "
+            else:
+                major = key +", "
+            counter += 1
+
+        major = major[:-2]
+
+        name = student.firstname + " "+ student.lastname
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
@@ -388,7 +405,9 @@ def advisor_sch_review():
             studentStatus=status,
             listOfCourses=list_of_courses,
             StudentCourses=json_courses,
-            advisor_view=True)
+            advisor_view=True,
+            studentName = name,
+            studentMajor = major)
 
 
 @app.route('/advisorSchReviewPost/', methods=["POST"])
@@ -661,6 +680,23 @@ def student_sch_review():
         query_results = db.get_all_courses()
         list_of_courses = db.get_courses()
 
+    major = ""
+    counter = 1
+    for key, value in student.majors:
+        print(len(student.majors))
+        print(student.majors)
+        if(len(student.majors)>1):
+            if (counter == len(student.majors)-1):
+                major += key +" and "
+            else:
+                major += key +", "
+        else:
+            major = key +", "
+        counter += 1
+
+    major = major[:-2]
+
+    name = student.firstname + " "+ student.lastname
     return render_template(
         'advisorStudentScheduleReview.html',
         student_id=student_id,
@@ -668,7 +704,9 @@ def student_sch_review():
         studentStatus=status,
         listOfCourses=list_of_courses,
         StudentCourses=json_courses,
-        advisor_view=False)
+        advisor_view=False,
+        studentName = name,
+        studentMajor = major)
 
 
 @app.route('/studentSchReviewPost/', methods=["POST"])

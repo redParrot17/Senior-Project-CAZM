@@ -1,6 +1,6 @@
 
 
-let ALL_SEMESTERS = ["January", "Spring", "May", "Summer", "Fall", "Winter Online"];
+let ALL_SEMESTERS = ["JANUARY", "SPRING", "MAY", "EARLY SUMMER","LATE SUMMER", "FALL", "WINTER ONLINE"];
 let invalidCombos = [];
 // var studentData
 
@@ -34,23 +34,30 @@ function getNameByCode(code) {
 function addClassHolder(semester, year, semesterOrder, courses) {
   let classHolder =  document.getElementById("main-schedule");
 	let holderContents = ``;
-
-	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Summer" ){
+	let creditCount = 0;
+	//console.log(semester);
+	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Early Summer" || semester == "Late Summer"){
+		//for loop through all the student's courses_to_add
+		  courses.forEach((course, index) => {
+		    holderContents += `<div class="col-6 drag_box">
+		            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)">
+									<div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
+			              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
+			              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
+			              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
+		            </div>
+							</div>
+		        </div>`
+		      });
 		holderContents = `
 	  <fieldset class="container scheduleContainer rounded itemInvisible" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-	    <legend > ${semester} ${year}</legend>
-	      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">`;
+	    <legend class = "mb-0"> ${semester} ${year}</legend>
+				<div class = "row">
+					<h6 class = "pl-3" id = "${semester}-${year}-credits"> Scheduled Credits: ${creditCount} </h6>
+				</div>
+	      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">` + holderContents;
 
-	//for loop through all the student's courses_to_add
-	  courses.forEach((course, index) => {
-	    holderContents += `<div class="col-6 drag_box">
-	            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)"><div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
-	              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
-	              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
-	              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
-	            </div></div>
-	        </div>`
-	      });
+
 
 	    holderContents += `
 	        <div class="col-6 drag_box">
@@ -60,21 +67,48 @@ function addClassHolder(semester, year, semesterOrder, courses) {
 	  </fieldset>`;
 	}
 	else{
-		holderContents = `
-	  <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-	    <legend > ${semester} ${year}</legend>
-	      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">`;
+		//for loop through all the student's courses_to_add
+		  courses.forEach((course, index) => {
+				creditCount += getCreditsForSum(course.course_code);
+		    holderContents += `<div class="col-6 drag_box">
+		            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)">
+									<div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
+			              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
+			              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
+			              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
+			            </div>
+								</div>
+		        </div>`
+		      });
+			if(creditCount >17){
+				holderContents = `
+			  <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+			    <legend class = "mb-0"> ${semester} ${year}</legend>
+						<div class = "row">
+							<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
+						</div>
+			      <div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">` + holderContents;
+			}
+			else if(creditCount < 12 ){
+				holderContents = `
+				<fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+					<legend class = "mb-0"> ${semester} ${year}</legend>
+						<div class = "row">
+							<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
+						</div>
+						<div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">` + holderContents;
+			}
+			else{
+				holderContents = `
+				<fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
+					<legend class = "mb-0"> ${semester} ${year}</legend>
+						<div class = "row">
+							<h6 class = "pl-3" id = "${semester}-${year}-credits"> Scheduled Credits: ${creditCount} </h6>
+						</div>
+						<div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">` + holderContents;
+			}
 
-	//for loop through all the student's courses_to_add
-	  courses.forEach((course, index) => {
-	    holderContents += `<div class="col-6 drag_box">
-	            <div class="drag_container rounded border" ondrop="drop(event)" ondragover="allowDrop(event)"><div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
-	              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
-	              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}</span>
-	              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
-	            </div></div>
-	        </div>`
-	      });
+
 
 	    holderContents += `
 	        <div class="col-6 drag_box">
@@ -116,10 +150,10 @@ function setUpStudentScheduleContainers(studentData) {
   while (year <= studentData.grad_year){
     counter = 0;
 
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < 7; i++) {
 
       if ((year === studentData.enrolled_year)&&(i === 0)&&(counter === 0)){
-        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester);
+        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester.toUpperCase());
         counter = counter + 1;
       }
       //create list of the student's courses in that semester
@@ -127,7 +161,7 @@ function setUpStudentScheduleContainers(studentData) {
 
       StudentCourses.forEach((course, index) => {
         if(course.year == year){
-          if(course.semester.toLowerCase() == ALL_SEMESTERS[i].toLowerCase()){
+          if(course.semester.toUpperCase() == ALL_SEMESTERS[i].toUpperCase()){
             //add course to currentSemesterCourses
             currentSemesterCourses.push(course);
           }
@@ -137,11 +171,11 @@ function setUpStudentScheduleContainers(studentData) {
 
 
       addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses);
-      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
+      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
         year ++;
         break;
       }
-      if (i===5){
+      if (i===6){
         year++;
       }
     }
@@ -172,10 +206,10 @@ function set_valid_drag_locations(event) {
       years.push(year);
       validSemesters.push(semester);
       for (let year = studentData.enrolled_year; year <= studentData.grad_year; year++) {
-        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester)> ALL_SEMESTERS.indexOf(studentData.grad_semester))){
+        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester.toUpperCase())> ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
           //do nothing
         }
-        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester)< ALL_SEMESTERS.indexOf(studentData.enrolled_semester))){
+        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester.toUpperCase())< ALL_SEMESTERS.indexOf(studentData.enrolled_semester.toUpperCase()))){
           //do nothing
         }
         else{
@@ -222,7 +256,9 @@ function set_valid_drag_locations(event) {
 
   combined.forEach((item1, index) => {
     let dropContainer = document.getElementById(item1);
-
+		//console.log(combined);
+		//console.log(item1);
+		//console.log(dropContainer);
     let checkId = dragItemId + "-" + item1;
     // console.log(checkId);
 

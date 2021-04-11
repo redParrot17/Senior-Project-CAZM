@@ -55,9 +55,9 @@ function getCreditsForSum(code) {
 
 
 function updateStatusSheet() {
-	
+
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")
-	
+
 	let selectedClasses = document.getElementsByClassName("drag_item drag_item_fill")
 
 
@@ -67,7 +67,7 @@ function updateStatusSheet() {
 		//Set checkboxes as default
 		let statusSheetCourse = statusSheetCourses[courseNum];
 		let statusSheetCourseCode = statusSheetCourse.childNodes[0].nodeValue;
-		statusSheetCourse.childNodes[1].childNodes[0].classList = "far fa-square"
+		statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-times"
 		statusSheetCourse.childNodes[1].childNodes[0].style = "color: red;"
 
 
@@ -80,12 +80,12 @@ function updateStatusSheet() {
 
 			if (statusSheetCourseCode === selectedCode) {
 				let year = selectedClass.getAttribute("year")
-				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClass.getAttribute("semester"))
+				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClass.getAttribute("semester").toUpperCase())
 
 
-				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester))) {
+				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester.toUpperCase()))) {
 
-					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-check-square"
+					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-check"
 					statusSheetCourse.childNodes[1].childNodes[0].style = "color: green;"
 				}
 				else {
@@ -154,7 +154,7 @@ function updateStatusSheet() {
 		else {
 
 			var clusters = value.clusters
-	
+
 			let clusterKeys = Object.keys(clusters);
 
 			//Examine each cluster
@@ -195,7 +195,7 @@ function updateStatusSheet() {
 					}
 
 					let span = document.createElement("span")
-					span.innerHTML = '<i class="far fa-square" style="color: red;"></i>'
+					span.innerHTML = '<i class="fas fa-times" style="color: red;"></i>'
 					span.className = "fa-li"
 					li.appendChild(span)
 					li.appendChild(creditSpan)
@@ -257,7 +257,7 @@ function updateStatusSheet() {
 						}
 
 						let altspan = document.createElement("span")
-						altspan.innerHTML = '<i class="far fa-square" style="color: red;"></i>'
+						altspan.innerHTML = '<i class="fas fa-times" style="color: red;"></i>'
 
 						altspan.className = "fa-li"
 
@@ -270,7 +270,7 @@ function updateStatusSheet() {
 					or.classList = "or status-h3"
 					or.innerText = "[~~~ OR ~~~]";
 					requirementContainer.appendChild(or);
-	
+
 					if (alternate_creds !== null) {
 						let altcredMsg = "Select " + alternatecreds + " credits";
 						let altmsg = document.createElement("p");
