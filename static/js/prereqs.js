@@ -13,7 +13,7 @@ var pools;
 
 
 let getTargetIndex = (year, semester) => {
-   
+
     for (let s = 0; s < semesters.length; s++) {
         let sem = semesters[s].dataset;
 
@@ -41,7 +41,7 @@ function setWarnings(courseID, showSnack) {
 
     let semester = courseElement.getAttribute("semester");
     let year = courseElement.getAttribute("year");
-    
+
 
     //If requisites bad, set the warning, otherwise set to no warnings
     if (!checkRequisites(code, semester, year)) {
@@ -61,7 +61,7 @@ function setWarnings(courseID, showSnack) {
         courseElement.parentElement.classList = "drag_container rounded border warning"
 
     }
-    else if(checkSpecial(code)){
+    else if (checkSpecial(code)) {
         courseElement.parentElement.classList = "drag_container rounded border special-warning"
     }
 
@@ -142,13 +142,13 @@ function checkSpecial(code) {
     }
 
     //special requisite exists
-    if(special !== undefined){
+    if (special !== undefined) {
         return true
     }
 
     //special requisite does not exist
     return false
-    
+
 }
 
 
@@ -305,3 +305,81 @@ let totalCreds = () => {
     return credits;
 }
 
+function getWarningMsg(code) {
+    let codeRequisites = requisites[code];
+    if (codeRequisites !== undefined) {
+        var codeSpecial = (codeRequisites[0] ? Object.values(codeRequisites[0]) : undefined);
+        var codePrereqs = (codeRequisites[1] ? Object.values(codeRequisites[1]) : undefined);
+        var codeCoreqs = (codeRequisites[2] ? Object.values(codeRequisites[2]) : undefined);
+    }
+
+    var specialMsg = "";
+    var prereqMsg = "";
+    var coreqMsg = "";
+    var message = "";
+
+
+    //Special
+    if (codeSpecial !== undefined) {
+        specialMsg += "OTHER:\n-------\n";
+
+        for (let msgGroup = 0; msgGroup < codeSpecial.length; msgGroup++) {
+            if (msgGroup > 0) {
+                specialMsg += "AND\n"
+            }
+            let group = codeSpecial[msgGroup];
+            for (let m = 0; m < group.length; m++) {
+                if (m > 0) {
+                    specialMsg += "\nOR\n\n"
+                }
+                specialMsg += (group[m] + "\n");
+            }
+        }
+
+    }
+
+    if (codePrereqs !== undefined) {
+        prereqMsg += "Prerequisites:\n-------------\n";
+
+        for (let msgGroup = 0; msgGroup < codePrereqs.length; msgGroup++) {
+            if (msgGroup > 0) {
+                prereqMsg += "\nOR\n\n"
+            }
+            let group = codePrereqs[msgGroup];
+            for (let m = 0; m < group.length; m++) {
+                if (m > 0) {
+                    prereqMsg += "AND\n"
+                }
+                prereqMsg += (group[m] + "\n");
+            }
+        }
+
+        if (prereqMsg !== "") {
+            prereqMsg += "\n";
+        }
+
+    }
+
+    if (codeCoreqs !== undefined) {
+        prereqMsg += "Corequisites:\n-------------\n";
+
+        for (let msgGroup = 0; msgGroup < codeCoreqs.length; msgGroup++) {
+            if (msgGroup > 0) {
+                coreqMsg += "\nOR\n\n"
+            }
+            let group = codeCoreqs[msgGroup];
+            for (let m = 0; m < group.length; m++) {
+                if (m > 0) {
+                    coreqMsg += "AND\n";
+                }
+                coreqMsg += (group[m] + "\n");
+            }
+        }
+
+        if (coreqMsg !== "") {
+            coreqMsg += "\n";
+        }
+
+    }
+    return (prereqMsg + coreqMsg + specialMsg);
+}
