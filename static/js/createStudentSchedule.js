@@ -103,7 +103,7 @@ function addClassHolder(semester, year, semesterOrder, courses) {
 				<fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
 					<legend class = "mb-0"> ${semester} ${year}</legend>
 						<div class = "row">
-							<h6 class = "pl-3" id = "${semester}-${year}-credits">  class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
+							<h6 class = "pl-3" id = "${semester}-${year}-credits"> Scheduled Credits: ${creditCount} </h6>
 						</div>
 						<div class="row rounded mb-2 drag_box_container mt-0" id="${semester}-${year}">` + holderContents;
 			}
