@@ -129,11 +129,7 @@ function checkPools(update) {
 /**
  * 
  * @param {String} code 
- * the course code of the class being examined
- * @param {String} semester 
- * the semester of the class being examined
- * @param {Integer} year 
- * the year of the class being examined
+ * the course code of the class being examined 
  * @returns {Boolean} Requisites met
  */
 function checkSpecial(code) {
