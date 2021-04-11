@@ -73,7 +73,6 @@ function drop(ev) {
     document.getElementById(id).setAttribute("semester", targetNodeSemester.dataset.semester)
 
 
-
     // add dragged item to drag_container
     let clone = courseNode.cloneNode(true);
     targetNode.appendChild(clone);     // add the item transfered to the target element
@@ -126,6 +125,35 @@ function drop(ev) {
 
     //Refilter courses in case hide duplicates is checked
     filterCourses()
+
+    //reset credit count
+    console.log(targetNodeSemester);
+    let creditSemester = targetNodeSemester.getAttribute("data-semester");
+    let creditYear = targetNodeSemester.getAttribute("data-year");
+    let creditCount = 0;
+    targetNodeSemester.querySelectorAll(".drag_item_fill").forEach((item) => {
+      creditCount += getCreditsForSum(item.getAttribute("coursecode"));
+    });
+
+    if(creditSemester == "Winter Online" || creditSemester == "January" || creditSemester == "May" || creditSemester == "Early Summer" || creditSemester == "Late Summer"){
+      let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
+      creditDisplay.innerHTML = `Scheduled Credits: ${creditCount}`;
+    }
+    else{
+      let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
+      console.log(creditCount);
+      if(creditCount >17){
+        creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+			}
+			else if(creditCount < 12 ){
+        creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+			}
+			else{
+        creditDisplay.innerHTML = `Scheduled Credits: ${creditCount}`;
+
+			}
+
+    }
 }
 
 //when the trash can is clicked remove the item from it's semester container
@@ -133,6 +161,7 @@ function removeDragItem(ev) {
 //   console.log(ev.target);
 
   let parentNode = ev.target.parentElement.parentElement.parentElement;
+  let targetNodeSemester = parentNode.parentElement.parentElement;
   if( parentNode != null && parentNode.classList.contains("drag_box") ) {
       removeDiv(parentNode);                               // if a valid item to remove remove the item
       // zconsole.log("div removed")
@@ -155,6 +184,34 @@ function removeDragItem(ev) {
 
   //Refilter courses in case hide duplicates is checked
   filterCourses()
+
+  //reset credit count
+  let creditSemester = targetNodeSemester.getAttribute("data-semester");
+  let creditYear = targetNodeSemester.getAttribute("data-year");
+  let creditCount = 0;
+  targetNodeSemester.querySelectorAll(".drag_item_fill").forEach((item) => {
+    creditCount += getCreditsForSum(item.getAttribute("coursecode"));
+  });
+
+  if(creditSemester == "Winter Online" || creditSemester == "January" || creditSemester == "May" || creditSemester == "Early Summer" || creditSemester == "Late Summer"){
+    let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
+    creditDisplay.innerHTML = `Scheduled Credits: ${creditCount}`;
+  }
+  else{
+    let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
+    console.log(creditCount);
+    if(creditCount >17){
+      creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+    }
+    else if(creditCount < 12 ){
+      creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+    }
+    else{
+      creditDisplay.innerHTML = `Scheduled Credits: ${creditCount}`;
+
+    }
+
+  }
 
   // get data
   //let targetNode = ev.target;                              // get the target node (drag_container)
