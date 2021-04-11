@@ -64,21 +64,14 @@
                 <div class="form-group row">
 
                     <!-- Filter results by scheduling status -->
-                    <div class="col-8">
-                        <div id="status-selector" class="shaddow btn-group btn-group-toggle d-flex" data-toggle="buttons">
-                            <label class="btn btn-secondary toggleBtn active">
-                                <input type="radio" value="all" checked> All
-                            </label>
-                            <label class="btn btn-secondary toggleBtn">
-                                <input type="radio" value="approved"> Approved
-                            </label>
-                            <label class="btn btn-secondary toggleBtn">
-                                <input type="radio" value="awaiting-approval"> Awaiting Approval
-                            </label>
-                            <label class="btn btn-secondary toggleBtn">
-                                <input type="radio" value="awaiting-creation"> Awaiting Creation
-                            </label>
-                        </div>
+                    <div class="col">
+                        <select id="filterStatusSelection" class="border form-control">
+                            <option value="all" selected>All</option>
+                            <option value="approved">Approved</option>
+                            <option value="awaiting-advisor-approval">Awaiting Advisor Approval</option>
+                            <option value="awaiting-student-approval">Awaiting Student Approval</option>
+                            <option value="awaiting-creation">Awaiting Creation</option>
+                        </select>
                     </div>
 
                     <!-- Filtering results by year (Senior/Freshman/Junior etc..) -->
