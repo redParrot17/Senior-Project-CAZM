@@ -24,8 +24,11 @@ function createEventListeners(studentID) {
             setUpStudentScheduleContainers(studentData);
             document.getElementById("schedule-spinner").innerHTML = "";
 
+            if(viewedTutorial==false){
+              setTimeout(() => {  introJs().setOptions({scrollToElement: false, disableInteraction: true}).start(); }, 200);
+            }
             addClassestoPools();
-            
+
 
             //Get requisite list for each course
             $.getJSON($SCRIPT_ROOT + '/getRequisites', {
