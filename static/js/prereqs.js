@@ -36,17 +36,19 @@ let getTargetIndex = (year, semester) => {
  */
 function setWarnings(courseID, showSnack) {
 
-    let courseElement = document.getElementById(courseID)
+    let courseElement = document.getElementById(courseID);
     let code = courseElement.getAttribute("coursecode");
 
     let semester = courseElement.getAttribute("semester");
     let year = courseElement.getAttribute("year");
+    let title = getNameByCode(code);
+    let warn = courseElement.children[1].children[0];
 
 
     //If requisites bad, set the warning, otherwise set to no warnings
     if (!checkRequisites(code, semester, year)) {
 
-
+        
         //only show snackbar if required
         if (showSnack && courseElement.parentElement.classList == "drag_container rounded border") {
             new SnackBar({
@@ -59,16 +61,25 @@ function setWarnings(courseID, showSnack) {
 
         }
         courseElement.parentElement.classList = "drag_container rounded border warning"
+        courseElement.setAttribute("title", title + "\n--Missing Requisites--\n\n" + getWarningMsg(code) + getSpecialWarningMsg(code))
+        warn.classList = "fas fa-exclamation-circle";
 
     }
     else if (checkSpecial(code)) {
         courseElement.parentElement.classList = "drag_container rounded border special-warning"
+        courseElement.setAttribute("title", title + "\n\n" +getSpecialWarningMsg(code))
+        warn.classList = "fas fa-exclamation-circle";
+
     }
 
     //no warnings
     else {
 
         courseElement.parentElement.classList = "drag_container rounded border"
+        courseElement.setAttribute("title", title);
+        
+        warn.classList = "";
+
     }
 
 }
@@ -308,35 +319,14 @@ let totalCreds = () => {
 function getWarningMsg(code) {
     let codeRequisites = requisites[code];
     if (codeRequisites !== undefined) {
-        var codeSpecial = (codeRequisites[0] ? Object.values(codeRequisites[0]) : undefined);
         var codePrereqs = (codeRequisites[1] ? Object.values(codeRequisites[1]) : undefined);
         var codeCoreqs = (codeRequisites[2] ? Object.values(codeRequisites[2]) : undefined);
     }
 
-    var specialMsg = "";
+
     var prereqMsg = "";
     var coreqMsg = "";
-    var message = "";
 
-
-    //Special
-    if (codeSpecial !== undefined) {
-        specialMsg += "OTHER:\n-------\n";
-
-        for (let msgGroup = 0; msgGroup < codeSpecial.length; msgGroup++) {
-            if (msgGroup > 0) {
-                specialMsg += "AND\n"
-            }
-            let group = codeSpecial[msgGroup];
-            for (let m = 0; m < group.length; m++) {
-                if (m > 0) {
-                    specialMsg += "\nOR\n\n"
-                }
-                specialMsg += (group[m] + "\n");
-            }
-        }
-
-    }
 
     if (codePrereqs !== undefined) {
         prereqMsg += "Prerequisites:\n-------------\n";
@@ -381,5 +371,38 @@ function getWarningMsg(code) {
         }
 
     }
-    return (prereqMsg + coreqMsg + specialMsg);
+    return (prereqMsg + coreqMsg);
 }
+
+function getSpecialWarningMsg(code) {
+    let codeRequisites = requisites[code];
+    if (codeRequisites !== undefined) {
+        var codeSpecial = (codeRequisites[0] ? Object.values(codeRequisites[0]) : undefined);
+    }
+
+    var specialMsg = "";
+
+
+    //Special
+    if (codeSpecial !== undefined) {
+        specialMsg += "Other Requirements:\n-------\n";
+
+        for (let msgGroup = 0; msgGroup < codeSpecial.length; msgGroup++) {
+            if (msgGroup > 0) {
+                specialMsg += "AND\n"
+            }
+            let group = codeSpecial[msgGroup];
+            for (let m = 0; m < group.length; m++) {
+                if (m > 0) {
+                    specialMsg += "\nOR\n\n"
+                }
+                specialMsg += (group[m] + "\n");
+            }
+        }
+
+    }
+
+   
+    return specialMsg;
+}
+
