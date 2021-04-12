@@ -143,10 +143,10 @@ function drop(ev) {
       let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
       console.log(creditCount);
       if(creditCount >17){
-        creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+        creditDisplay.innerHTML = `<i data-toggle="tooltip" data-delay="0" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
 			}
 			else if(creditCount < 12 ){
-        creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+        creditDisplay.innerHTML = `<i data-toggle="tooltip" data-delay="0" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
 			}
 			else{
         creditDisplay.innerHTML = `Scheduled Credits: ${creditCount}`;
@@ -201,10 +201,10 @@ function removeDragItem(ev) {
     let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
     console.log(creditCount);
     if(creditCount >17){
-      creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+      creditDisplay.innerHTML = `<i data-toggle="tooltip" data-delay="0" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
     }
     else if(creditCount < 12 ){
-      creditDisplay.innerHTML = `<i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
+      creditDisplay.innerHTML = `<i data-toggle="tooltip" data-delay="0" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
     }
     else{
       creditDisplay.innerHTML = `Scheduled Credits: ${creditCount}`;
