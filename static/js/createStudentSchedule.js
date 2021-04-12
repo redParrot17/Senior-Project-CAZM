@@ -202,13 +202,12 @@ function setUpStudentScheduleContainers(studentData) {
       });
       // console.log(currentSemesterCourses);
 
-			if(ALL_SEMESTERS[i]==studentData.enrolled_semester && year == studentData.enrolled_year){
+			if(ALL_SEMESTERS[i]==studentData.enrolled_semester.toUpperCase() && year == studentData.enrolled_year){
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,0);
 			}
 			else{
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,1);
 			}
-      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
       if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
         year ++;
         break;
