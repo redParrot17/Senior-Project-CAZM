@@ -1,6 +1,6 @@
 
 
-let ALL_SEMESTERS = ["JANUARY", "SPRING", "MAY", "EARLY SUMMER","LATE SUMMER", "FALL", "WINTER ONLINE"];
+let ALL_SEMESTERS = ["January", "Spring", "May", "Early Summer","Late Summer", "Fall", "Winter Online"];
 let invalidCombos = [];
 // var studentData
 
@@ -190,12 +190,12 @@ function setUpStudentScheduleContainers(studentData) {
     for (i = 0; i < 7; i++) {
 
       if ((year === studentData.enrolled_year)&&(i === 0)&&(counter === 0)){
-        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester.toUpperCase());
+        i = ALL_SEMESTERS.indexOf(studentData.enrolled_semester);
         counter = counter + 1;
       }
       //create list of the student's courses in that semester
       let currentSemesterCourses = []
-
+	  
       StudentCourses.forEach((course, index) => {
         if(course.year == year){
           if(course.semester.toUpperCase() == ALL_SEMESTERS[i].toUpperCase()){
@@ -204,15 +204,16 @@ function setUpStudentScheduleContainers(studentData) {
           }
         }
       });
+	  console.log(currentSemesterCourses)
       // console.log(currentSemesterCourses);
 
-			if(ALL_SEMESTERS[i]==studentData.enrolled_semester.toUpperCase() && year == studentData.enrolled_year){
+			if(ALL_SEMESTERS[i]==studentData.enrolled_semester && year == studentData.enrolled_year){
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,0);
 			}
 			else{
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,1);
 			}
-      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
+      if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester))){
         year ++;
         break;
       }
@@ -247,10 +248,10 @@ function set_valid_drag_locations(event) {
       years.push(year);
       validSemesters.push(semester);
       for (let year = studentData.enrolled_year; year <= studentData.grad_year; year++) {
-        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester.toUpperCase())> ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
+        if((year === studentData.grad_year) && (ALL_SEMESTERS.indexOf(semester)> ALL_SEMESTERS.indexOf(studentData.grad_semester))){
           //do nothing
         }
-        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester.toUpperCase())< ALL_SEMESTERS.indexOf(studentData.enrolled_semester.toUpperCase()))){
+        else if((year === studentData.enrolled_year) && (ALL_SEMESTERS.indexOf(semester)< ALL_SEMESTERS.indexOf(studentData.enrolled_semester))){
           //do nothing
         }
         else{

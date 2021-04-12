@@ -80,10 +80,11 @@ function updateStatusSheet() {
 
 			if (statusSheetCourseCode === selectedCode) {
 				let year = selectedClass.getAttribute("year")
-				let semesterIndex = ALL_SEMESTERS.indexOf(selectedClass.getAttribute("semester").toUpperCase())
+				let semester = selectedClass.getAttribute("semester")
+				
 
 
-				if ((year < curSemester.year) || (year === curSemester.year && semesterIndex <= ALL_SEMESTERS.indexOf(curSemester.semester.toUpperCase()))) {
+				if (getTargetIndex(year,semester) < getTargetIndex(curSemester.year, curSemester.semester)) {
 
 					statusSheetCourse.childNodes[1].childNodes[0].classList = "fas fa-check"
 					statusSheetCourse.childNodes[1].childNodes[0].style = "color: green;"
