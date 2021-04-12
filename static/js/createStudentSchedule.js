@@ -1,6 +1,7 @@
 
 
 let ALL_SEMESTERS = ["JANUARY", "SPRING", "MAY", "EARLY SUMMER","LATE SUMMER", "FALL", "WINTER ONLINE"];
+let NICE_SEMESTERS = ["January", "Spring", "May", 'Early Summer', "Late Summer", "Fall", "Winter Online"]
 let invalidCombos = [];
 // var studentData
 
@@ -31,7 +32,7 @@ function getNameByCode(code) {
 
 
 
-function addClassHolder(semester, year, semesterOrder, courses, counter) {
+function addClassHolder(semester, year, semesterOrder, courses, counter, niceSemester) {
   let classHolder =  document.getElementById("main-schedule");
 	let holderContents = ``;
 	let creditCount = 0;
@@ -44,7 +45,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 									<div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
 			              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
 			              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}
-						  	<i aria-hidden="true"></i> 
+						  	<i aria-hidden="true"></i>
 						  </span>
 			              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
 		            </div>
@@ -53,7 +54,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 		      });
 		holderContents = `
 	  <fieldset class="container scheduleContainer rounded itemInvisible" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-	    <legend class = "mb-0"> ${semester} ${year}</legend>
+	    <legend class = "mb-0"> ${niceSemester} ${year}</legend>
 				<div class = "row">
 					<h6 class = "pl-3" id = "${semester}-${year}-credits"> Scheduled Credits: ${creditCount} </h6>
 				</div>
@@ -78,7 +79,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 									<div id="${course.course_code}-${course.semester}-${course.year}" coursecode="${course.course_code}" year="${course.year}" semester="${course.semester}" class="drag_item drag_item_fill" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="${getNameByCode(course.course_code)}">
 			              <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt" aria-hidden="true"></i>
 			              <span class="col pr-0 pl-0 drag_item_text text-center">${course.course_code}
-						  	<i aria-hidden="true"></i> 
+						  	<i aria-hidden="true"></i>
 						  </span>
 			              <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 trashRed" onclick="removeDragItem(event)" aria-hidden="true"></i>
 			            </div>
@@ -90,7 +91,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				if(creditCount >17){
 					holderContents = `
 				  <fieldset data-title="Semester Block" data-step='3' data-intro = "This is a semester block. You can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your schedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-				    <legend class = "mb-0"> ${semester} ${year}</legend>
+				    <legend class = "mb-0"> ${niceSemester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
 							</div>
@@ -99,7 +100,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				else if(creditCount < 12 ){
 					holderContents = `
 					<fieldset data-title="Semester Block" data-step='3' data-intro = "This is a semester block. You can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your schedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-						<legend class = "mb-0"> ${semester} ${year}</legend>
+						<legend class = "mb-0"> ${niceSemester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
 							</div>
@@ -108,7 +109,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				else{
 					holderContents = `
 					<fieldset data-title="Semester Block" data-step='3' data-intro = "This is a semester block. You can drag the courses from the side bar into these boxes where there is a dotted outline. You can also drag courses from semester to semester and delete them from your schedule all together by clicking the trash icon. NOTE: if a semester block is greyed out when you are dragging a course that means it is not available in that semester" class="container scheduleContainer rounded" class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-						<legend class = "mb-0"> ${semester} ${year}</legend>
+						<legend class = "mb-0"> ${niceSemester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits">  Scheduled Credits: ${creditCount} </h6>
 							</div>
@@ -119,7 +120,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				if(creditCount >17){
 					holderContents = `
 				  <fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-				    <legend class = "mb-0"> ${semester} ${year}</legend>
+				    <legend class = "mb-0"> ${niceSemester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
 							</div>
@@ -128,7 +129,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				else if(creditCount < 12 ){
 					holderContents = `
 					<fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-						<legend class = "mb-0"> ${semester} ${year}</legend>
+						<legend class = "mb-0"> ${niceSemester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> <i data-toggle="tooltip" title="Credit Count Low: Need more credits for full time" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount} </h6>
 							</div>
@@ -137,7 +138,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 				else{
 					holderContents = `
 					<fieldset class="container scheduleContainer rounded" data-semester="${semester}" data-year="${year}" data-order="${semesterOrder}">
-						<legend class = "mb-0"> ${semester} ${year}</legend>
+						<legend class = "mb-0"> ${niceSemester} ${year}</legend>
 							<div class = "row">
 								<h6 class = "pl-3" id = "${semester}-${year}-credits"> Scheduled Credits: ${creditCount} </h6>
 							</div>
@@ -207,10 +208,10 @@ function setUpStudentScheduleContainers(studentData) {
       // console.log(currentSemesterCourses);
 
 			if(ALL_SEMESTERS[i]==studentData.enrolled_semester.toUpperCase() && year == studentData.enrolled_year){
-				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,0);
+				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,0, NICE_SEMESTERS[i]);
 			}
 			else{
-				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,1);
+				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,1, NICE_SEMESTERS[i]);
 			}
       if ((year === studentData.grad_year) && (i>=ALL_SEMESTERS.indexOf(studentData.grad_semester.toUpperCase()))){
         year ++;
