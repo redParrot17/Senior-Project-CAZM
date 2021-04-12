@@ -9,7 +9,8 @@ function toggleSideBar(event){
     document.getElementById("middle").classList.remove('col-5');
     document.getElementById("middle").classList.add('col-8');
     btn.classList.remove("selected");
-    btn.innerHTML='<i class=" openbtn fas fa-arrow-circle-left rounded-circle" ></i>';
+
+    btn.innerHTML='<i class="openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle"></i>';
   }
   else{
     btn.classList.add("selected");
@@ -19,10 +20,26 @@ function toggleSideBar(event){
     document.getElementById("middle").classList.remove('col-8');
     document.getElementById("middle").classList.add('col-5');
 
-    btn.innerHTML='<i class=" openbtn fas fa-arrow-circle-right rounded-circle" ></i>';
+    btn.innerHTML='<i class="openbtn shaddow btn-secondary fas fa-arrow-circle-right rounded-circle"></i>';
   }
 
 }
+
+
+function openTutorial(event){
+  introJs().setOptions({scrollToElement: false, disableInteraction: true}).start();
+  let btn=document.getElementById("toggleBtn");
+  btn.classList.add("selected");
+  document.getElementById("mySidebar").style.width = "25%";
+  document.getElementById("middle").style.marginRight = "25%";
+  document.getElementById("nav").style.marginRight = "25%";
+  document.getElementById("middle").classList.remove('col-8');
+  document.getElementById("middle").classList.add('col-5');
+
+  btn.innerHTML='<i data-title="Toggle Side-Bar" data-step="8" data-intro="This button will toggle the right side bar" class="openbtn shaddow btn-secondary fas fa-arrow-circle-right rounded-circle"></i>';
+}
+
+
 function openNav() {
   document.getElementById("mySidebar").style.width = "50hw";
   document.getElementById("middle").style.marginRight = "50hw";

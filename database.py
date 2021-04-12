@@ -120,7 +120,7 @@ class Database:
         for course_code in results:
             cluster.append(course_code)
 
-        
+
         return cluster
 
     def get_clusters_by_requirement(self, requirement_id):
@@ -134,7 +134,7 @@ class Database:
         results = cursor.fetchall()
         cursor.close()
 
-         
+
         group = {}
         for cluster_id, required_credits in results:
             courses = self.get_courses_by_cluster(cluster_id)
@@ -143,8 +143,8 @@ class Database:
                 "credits" : required_credits,
                 "alternate_clusters": self.get_alternates_by_cluster(cluster_id)
             }
-        
-            
+
+
         return group
 
 
@@ -153,9 +153,9 @@ class Database:
         args = (student_id,)
         sql = """
        SELECT TITLE, REQUIREMENT_ID, SPECIAL from
-        (SELECT MAJOR_REQUIREMENT_ID FROM STUDENT_MAJOR  INNER JOIN  MAJOR_REQUIREMENTS USING (MAJOR_NAME, MAJOR_YEAR) 
+        (SELECT MAJOR_REQUIREMENT_ID FROM STUDENT_MAJOR  INNER JOIN  MAJOR_REQUIREMENTS USING (MAJOR_NAME, MAJOR_YEAR)
         where STUDENT_ID = %s) as reqID
-        INNER JOIN REQUIREMENT ON reqID.MAJOR_REQUIREMENT_ID = REQUIREMENT.REQUIREMENT_ID 
+        INNER JOIN REQUIREMENT ON reqID.MAJOR_REQUIREMENT_ID = REQUIREMENT.REQUIREMENT_ID
         """
         cursor.execute(sql, args)
         results = cursor.fetchall()
@@ -164,7 +164,7 @@ class Database:
         req_info = {}
         for title, requirement_id, special in results:
             req_info[requirement_id] = {
-                
+
                 "title": title,
                 "clusters": self.get_clusters_by_requirement(requirement_id),
                 "special": special
@@ -255,7 +255,7 @@ class Database:
         major_code = None
         if result is not None:
             major_code = result
-        
+
         return major_code
 
 
@@ -268,7 +268,7 @@ class Database:
         cursor.execute(sql, args)
         results = cursor.fetchall()
         cursor.close()
-        
+
         template = []
         courses = []
         current_semester = results[0][1]
@@ -480,7 +480,7 @@ class Database:
 
         # Execute the SQL query
         cursor.execute(sql_query, arguments)
-        
+
 
         cursor.close()
         if not suppress_commit and self.autocommit:
@@ -1066,3 +1066,64 @@ class Database:
         # commit the changes to the database
         if not suppress_commit and self.autocommit:
             self.db.commit()
+
+    def getTutorialStatus(self, idNum)->bool:
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT TUTORIAL_VIEWED FROM STUDENTS WHERE STUDENT_ID=%s;'
+        arguments = (idNum, )
+
+        cursor.execute(sql_query, arguments)
+        results = cursor.fetchall()
+        print(results)
+        cursor.close()
+
+        if (results == [(0,)]):
+            self.setTutorialStatus(idNum)
+            return False
+
+        return True
+
+    def setTutorialStatus(self, idNum):
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'UPDATE STUDENTS SET TUTORIAL_VIEWED = 1 WHERE STUDENT_ID=%s;'
+        arguments = (idNum, )
+
+        cursor.execute(sql_query, arguments)
+        cursor.close()
+        self.db.commit()
+
+    #returning false means that the user has not seen the tutorial
+    def advisorViewedTutorial(self, idNum)->bool:
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT TUTORIAL_VIEWED FROM STUDENTS WHERE STUDENT_ID=%s;'
+        arguments = (idNum, )
+
+        cursor.execute(sql_query, arguments)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if (results == None):
+            cursor = self.db.cursor(buffered=True)
+
+            sql_query = 'INSERT INTO STUDENTS (STUDENT_ID, ADVISOR_ID, FIRST, LAST, EMAIL, CLASSIFICATION, GRAD_YEAR, GRAD_SEMESTER, ENROLLED_YEAR, ENROLLED_SEMESTER, SCHEDULE_STATUS, HIDE_INTERCESSIONS, TUTORIAL_VIEWED) VALUES (%s, null, null, null, null, null, null, null, null, null, null, null, 1);'
+            arguments = (idNum, )
+
+            cursor.execute(sql_query, arguments)
+            cursor.close()
+            self.db.commit()
+            return(False)
+        if (results == [(0,)]):
+            cursor = self.db.cursor(buffered=True)
+
+            sql_query = 'UPDATE STUDENTS SET TUTORIAL_VIEWED = 1 WHERE STUDENT_ID=%s;'
+            arguments = (idNum, )
+
+            cursor.execute(sql_query, arguments)
+            cursor.close()
+            self.db.commit()
+            return(False)
+
+        return (True)

@@ -21,10 +21,14 @@ window.addEventListener("DOMContentLoaded", function () {
             loadStatusSheet(reqs);
             document.getElementById("status-sheet-spinner").innerHTML = "";
         });
-      
+
             // set up student schedule containers
             setUpStudentScheduleContainers(studentData);
             document.getElementById("schedule-spinner").innerHTML = "";
+
+            if(viewedTutorial==false){
+              setTimeout(() => {  introJs().setOptions({scrollToElement: false, disableInteraction: true}).start(); }, 200);
+            }
             addClassestoPools();
             // updateStatusSheet();
 
@@ -52,12 +56,10 @@ window.addEventListener("DOMContentLoaded", function () {
     let input = document.getElementById("search-bar");
     // Execute a function when the user releases a key on the keyboard
     input.addEventListener("keyup", function(event) {
-  
+
         // Cancel the default action, if needed
         event.preventDefault();
         // Trigger the button element with a click
         document.getElementById("search-button").click();
 
     });
-
-

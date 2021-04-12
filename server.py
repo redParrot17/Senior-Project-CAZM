@@ -371,7 +371,7 @@ def advisor_sch_review():
         with Database() as db:
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
-
+            viewedTutorial = db.advisorViewedTutorial(advisor_id)
         status = schedule.status
         courses = schedule.courses
         json_courses = [{
@@ -398,6 +398,8 @@ def advisor_sch_review():
         major = major[:-2]
 
         name = student.firstname + " "+ student.lastname
+
+        print(viewedTutorial)
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
@@ -407,7 +409,8 @@ def advisor_sch_review():
             StudentCourses=json_courses,
             advisor_view=True,
             studentName = name,
-            studentMajor = major)
+            studentMajor = major,
+            viewedTutorial = viewedTutorial)
 
 
 @app.route('/advisorSchReviewPost/', methods=["POST"])
@@ -679,12 +682,11 @@ def student_sch_review():
     with Database() as db:
         query_results = db.get_all_courses()
         list_of_courses = db.get_courses()
+        viewedTutorial = db.getTutorialStatus(student_id)
 
     major = ""
     counter = 1
     for key, value in student.majors:
-        print(len(student.majors))
-        print(student.majors)
         if(len(student.majors)>1):
             if (counter == len(student.majors)-1):
                 major += key +" and "
@@ -697,6 +699,8 @@ def student_sch_review():
     major = major[:-2]
 
     name = student.firstname + " "+ student.lastname
+
+    print(viewedTutorial)
     return render_template(
         'advisorStudentScheduleReview.html',
         student_id=student_id,
@@ -706,7 +710,8 @@ def student_sch_review():
         StudentCourses=json_courses,
         advisor_view=False,
         studentName = name,
-        studentMajor = major)
+        studentMajor = major,
+        viewedTutorial = viewedTutorial)
 
 
 @app.route('/studentSchReviewPost/', methods=["POST"])
