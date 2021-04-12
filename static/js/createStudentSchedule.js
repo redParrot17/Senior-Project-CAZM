@@ -37,7 +37,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter, niceSem
 	let holderContents = ``;
 	let creditCount = 0;
 	//console.log(semester);
-	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Early Summer" || semester == "Late Summer"){
+	if(semester == "WINTER ONLINE" || semester == "JANUARY" || semester == "MAY" || semester == "EARLY SUMMER" || semester == "LATE SUMMER"){
 		//for loop through all the student's courses_to_add
 		  courses.forEach((course, index) => {
 		    holderContents += `<div class="col-6 drag_box">
