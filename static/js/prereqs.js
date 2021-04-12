@@ -284,6 +284,10 @@ function checkRequisites(code, semester, year) {
             }
 
         }
+
+        if (prereqs === undefined && coreqs === undefined){
+            found = true;
+        }
         return (found)
 
         //TODO Check Prohibited
