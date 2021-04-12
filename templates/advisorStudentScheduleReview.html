@@ -224,16 +224,11 @@
           </div>
         </div>
         <div class="container course-container rounded-bottom overflow-auto Scrollstyle" id="course-container">
-
           {% for i in range(allCourses|length) %}
             <div {% if i == 2 %} data-title="Draging and Dropping Courses" data-step='4' data-intro="These courses can be dragged over to your schedule into a dotted outlined box. NOTE: if a semester is greyed out when you try to drag a course, that course is not offered in that semester" {% endif %} id="{{allCourses[i].courseCode}}" courseCode = "{{allCourses[i].courseCode}}" year="{{allCourses[i].year}}" semester="{{allCourses[i].semester}}" class="drag_item" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="{{allCourses[i].name}}">
               <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt"></i>
-              <span class="col pr-0 pl-0 drag_item_text text-center">{{allCourses[i].courseCode}}
-                 <i aria-hidden="true"></i>
-              </span>
+              <span class="col pr-0 pl-0 drag_item_text text-center">{{allCourses[i].courseCode}}</span>
               <i class="col-1 pr-0 pl-0 fas fa-trash-alt mr-2 itemInvisible trashRed" onclick="removeDragItem(event)"></i>
-             
-              
             </div>
           {% endfor%}
         </div>

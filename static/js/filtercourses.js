@@ -34,15 +34,10 @@ function createCourseDiv(course) {
     trash.classList = "col-1 pr-0 pl-0 fas fa-trash-alt ml-auto m-2 itemInvisible trashRed";
     trash.setAttribute("onclick", "removeDragItem(event)");
 
-    /*Warning*/
-    let warning = document.createElement("i");
-
-
     /* Combine elements */
     div.appendChild(arrows);
     div.appendChild(span);
     div.appendChild(trash);
-    span.appendChild(warning);
     return div;
 }
 
