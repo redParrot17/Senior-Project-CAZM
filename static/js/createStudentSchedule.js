@@ -195,15 +195,16 @@ function setUpStudentScheduleContainers(studentData) {
       }
       //create list of the student's courses in that semester
       let currentSemesterCourses = []
-
+	  
       StudentCourses.forEach((course, index) => {
         if(course.year == year){
-          if(course.semester == ALL_SEMESTERS[i]){
+          if(course.semester.toUpperCase() == ALL_SEMESTERS[i].toUpperCase()){
             //add course to currentSemesterCourses
             currentSemesterCourses.push(course);
           }
         }
       });
+	  console.log(currentSemesterCourses)
       // console.log(currentSemesterCourses);
 
 			if(ALL_SEMESTERS[i]==studentData.enrolled_semester && year == studentData.enrolled_year){
