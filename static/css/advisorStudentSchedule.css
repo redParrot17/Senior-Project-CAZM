@@ -86,7 +86,7 @@ body {
   color: white;
   padding: 10px 10px;
   border: none;
-  
+
 }
 
 .openbtn:hover{
@@ -183,7 +183,6 @@ body {
   height: 100%;
   background-color: white;
   border: 1px solid black;
-  margin-top: 10px !important;
   data-mdb-perfect-scrollbar='true';
 }
 .paddingTen{

@@ -139,7 +139,7 @@ function onClickMessage() {
     advisees.forEach(a=>{ emailList += a.email + ";" })
 
     location.href = "mailto:" + emailList
-    
+
     // $('#emailModal').modal('show')
     // console.log('Email students')
 }
@@ -148,7 +148,7 @@ function onClickMessage() {
 
 function buildAdviseeCard(advisee) {
     return [
-        `<div class="advisee border shadow p-3 mb-4 bg-body rounded" value="${advisee.id}" onclick="onClickAdvisee(${advisee.id})">`,
+        `<div class="advisee borderStudentElements shadow p-3 mb-4 bg-body rounded" value="${advisee.id}" onclick="onClickAdvisee(${advisee.id})">`,
         '<div class="row align-items-center">',
         `<div class="col"><h5>${advisee.name}</h5></div>`,
         `<div class="col"><h5>${advisee.id}</h5></div>`,

@@ -128,27 +128,28 @@
     </div>
 
     <div class="col-5 paddingTen" id="middle">
-      <div data-title="Approval Button" data-step='9' data-intro = "when you make an edit to your schedule you will need to click a button to save it and submit it for approval, the green button will appear here" class="row align-items-center">
-        <div class="justify-content-center col-10 p-0 pr-2">
-          <button  class="btn approvebtn shaddow btn-lg btn-secondary itemInvisible" id="approveBtn" style="background-color: green;" type="button" onclick="approveBtn(event)">Approve Schedule</button>
-        </div>
-        <div class="text-center col-1 p-0" id="infoBtn" onclick="openTutorial(event)">
+      <div style="min-height: 55px;">
+        <div data-title="Approval Button" data-step='5' data-intro = "when you make an edit to your schedule you will need to click a button to save it and submit it for approval, the green button will appear here" class="row align-items-center">
+          <div class="justify-content-center col-10 p-0 pr-2">
+            <button  class="btn approvebtn shaddow btn-lg btn-secondary itemInvisible" id="approveBtn" style="background-color: green;" type="button" onclick="approveBtn(event)">Approve Schedule</button>
+          </div>
+          <div class="text-center col-1 p-0" id="infoBtn" onclick="openTutorial(event)">
 
-          <i data-title="Restart the Tutorial" data-step='10' data-intro = "This info button will start this tutorial again so you can always revisit if you need a reminder of something" class="openbtn shaddow btn-secondary fas fa-info-circle rounded-circle"></i>
+            <i class="openbtn shaddow btn-secondary fas fa-info-circle rounded-circle"></i>
 
-          <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
-        </div>
-        <div  data-title="Toggle Side-Bar" data-step='8' data-intro="This button will toggle the right side bar" class="text-center col-1 p-0" id="toggleBtn" onclick="toggleSideBar(event)">
+            <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
+          </div>
+          <div class="text-center col-1 p-0" id="toggleBtn" onclick="toggleSideBar(event)">
 
-          <i class="openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle"></i>
+            <i class="openbtn shaddow btn-secondary fas fa-arrow-circle-left rounded-circle"></i>
 
-          <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
+            <!-- <button class="openbtn rounded-circle" onclick="toggleSideBar(event)"><i class="fas fa-arrow-circle-left"></i></button> -->
+          </div>
         </div>
       </div>
 
 
-
-      <div class="container outsideContainer mt-2 pl-2 pr-2 pb-2 rounded overflow-auto Scrollstyle" id= "main-schedule">
+      <div class="container outsideContainer pl-2 pr-2 pb-2 rounded overflow-auto Scrollstyle" id= "main-schedule">
         <div class="whiteOutside sticky pt-2 pb-2">
           <div class="SSheaderText rounded p-2">
             <h4> Student Schedule </h4>
@@ -185,7 +186,7 @@
 
 <div id="mySidebar" class="sidebar sidebar-container">
   <div class="row mb-1 mt-1">
-    <div data-title="Search Bar" data-step='7' data-intro = "The search bar will allow you to search by a courses name or by a course code" class="search m-2">
+    <div class = "search m-2">
       <input type="text" id="search-bar" class="rounded-left searchTerm" placeholder="Search">
       <button  id="search-button" class="searchButton rounded-right" onclick="filterCourses();">
         <i class="fa fa-search"></i>
@@ -193,7 +194,7 @@
    </div>
   </div>
   <div class="rounded sidebar-container-inside m-2 mb-3">
-      <div class="container filterContainer rounded" data-title="Filter Check Boxes" data-step='6' data-intro = "By checking these boxes you can filter the courses: You can filter by what you have not taken the pre or co-requisites for, filter out the courses that are not specific to your major, or filter out the courses that are already somewhere on your schedule">
+      <div class="container filterContainer rounded">
         <div class="headerText rounded-top">
           Filters
         </div>
@@ -214,7 +215,7 @@
       </div>
       <div class="container searchContainer p-0 rounded overflow-hidden" >
         <div class="row rowDropDown">
-          <div data-title="Filter Dropdown" data-step='5' data-intro="By using this drop down you can filter the courses based on the semester that they are offered" class="form-group col p-0">
+          <div class="form-group col p-0">
             <select class="form-control form-border-semester dropdown topLeftRounded topRightRounded" id="semester-dropdown" onchange="filterCourses()">
               <option value=-1>Semester:</option>
               <option value="Fall">Fall</option>

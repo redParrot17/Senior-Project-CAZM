@@ -45,21 +45,21 @@
           <button type="submit" class="btn btn-lg shaddow btn-secondary" id="backButton">Back</button>
         </form>
       </div>
-      <div class="col ml-4">
+      <div class="col ml-4 pr-4 mr-3">
         <div class="row">
-          <div class="col-4 pl-4 pr-0">
-            <button class="btn btn-lg shaddow btn-secondary" id="messageStudentBtn">Message Student</button>
+          <div class="col-4 pl-1 pr-0">
+            <button class="btn btn-lg shaddow btn-secondary" style="width:100%" id="messageStudentBtn">Message Student</button>
           </div>
 
-          <div class="col-4 pr-4 pl-4">
-            <button type="button" class="btn btn-lg shaddow btn-secondary" id="printScheduleBtn">Download Schedule</button>
+          <div class="col-4">
+            <button type="button" class="btn btn-lg shaddow btn-secondary" style="width:100%" id="printScheduleBtn">Download Schedule</button>
           </div>
 
           <!--   Button callback to edit the schedule   -->
-          <div class="col-4 pl-4 pl-0">
+          <div class="col-4 pl-0 pl-1style="width:100%" ">
             <form action="/advisorSchReview/" method="post">
               <input type="hidden" name="student_id" value="{{student.get('id')}}">
-              <button type="submit" class="btn btn-lg shaddow btn-secondary" id="editScheduleBtn">Approve/Edit Schedule</button>
+              <button type="submit" class="btn btn-lg shaddow btn-secondary" style="width:100%" id="editScheduleBtn">Approve/Edit Schedule</button>
             </form>
           </div>
         </div>
