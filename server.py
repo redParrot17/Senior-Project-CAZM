@@ -311,10 +311,16 @@ def advisor_viewing_student():
             'email': student.email,
             'status': schedule.status_str if schedule else 'Awaiting Student Creation',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
-            'major': None if not student.majors else student.majors[0][0],
             'enrolled_year': student.enrolled_year,
-            'grad_year': student.graduation_year
+            'grad_year': student.graduation_year,
+            'majors': []
         }
+
+        for major in student.majors:
+            data['majors'].append({
+                'major_name': major[0],
+                'major_year': major[1]
+            })
 
     # Redirect to the unauthorized page since the advisor does not have access to the requested student
     else:
