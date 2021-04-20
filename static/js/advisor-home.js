@@ -201,13 +201,11 @@ function addListeners() {
     });
     $('#search-text').on('keyup', function (e) {
         // Disabling textbox to avoid multiple submits.
-        $(this).attr('disabled', 'disabled');
 
         searchBarText = $(this).val();
         refreshTable();
 
         // Re-enabling textbox
-        $(this).removeAttr('disabled');
 
     });
 }
