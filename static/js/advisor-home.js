@@ -199,17 +199,16 @@ function addListeners() {
         searchBarText = $('#search-text').val();
         refreshTable();
     });
-    $('#search-text').on('keypress', function(e) {
-        if (e.which === 13) {
-            // Disabling textbox to avoid multiple submits.
-            $(this).attr('disabled', 'disabled');
+    $('#search-text').on('keyup', function (e) {
+        // Disabling textbox to avoid multiple submits.
+        $(this).attr('disabled', 'disabled');
 
-            searchBarText = $(this).val();
-            refreshTable();
+        searchBarText = $(this).val();
+        refreshTable();
 
-            // Re-enabling textbox
-            $(this).removeAttr('disabled');
-        }
+        // Re-enabling textbox
+        $(this).removeAttr('disabled');
+
     });
 }
 
