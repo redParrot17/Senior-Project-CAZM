@@ -42,6 +42,10 @@
   flex: 1 1 auto;
 }
 
+.borderStudentElements{
+  border: 1px solid black !important;
+}
+
 .toggleBtn{
   background-color: black;
 }

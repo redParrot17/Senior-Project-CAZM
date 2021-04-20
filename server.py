@@ -97,6 +97,7 @@ def login_post():
 
     # Redirect if either the username or password is missing
     if not username or not password:
+        flash("Invalid username or password")
         return flask.redirect(flask.url_for('login_get'))
 
 
@@ -154,6 +155,7 @@ def login_post():
 
         # Redirect to login page if the user id was not present
         else:
+            flash("Invalid username or password")
             return flask.redirect(flask.url_for('login_get'))
 
     except errors.LoginError:
