@@ -13,7 +13,6 @@ import security
 import webscraping.adviseescraper as advisee_scraper
 from webscraping.components.student import Student
 from webscraping.components.schedule import Schedule
-from webscraping.components.course import Course
 from webscraping.mygcc import MyGcc
 import webscraping.errors as errors
 from webscraping.backoff import exponential_backoff
@@ -159,7 +158,6 @@ def login_post():
     except errors.LoginError:
         # Redirect to login page if the supplied credentials were invalid
         flash("Invalid username or password")
-        print("wrong credentials")
         return flask.redirect(flask.url_for('login_get'))
 
 
@@ -208,22 +206,18 @@ def advisor_landing_page():
             schedule = db.get_student_schedule(student.student_id)
 
             if not schedule.courses:
+
                 # load and save template schedule
                 student_majors = db.get_student_majors(student.student_id)
-
                 major_name, major_year = student_majors[0]
-
                 major_code = db.get_major_code(major_name, major_year)
-
                 template = db.get_template(major_code[0])
-
 
                 # status 3 = Awaiting Student Creation
                 schedule = Schedule(student_id=student.student_id, status=3, courses=[])
 
                 for semester in template:
                     for course_code in semester["classes"]:
-
                         schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
 
                 # save schedule to db
@@ -276,13 +270,11 @@ def advisor_viewing_student():
         schedule = db.get_student_schedule(student_id)
 
         if not schedule.courses:
+
             # load and save template schedule
             student_majors = db.get_student_majors(student_id)
-
             major_name, major_year = student_majors[0]
-
             major_code = db.get_major_code(major_name, major_year)
-
             template = db.get_template(major_code[0])
 
             # status 3 = Awaiting Student Creation
@@ -383,23 +375,21 @@ def advisor_sch_review():
 
         major = ""
         counter = 1
+
         for key, value in student.majors:
-            print(len(student.majors))
-            print(student.majors)
-            if(len(student.majors)>1):
-                if (counter == len(student.majors)-1):
-                    major += key +" and "
+            if len(student.majors) > 1:
+                if counter == len(student.majors) - 1:
+                    major += key + " and "
                 else:
-                    major += key +", "
+                    major += key + ", "
             else:
-                major = key +", "
+                major = key + ", "
             counter += 1
 
         major = major[:-2]
 
-        name = student.firstname + " "+ student.lastname
+        name = student.firstname + " " + student.lastname
 
-        print(viewedTutorial)
         return render_template(
             'advisorStudentScheduleReview.html',
             student_id=student_id,
@@ -408,9 +398,9 @@ def advisor_sch_review():
             listOfCourses=list_of_courses,
             StudentCourses=json_courses,
             advisor_view=True,
-            studentName = name,
-            studentMajor = major,
-            viewedTutorial = viewedTutorial)
+            studentName=name,
+            studentMajor=major,
+            viewedTutorial=viewedTutorial)
 
 
 @app.route('/advisorSchReviewPost/', methods=["POST"])
@@ -418,7 +408,6 @@ def advisor_sch_review():
 @security.restrict_to_advisors  # you must be a student to view this page
 def advisor_sch_review_post():
     data = request.json
-    # print("\n\n",data)
     changed = data["changed"]
     courses = data["courses"]
     student_id = data["student_id"]
@@ -472,17 +461,8 @@ def get_advisee_data():
                 'grad_year': student.graduation_year,
                 'enrolled_semester_combined': f'{student.enrolled_semester} {student.enrolled_year}',
                 'grad_semester_combined': f'{student.graduation_semester} {student.graduation_year}',
-                'majors': [],
-                # 'major_name': student.majors[0][0],
-                # 'major_year': student.majors[0][1],
-                # 'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
+                'majors': [dict(major_name=major[0], major_year=major[1]) for major in student.majors],
             }
-
-            for major in student.majors:
-                data['majors'].append({
-                    'major_name': major[0],
-                    'major_year': major[1]
-                })
 
             return jsonify(data)
 
@@ -530,7 +510,7 @@ def scrape_student_data(__student_id, __username, __password):
         firstname=student_name['firstname'],
         lastname=student_name['lastname'],
         email=email,
-        majors=[(profile.major, int(enrolled_year))],
+        majors=[(major.strip(), int(enrolled_year)) for major in profile.major.split(',')],
         classification=profile.classification,
         graduation_year=int(graduation_year),
         graduation_semester=graduation_semester,
@@ -556,9 +536,8 @@ def get_student_data():
         student = scrape_student_data(student_id, current_user.username, current_user.password)
 
         # Caching the new student data within the database
-        db = Database()
-        db.create_new_student(student)
-        db.close()
+        with Database() as db:
+            db.create_new_student(student)
 
     # Format the student data into something that can be passed to the html page
     data = {
@@ -572,17 +551,8 @@ def get_student_data():
         'grad_year': student.graduation_year,
         'enrolled_semester_combined': f'{student.enrolled_semester} {student.enrolled_year}',
         'grad_semester_combined': f'{student.graduation_semester} {student.graduation_year}',
-        'majors': [],
-        # 'major_name': student.majors[0][0],
-        # 'major_year': student.majors[0][1],
-        # 'major': student.majors[0][0] if student.majors else None,  # TODO: add support for multiple majors
+        'majors': [dict(major_name=major[0], major_year=major[1]) for major in student.majors],
     }
-
-    for major in student.majors:
-        data['majors'].append({
-            'major_name': major[0],
-            'major_year': major[1]
-        })
 
     return data
 
@@ -612,13 +582,11 @@ def student_landing_page():
         schedule = db.get_student_schedule(student_id)
 
         if not schedule.courses:
+
             # load and save template schedule
             student_majors = db.get_student_majors(student_id)
-
             major_name, major_year = student_majors[0]
-
             major_code = db.get_major_code(major_name, major_year)
-
             template = db.get_template(major_code[0])
 
 
@@ -627,7 +595,6 @@ def student_landing_page():
 
             for semester in template:
                 for course_code in semester["classes"]:
-
                     schedule.courses.append(db.get_course(course_code, semester["year"], semester["semester"]))
 
             # save schedule to db
@@ -687,20 +654,19 @@ def student_sch_review():
     major = ""
     counter = 1
     for key, value in student.majors:
-        if(len(student.majors)>1):
-            if (counter == len(student.majors)-1):
-                major += key +" and "
+        if len(student.majors) > 1:
+            if counter == len(student.majors) - 1:
+                major += key + " and "
             else:
-                major += key +", "
+                major += key + ", "
         else:
-            major = key +", "
+            major = key + ", "
         counter += 1
 
     major = major[:-2]
 
     name = student.firstname + " "+ student.lastname
 
-    print(viewedTutorial)
     return render_template(
         'advisorStudentScheduleReview.html',
         student_id=student_id,
@@ -709,9 +675,9 @@ def student_sch_review():
         listOfCourses=list_of_courses,
         StudentCourses=json_courses,
         advisor_view=False,
-        studentName = name,
-        studentMajor = major,
-        viewedTutorial = viewedTutorial)
+        studentName=name,
+        studentMajor=major,
+        viewedTutorial=viewedTutorial)
 
 
 @app.route('/studentSchReviewPost/', methods=["POST"])
@@ -719,7 +685,6 @@ def student_sch_review():
 @security.restrict_to_students  # you must be a student to view this page
 def student_sch_review_post():
     data = request.json
-    # print("\n\n",data)
     changed = data["changed"]
     courses = data["courses"]
     newCredits = data["newCredits"]
@@ -782,11 +747,9 @@ def filter_semester():
 def get_requirements():
     student_id = request.args.get('id', 0, type=str)
 
-    # print(major_name,major_year)
-
     with Database() as db:
         query_results = db.getRequirements(student_id)
-        # print(query_results)
+
     return jsonify(query_results)
 
 
@@ -799,12 +762,6 @@ def get_requisites():
 
 
 if __name__ == "__main__":
-    # from webscraping.adviseescraper import AsyncAdviseeScraper
-    # import getpass
-    # username = input('Username: ')
-    # password = getpass.getpass()
-    # scraper = AsyncAdviseeScraper(username, password, lambda a: _)
-    # scraper.start()
     app.run(debug=True)
 
 # Having debug=True allows possible Python errors to appear on the web page
