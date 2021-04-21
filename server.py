@@ -304,6 +304,7 @@ def advisor_viewing_student():
             'credits': student.credits_completed,
             'email': student.email,
             'status': schedule.status_str if schedule else 'Awaiting Student Creation',
+            'enrolled_semester': f'{student.enrolled_semester} {student.enrolled_year}',
             'grad_semester': f'{student.graduation_semester} {student.graduation_year}',
             'enrolled_year': student.enrolled_year,
             'grad_year': student.graduation_year,
