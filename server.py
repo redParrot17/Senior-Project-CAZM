@@ -217,7 +217,7 @@ def advisor_landing_page():
 
                 major_code = db.get_major_code(major_name, major_year)
 
-                template = db.get_template(major_code[0])
+                template = db.get_template(major_code)
 
 
                 # status 3 = Awaiting Student Creation
@@ -285,7 +285,7 @@ def advisor_viewing_student():
 
             major_code = db.get_major_code(major_name, major_year)
 
-            template = db.get_template(major_code[0])
+            template = db.get_template(major_code)
 
             # status 3 = Awaiting Student Creation
             schedule = Schedule(student_id=student_id, status=3, courses=[])
@@ -627,7 +627,7 @@ def student_landing_page():
 
             major_code = db.get_major_code(major_name, major_year)
 
-            template = db.get_template(major_code[0])
+            template = db.get_template(major_code)
 
 
             # status 3 = Awaiting Student Creation
