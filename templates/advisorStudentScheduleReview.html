@@ -31,6 +31,10 @@
     var studentName = {{studentName|tojson|safe}};
     var studentMajor = {{studentMajor|tojson|safe}};
     var viewedTutorial = {{viewedTutorial|tojson|safe}};
+    var curSemester = {
+    	semester: {{currentSemester|tojson|safe}},
+    	year: '{{currentYear|tojson|safe}}'
+    };
   </script>
 
   <!-- font/icons -->
@@ -227,7 +231,7 @@
             </select>
           </div>
         </div>
-        <div class="container course-container rounded-bottom overflow-auto Scrollstyle" id="course-container">
+        <div class="container course-container rounded-bottom overflow-auto Scrollstyle" style = "height: 94%;" id="course-container">
           {% for i in range(allCourses|length) %}
             <div {% if i == 2 %} data-title="Draging and Dropping Courses" data-step='4' data-intro="These courses can be dragged over to your schedule into a dotted outlined box. Hovering over these course codes will display the course name. NOTE: if a semester is greyed out when you try to drag a course, that course is not offered in that semester" {% endif %} id="{{allCourses[i].courseCode}}" courseCode = "{{allCourses[i].courseCode}}" year="{{allCourses[i].year}}" semester="{{allCourses[i].semester}}" class="drag_item" draggable="true" ondragstart="set_valid_drag_locations(event);drag(event);" ondragend="revert_drag_locations(event);dragEnd(event);" data-toggle="tooltip" title="{{allCourses[i].name}}">
               <i class="col-1 pr-0 pl-0 ml-2 fas fa-arrows-alt"></i>
