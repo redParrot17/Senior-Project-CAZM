@@ -35,6 +35,9 @@ function openTutorial(event){
   document.getElementById("nav").style.marginRight = "25%";
   document.getElementById("middle").classList.remove('col-8');
   document.getElementById("middle").classList.add('col-5');
+  let myElement = document.getElementById('disclaimer');
+  var topPos = myElement.offsetTop;
+  document.getElementById('main-schedule').scrollTop = topPos - 110;
 
   btn.innerHTML='<i data-title="Toggle Side-Bar" data-step="8" data-intro="This button will toggle the right side bar" class="openbtn shaddow btn-secondary fas fa-arrow-circle-right rounded-circle"></i>';
 }
