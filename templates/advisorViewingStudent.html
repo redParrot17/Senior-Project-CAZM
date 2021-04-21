@@ -74,7 +74,7 @@
           <div class="container" style="height:40px"></div>
           <div class="container">
             <p>Credits Completed: {{ student.get("credits") }}</p>
-            <p>Enrolled Semester:  {{ student.get("enrolled_semester_combined") }}</p>
+            <p>Enrolled Semester:  {{ student.get("enrolled_semester") }}</p>
             <p>Graduation Semester: {{ student.get("grad_semester") }}</p>
             {%for major in student.get("majors")%}
             <p>Major: {{major['major_name']}} {{major['major_year']}}</p>
