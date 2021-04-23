@@ -254,13 +254,16 @@ class Database:
 
         major_code = None
         if result is not None:
-            major_code = result
+            major_code = result[0]
 
         return major_code
 
 
 
     def get_template(self, major_code: int):
+        if(major_code is None):
+            return []
+
         cursor = self.db.cursor(buffered=True)
 
         args = (major_code,)
