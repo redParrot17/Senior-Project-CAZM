@@ -1121,3 +1121,25 @@ class Database:
             return(False)
 
         return (True)
+
+    #get the current year from the db
+    def getCurrentYear(self) -> int:
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT YEAR FROM CurrentSemester;'
+
+        cursor.execute(sql_query)
+        results = cursor.fetchone()
+        cursor.close()
+        return(results[0])
+
+    #get the current semester from the db
+    def getCurrentSemester(self) -> str:
+        cursor = self.db.cursor(buffered=True)
+
+        sql_query = 'SELECT SEMESTER FROM CurrentSemester;'
+
+        cursor.execute(sql_query)
+        results = cursor.fetchone()
+        cursor.close()
+        return(results[0])

@@ -1,9 +1,3 @@
-//TODO Fetch Current Semester from server
-curSemester = {
-	semester: 'Spring',
-	year: '2021'
-}
-
 
 /* Gets number of credits for a coursecode */
 function getCredits(code) {
@@ -81,7 +75,7 @@ function updateStatusSheet() {
 			if (statusSheetCourseCode === selectedCode) {
 				let year = selectedClass.getAttribute("year")
 				let semester = selectedClass.getAttribute("semester")
-				
+
 
 
 				if (getTargetIndex(year,semester) < getTargetIndex(curSemester.year, curSemester.semester)) {

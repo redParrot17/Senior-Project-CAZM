@@ -373,6 +373,8 @@ def advisor_sch_review():
             query_results = db.get_all_courses()
             list_of_courses = db.get_courses()
             viewedTutorial = db.advisorViewedTutorial(advisor_id)
+            currentSem = db.getCurrentSemester()
+            currentYr = db.getCurrentYear()
         status = schedule.status
         courses = schedule.courses
         json_courses = [{
@@ -397,7 +399,9 @@ def advisor_sch_review():
 
         major = major[:-2]
 
+
         name = student.firstname + " " + student.lastname
+
 
         return render_template(
             'advisorStudentScheduleReview.html',
@@ -407,9 +411,11 @@ def advisor_sch_review():
             listOfCourses=list_of_courses,
             StudentCourses=json_courses,
             advisor_view=True,
-            studentName=name,
-            studentMajor=major,
-            viewedTutorial=viewedTutorial)
+            studentName = name,
+            studentMajor = major,
+            viewedTutorial = viewedTutorial,
+            currentYear = currentYr,
+            currentSemester = currentSem)
 
 
 @app.route('/advisorSchReviewPost/', methods=["POST"])
@@ -648,6 +654,8 @@ def student_sch_review():
         schedule = db.get_student_schedule(student_id)
         status = schedule.status
         courses = schedule.courses
+        currentSem = db.getCurrentSemester()
+        currentYr = db.getCurrentYear()
 
     json_courses = [{'course_code': c.course_code,
                      'name': c.name,
@@ -684,9 +692,12 @@ def student_sch_review():
         listOfCourses=list_of_courses,
         StudentCourses=json_courses,
         advisor_view=False,
-        studentName=name,
-        studentMajor=major,
-        viewedTutorial=viewedTutorial)
+
+        studentName = name,
+        studentMajor = major,
+        viewedTutorial = viewedTutorial,
+        currentYear = currentYr,
+        currentSemester = currentSem)
 
 
 @app.route('/studentSchReviewPost/', methods=["POST"])
