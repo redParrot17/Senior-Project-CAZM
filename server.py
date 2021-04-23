@@ -203,6 +203,7 @@ def advisor_landing_page():
     with Database() as db:
         data = []
 
+        # fetch all students
         for student in advisor_students:
             # Fetches the student's schedule status and defaults to awaiting creation
             schedule = db.get_student_schedule(student.student_id)
@@ -239,7 +240,7 @@ def advisor_landing_page():
                 'email': student.email,
                 'status': schedule_status,
                 'year': student.classification,
-                'major': None if not student.majors else student.majors[0][0],  # TODO: handle multiple majors
+                'major': None if not student.majors else student.majors[0][0],
             })
 
     # Serve the advisor landing page template to the user
@@ -326,6 +327,7 @@ def advisor_viewing_student():
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
 
+    # Get student schedule
     for year in range(data['enrolled_year'], data['grad_year'] + 1):
         for sem in semesters:
             classes = []
@@ -626,6 +628,7 @@ def student_landing_page():
     semesters = ['January', 'Spring', 'May', 'Summer', 'Fall', 'Winter Online']
     schedule_data = []
 
+    # Get student schedule
     for year in range(data['enrolled_year'], data['grad_year'] + 1):
         for sem in semesters:
             classes = []
@@ -635,12 +638,6 @@ def student_landing_page():
 
             if classes:
                 schedule_data.append({'semester': sem, 'year': year, 'classes': classes})
-
-    # if schedule is not None:
-    #     for course in schedule.courses:
-    #         if course.semester == current_semester and course.year == current_year:
-    #             if course.course_code not in schedule_data['classes']:
-    #                 schedule_data['classes'].append(course.course_code)
 
     # Serve the formatted landing page to the student requesting this endpoint
     return render_template('studentLanding.html', student=data, studentSchedule=schedule_data)
