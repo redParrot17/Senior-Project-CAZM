@@ -110,7 +110,14 @@ def login_post():
         users[user.get_id()] = user
         flask_login.login_user(user)
         return flask.redirect(flask.url_for("student_landing_page"))
-
+    if username == "comp" and password == "1234S":
+        user_id = 777777
+        print("comp logon")
+        is_advisor = False
+        user = User(user_id, is_advisor, username, password)
+        users[user.get_id()] = user
+        flask_login.login_user(user)
+        return flask.redirect(flask.url_for("student_landing_page"))        
     if username == "advisor" and password == "1234":
         user_id = 888888
         is_advisor = True
