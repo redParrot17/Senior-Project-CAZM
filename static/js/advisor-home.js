@@ -55,7 +55,7 @@ function filterByStatus(advisees) {
 }
 
 function filterByYear(advisees) {
-    if (selectedYearFilter !== 'All Years...')
+    if (selectedYearFilter !== 'All years...')
         return advisees.filter(a => a.year == selectedYearFilter);
     return advisees;
 }
@@ -80,7 +80,7 @@ function getFilteredAdvisees() {
 function sortAdvisees(advisees) {
     let newAdvisees = advisees;
 
-    if (selectedSortFilter === 'Name')
+    if (selectedSortFilter === 'Sort by name')
         newAdvisees.sort(function(a, b) {
             let aName = a.name.toLowerCase();
             let bName = b.name.toLowerCase();
@@ -88,7 +88,7 @@ function sortAdvisees(advisees) {
             if (aName < bName) return -1;
             return 0;
         });
-    else if (selectedSortFilter === 'Major')
+    else if (selectedSortFilter === 'Sort by major')
         newAdvisees.sort(function(a, b) {
             let aMajor = a.major.toLowerCase();
             let bMajor = b.major.toLowerCase();
@@ -96,7 +96,7 @@ function sortAdvisees(advisees) {
             if (aMajor < bMajor) return -1;
             return 0;
         });
-    else if (selectedSortFilter === 'Status')
+    else if (selectedSortFilter === 'Sort by status')
         newAdvisees.sort(function(a, b){ return a.status - b.status });
     return newAdvisees;
 }
@@ -176,7 +176,7 @@ function refreshTable() {
 
 function refreshYears() {
     let $yearSelector = $('#filterYearSelection');
-    $yearSelector.html(buildYearOption('All Years...', true));  // reset the inner html
+    $yearSelector.html(buildYearOption('All years...', true));  // reset the inner html
     uniqueYears.forEach(year => $yearSelector.html($yearSelector.html() + buildYearOption(year, false)));
 }
 
