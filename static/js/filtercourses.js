@@ -47,77 +47,6 @@ function createCourseDiv(course) {
     return div;
 }
 
-function filterDuplicates(checkbox) {
-    $.getJSON($SCRIPT_ROOT + '/searchClasses', {
-        class_name: $('input[id="search-bar"]').val()
-    }, function (data, status) {
-        classes = data
-        let container = document.getElementById("course-container");
-        container.innerHTML = "";
-        for (let i in classes) {
-            let course = classes[i]
-
-            if (checkbox.checked) {
-                var duplicate = false
-
-                for (let sem = 0; sem < pools.length; sem++) {
-                    for (c in pools[sem]) {
-                        if (document.getElementById(pools[sem][c]).getAttribute("coursecode").includes(course.course_code)) {
-                            duplicate = true
-                            break
-                        }
-                    }
-
-                    if (duplicate)
-                        break
-                }
-
-                if (duplicate)
-                    continue
-            }
-
-            let div = createCourseDiv(course);
-            container.appendChild(div)
-        }
-    });
-}
-
-function filterSemester(semesterDropdown) {
-    if (semesterDropdown.value != -1) {
-        $.getJSON($SCRIPT_ROOT + '/filterSemester', {
-            semester: semesterDropdown.value
-        }, function (data, status) {
-            classes = data
-
-            let container = document.getElementById("course-container");
-            container.innerHTML = "";
-            for (let i in classes) {
-                let course = classes[i]
-
-                /* Outer Div */
-                let div = createCourseDiv(course);
-                container.appendChild(div)
-            }
-        });
-    }
-    else {
-        $.getJSON($SCRIPT_ROOT + '/searchClasses', {
-            class_name: $('input[id="search-bar"]').val()
-        }, function (data, status) {
-            classes = data
-            let container = document.getElementById("course-container");
-            container.innerHTML = "";
-            for (let i in classes) {
-                let course = classes[i]
-                let div = createCourseDiv(course)
-                container.appendChild(div)
-            }
-        });
-    }
-}
-
-
-
 function filterCourses() {
     var filteredCourses
 
@@ -177,6 +106,7 @@ function filterCourses() {
             });
         }
 
+        //Display courses
         let container = document.getElementById("course-container");
         container.innerHTML = "";
         for (let i in filteredCourses) {
