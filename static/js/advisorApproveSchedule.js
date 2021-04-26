@@ -1,4 +1,7 @@
-
+/**
+ * Submits the current schedule from the edit page
+ * @param {*} ev 
+ */
 function approveBtn(ev){
   let container = document.getElementById("main-schedule");
   let newSchedule = container.querySelectorAll(".drag_item_fill");
@@ -46,7 +49,9 @@ function approveBtn(ev){
     })
 }
 
-
+/**
+ * Changes the Approve button text based on what the approve button will set the status to. i.e., "Approve Schedule", or "Submit for student approvel"
+ */
 function setApproveBtnText() {
   let approveBtn = document.getElementById("approveBtn");
 

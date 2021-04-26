@@ -22,6 +22,10 @@ let selectedSortFilter = $('#sortBySelection').find('option:selected').text();
 let searchBarText = $('#search-text').val();
 
 
+/**
+ * Adds advisees to the list
+ * @param {Object} json 
+ */
 function setAdvisees(json) {
     allAdvisees = json;
     uniqueYears = [];
@@ -34,12 +38,21 @@ function setAdvisees(json) {
     });
 }
 
+/**
+ * Sets Text for email Button
+ * @param {String} text 
+ */
 function setEmailButtonText(text) {
     $('#message-btn').html(`<i class="fa fa-envelope" aria-hidden="true"></i> Message ${text}`);
 }
 
 // ADVISEE FILTERING METHODS //
-
+/**
+ * Filters list of advisees by schedule status
+ * @param {*} advisees 
+ * list of advisees
+ * @returns 
+ */
 function filterByStatus(advisees) {
     if (selectedStatusFilter === 'all')
         return advisees;
@@ -54,12 +67,23 @@ function filterByStatus(advisees) {
     else return [];
 }
 
+/**
+ * Filters list of advisees by enrollment year
+ * @param {*} advisees 
+ * list of advisees
+ * @returns 
+ */
 function filterByYear(advisees) {
     if (selectedYearFilter !== 'All years...')
         return advisees.filter(a => a.year == selectedYearFilter);
     return advisees;
 }
 
+/**
+ * Filters list of advisees by text in the search bar
+ * @param {*} advisees 
+ * @returns 
+ */
 function filterBySearch(advisees) {
     let search = searchBarText.toLowerCase();
     return advisees.filter(a => {
@@ -69,6 +93,10 @@ function filterBySearch(advisees) {
     });
 }
 
+/**
+ * Applies filters to list of advisees
+ * @returns filtered advisee list
+ */
 function getFilteredAdvisees() {
     let advisees = allAdvisees;
     advisees = filterByStatus(advisees);
@@ -77,6 +105,12 @@ function getFilteredAdvisees() {
     return advisees;
 }
 
+/**
+ * Sorts advisees by selected option
+ * @param {*} advisees 
+ * list of advisees
+ * @returns sorted advisee list
+ */
 function sortAdvisees(advisees) {
     let newAdvisees = advisees;
 
@@ -103,7 +137,12 @@ function sortAdvisees(advisees) {
 
 // CALLBACK FUNCTIONS //
 
-// Sends an html POST request to the current location
+
+
+/**
+ * Sends an html POST request to the current location
+ * @param {Object} object json being sent to the endpoint
+ */
 function httpPost(object) {
     let xhr = new XMLHttpRequest();
     let url = window.location.href;
@@ -112,24 +151,33 @@ function httpPost(object) {
     xhr.onload = function() {
         if (xhr.readyState === xhr.DONE) {
             if (xhr.status === 200) {
-                console.log(xhr.response);
-                console.log(xhr.responseText);
+
             }
         }
     }
     xhr.send(JSON.stringify(object));
 }
 
+/**
+ * Select user by ID
+ * @param {Number} user_id 
+ * selected user ID
+ */
 function onClickAdvisee(user_id) {
     $('#student_id').val(user_id)
     document.forms[1].submit();
 }
 
+/**
+ * Logout user
+ */
 function onClickLogout() {
-    console.log('Perform logout')
     window.location.href = '/'
 }
 
+/**
+ * Open message all advisees
+ */
 function onClickMessage() {
     let advisees = getFilteredAdvisees();
 
@@ -143,6 +191,11 @@ function onClickMessage() {
 
 // TEMPLATES //
 
+/**
+ * Builds advisee bootstrap card
+ * @param {*} advisee 
+ * @returns advisee card DOM element
+ */
 function buildAdviseeCard(advisee) {
     return [
         `<div class="advisee borderStudentElements shadow p-3 mb-4 bg-body rounded" value="${advisee.id}" onclick="onClickAdvisee(${advisee.id})">`,

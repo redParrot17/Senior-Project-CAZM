@@ -76,14 +76,12 @@ function drop(ev) {
     ev.preventDefault();
     targetNode.classList.add("border");
 
-    // console.log(document.getElementById(id).childNodes);
     if(document.getElementById(id).childNodes.length == 7){
       document.getElementById(id).childNodes[5].classList.remove("itemInvisible");
     }               // makes spot white bg
     if(document.getElementById(id).childNodes.length == 3){
       document.getElementById(id).childNodes[2].classList.remove("itemInvisible");
     }
-    //console.log(document.getElementById(id).childNodes);
     clone.classList.add("drag_item_fill");
     let newID = clone.getAttribute("courseCode")+"-"+targetNodeContainer.id;
     clone.id = document.getElementById(id).getAttribute("courseCode")+"-"+targetNodeContainer.id;
@@ -111,7 +109,6 @@ function drop(ev) {
     // setWarnings(clone.getAttribute("coursecode"), clone.getAttribute("semester"), clone.getAttribute("year"), clone,true)
 
     addClassestoPools();
-    // console.log("Drag drop checking")
     checkPools(true);
     updateStatusSheet(pools);
 
@@ -119,7 +116,6 @@ function drop(ev) {
     filterCourses()
 
     //reset credit count
-    console.log(targetNodeSemester);
     let creditSemester = targetNodeSemester.getAttribute("data-semester");
     let creditYear = targetNodeSemester.getAttribute("data-year");
     let creditCount = 0;
@@ -133,7 +129,6 @@ function drop(ev) {
     }
     else{
       let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
-      console.log(creditCount);
       if(creditCount >17){
         creditDisplay.innerHTML = `<i data-toggle="tooltip" data-delay="0" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
 			}
@@ -189,7 +184,6 @@ function removeDragItem(ev) {
   }
   else{
     let creditDisplay = document.getElementById(creditSemester+"-"+creditYear+"-credits");
-    console.log(creditCount);
     if(creditCount >17){
       creditDisplay.innerHTML = `<i data-toggle="tooltip" data-delay="0" title="Credit Count High: There will be an added fee" class="fas fa-exclamation-triangle"></i> Scheduled Credits: ${creditCount}`;
     }
@@ -202,3 +196,8 @@ function removeDragItem(ev) {
     }
 
   }
+
+
+}
+
+

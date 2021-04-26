@@ -201,7 +201,6 @@ function setUpStudentScheduleContainers(studentData) {
           }
         }
       });
-	  console.log(currentSemesterCourses)
 
 			if(ALL_SEMESTERS[i]==studentData.enrolled_semester && year == studentData.enrolled_year){
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,0);
@@ -340,17 +339,3 @@ function revert_drag_locations(event) {
   // clear invalid positions
   while (invalidCombos.length) { invalidCombos.pop(); }
 }
-
-
-
-
-//------------------------------------------------------------------------------
-/*$.getJSON($SCRIPT_ROOT + '/studentData', {
-
-}, function (data) {
-    studentData = data;
-    console.log(studentData);
-    // set up student schedule containers
-    setUpStudentScheduleContainers(studentData);
-
-})*/

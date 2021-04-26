@@ -1,5 +1,10 @@
 var classes;
 document.getElementById("toggleBtn").click();
+
+/**
+ * Toggle Sidebar
+ * @param {*} event 
+ */
 function toggleSideBar(event){
   let btn=document.getElementById("toggleBtn");
   if(btn.classList.contains("selected")){
@@ -25,7 +30,10 @@ function toggleSideBar(event){
 
 }
 
-
+/**
+ * Runs tutorial Dialogue
+ * @param {*} event 
+ */
 function openTutorial(event){
   introJs().setOptions({scrollToElement: false, disableInteraction: true}).start();
   let btn=document.getElementById("toggleBtn");
@@ -43,6 +51,7 @@ function openTutorial(event){
 }
 
 
+
 function openNav() {
   document.getElementById("mySidebar").style.width = "50hw";
   document.getElementById("middle").style.marginRight = "50hw";
@@ -57,6 +66,9 @@ function closeNav() {
   document.getElementById("middle").classList.add('col-8');
 }
 
+/**
+ * Search classlist by what is in the search bar, and update the listed courses
+ */
 function searchClasses() {
   $.getJSON($SCRIPT_ROOT + '/searchClasses', {
       class_name: $('input[id="search-bar"]').val()
