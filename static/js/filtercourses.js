@@ -1,4 +1,10 @@
 
+/**
+ * Create a draggable div DOM element for the course code
+ * @param {*} course
+ * course code to use
+ * @returns draggable course code DOM element
+ */
 function createCourseDiv(course) {
     let name = course.course_code;
     let courseID = name;
@@ -47,6 +53,9 @@ function createCourseDiv(course) {
     return div;
 }
 
+/**
+ * Applies filters to searched courses
+ */
 function filterCourses() {
     var filteredCourses
 

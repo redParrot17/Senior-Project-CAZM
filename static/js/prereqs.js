@@ -11,7 +11,14 @@ let semesters = document.getElementsByClassName("scheduleContainer")
 var pools;
 
 
-
+/**
+ * Gets the 0-indexed position of the semester matching the parameters from the semester list
+ * @param {Number} year 
+ * The year of the semester
+ * @param {String} semester 
+ * The season of the semester i.e. "Spring" or "Winter Online"
+ * @returns the semester's 0-indexed position
+ */
 let getTargetIndex = (year, semester) => {
    
     for (let s = 0; s < semesters.length; s++) {
@@ -159,7 +166,16 @@ function checkSpecial(code) {
 }
 
 
-
+/**
+ * Returns false if missing prereqs or coreqs, else if true
+ * @param {*} code 
+ * checked course code
+ * @param {*} semester 
+ * checked semester 
+ * @param {*} year 
+ * checked year
+ * @returns false if warning required, else true
+ */
 function checkRequisites(code, semester, year) {
 
     //Get code prereq dictionary
@@ -298,7 +314,10 @@ function checkRequisites(code, semester, year) {
 
 
 
-
+/**
+ * Gets sum total of credits in the schedule
+ * @returns credit count
+ */
 let totalCreds = () => {
     var credits = 0;
     let credindex = getTargetIndex(curSemester.year, curSemester.semester);
@@ -313,6 +332,11 @@ let totalCreds = () => {
     return credits;
 }
 
+/**
+ * Gets a string containing the warnings for any available prereqs or coreqs
+ * @param {String} code the code being checked for warnings needed
+ * @returns warning message string, empty if no warnings needed
+ */
 function getWarningMsg(code) {
     let codeRequisites = requisites[code];
     if (codeRequisites !== undefined) {
@@ -371,6 +395,11 @@ function getWarningMsg(code) {
     return (prereqMsg + coreqMsg);
 }
 
+/**
+ * Gets a string containing the warnings for any available special messages
+ * @param {String} code the code being checked for warnings needed
+ * @returns warning message string, empty if no warnings needed
+ */
 function getSpecialWarningMsg(code) {
     let codeRequisites = requisites[code];
     if (codeRequisites !== undefined) {

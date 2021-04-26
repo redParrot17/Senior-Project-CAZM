@@ -3,7 +3,9 @@ var requisites;
 var studentData;
 
 
-
+/**
+ * Load Student info
+ */
 window.addEventListener("DOMContentLoaded", function () {
 
     $.getJSON($SCRIPT_ROOT + '/studentData', {

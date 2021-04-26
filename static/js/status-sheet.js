@@ -1,5 +1,9 @@
 
-/* Gets number of credits for a coursecode */
+/**
+ * Gets number of credits for a coursecode
+ * @param {Number} code 
+ * @returns code's credit count
+ */
 function getCredits(code) {
 
 	var returnedCredits = -1;
@@ -21,8 +25,11 @@ function getCredits(code) {
 	return returnedCredits;
 }
 
-
-/* Gets number of credits for a coursecode */
+/**
+ * Gets number of credits for a coursecode (used for credit sum)
+ * @param {Number} code 
+ * @returns code's credit count
+ */
 function getCreditsForSum(code) {
 
 	var returnedCredits = -1;
@@ -47,7 +54,9 @@ function getCreditsForSum(code) {
 
 
 
-
+/**
+ * Updates the icons for each course in the status sheet
+ */
 function updateStatusSheet() {
 
 	let statusSheetCourses = document.getElementsByClassName("requirement-list-course")

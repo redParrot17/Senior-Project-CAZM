@@ -1,7 +1,11 @@
 var reqs;
 var requisites;
 var studentData;
-
+/**
+ * Inits all event listeners for the advisee page
+ * @param {Number} studentID
+ *  the student ID to get Data for
+ */
 function createEventListeners(studentID) {
     window.addEventListener("DOMContentLoaded", function () {
 

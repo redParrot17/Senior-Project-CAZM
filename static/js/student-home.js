@@ -7,6 +7,11 @@ function setStudentInfo(json) {
     student = json;
 }
 
+/**
+ * Get student info and create DOM element for it
+ * @param {*} student 
+ * @returns student info DOM element
+ */
 function buildStudentInfo(student) {
     return [
         '<div class="bg-gcc-primary p-2 student-info rounded">',

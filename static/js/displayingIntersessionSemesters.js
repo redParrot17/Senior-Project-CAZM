@@ -1,4 +1,6 @@
-
+/**
+ * Toggles the displaying of intersession semesters in the semester list
+ */
 function displayIntersessionSemesters() {
   if (document.getElementById("intersession-checkbox").checked) {
     mainSchedule = document.getElementById("main-schedule");
