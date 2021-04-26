@@ -22,15 +22,3 @@ function buildStudentInfo(student) {
                 '</div>'
     ].join('')
 }
-
-function buildStudentSchedule(schedule) {
-
-}
-
-$(document).ready(function() {
-    //Set up student info
-    // $studentInfo.html('')
-    // student.forEach(s => {
-    //     $studentInfo.html($studentInfo.html() + buildStudentInfo(s))
-    // });
-});

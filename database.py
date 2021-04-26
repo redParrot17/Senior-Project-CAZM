@@ -527,12 +527,10 @@ class Database:
         cursor.close()
 
         ### Fetch the course information for each course identifier ###
-        # print("HERE!!!!!!!!!!!!!!",course_identifiers)
         if schedule is not None:
             for course_code, year, semester in course_identifiers:
                 course = self.get_course(course_code, year, semester)
                 if course is not None:
-                    # print("GETTING HERE", course)
                     schedule.courses.append(course)
 
         return schedule

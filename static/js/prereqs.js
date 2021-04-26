@@ -178,7 +178,6 @@ function checkRequisites(code, semester, year) {
 
 
         //TODO handle prohibited courses correctly
-        // var prohibited = codeReqs[4]
         var found = false;
 
 
@@ -289,8 +288,6 @@ function checkRequisites(code, semester, year) {
             found = true;
         }
         return (found)
-
-        //TODO Check Prohibited
 
 
     }

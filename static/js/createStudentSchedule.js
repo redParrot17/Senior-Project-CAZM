@@ -2,7 +2,6 @@
 
 let ALL_SEMESTERS = ["January", "Spring", "May", "Early Summer","Late Summer", "Fall", "Winter Online"];
 let invalidCombos = [];
-// var studentData
 
 
 function getNameByCode(code) {
@@ -35,7 +34,6 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
   let classHolder =  document.getElementById("main-schedule");
 	let holderContents = ``;
 	let creditCount = 0;
-	//console.log(semester);
 	if(semester == "Winter Online" || semester == "January" || semester == "May" || semester == "Early Summer" || semester == "Late Summer"){
 		//for loop through all the student's courses_to_add
 		  courses.forEach((course, index) => {
@@ -166,7 +164,7 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 
 				<div class = "col-6 p-0" style = "text-align:center;">
 					<h6>
-						Future course offerings are not guaranteed to be accurate
+					Future course offerings are subject to availability. Verify plans when GCC schedule is published.
 					</h6>
 				</div>
 
@@ -183,7 +181,6 @@ function addClassHolder(semester, year, semesterOrder, courses, counter) {
 
 function setUpStudentScheduleContainers(studentData) {
   year = studentData.enrolled_year;
-  // console.log(StudentCourses);
   while (year <= studentData.grad_year){
     counter = 0;
 
@@ -205,7 +202,6 @@ function setUpStudentScheduleContainers(studentData) {
         }
       });
 	  console.log(currentSemesterCourses)
-      // console.log(currentSemesterCourses);
 
 			if(ALL_SEMESTERS[i]==studentData.enrolled_semester && year == studentData.enrolled_year){
 				addClassHolder(ALL_SEMESTERS[i], year, 0, currentSemesterCourses,0);
@@ -241,7 +237,6 @@ function set_valid_drag_locations(event) {
     if (dragItemId.includes(currentCourse.courseCode)) {
 
       // get items
-      //let year = currentCourse.year;
       let semester = currentCourse.semester;
 
       // add to array
@@ -263,7 +258,6 @@ function set_valid_drag_locations(event) {
 
     }
   }
-  //console.log(validSemesters, years, combined);
 
   // block non-valid
   invalidSemesters = [];
@@ -277,7 +271,6 @@ function set_valid_drag_locations(event) {
     }
   }
 
-  //console.log("INVALID", invalidSemesters, invalidCombos);
 
   // go over invalid objects
   invalidCombos.forEach((item, index) => {
@@ -298,16 +291,12 @@ function set_valid_drag_locations(event) {
 
   combined.forEach((item1, index) => {
     let dropContainer = document.getElementById(item1);
-		//console.log(combined);
-		//console.log(item1);
-		//console.log(dropContainer);
+
     let checkId = dragItemId + "-" + item1;
-    // console.log(checkId);
 
     let hasCourse = dropContainer.querySelectorAll(".drag_item_fill");
 
     if(hasCourse.length > 0){
-      // console.log("got in");
 
       hasCourse.forEach((item2, index) => {
         if(item2.id == checkId){

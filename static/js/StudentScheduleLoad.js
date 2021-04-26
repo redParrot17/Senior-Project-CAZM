@@ -30,7 +30,6 @@ window.addEventListener("DOMContentLoaded", function () {
               setTimeout(() => {  introJs().setOptions({scrollToElement: false, disableInteraction: true}).start(); }, 200);
             }
             addClassestoPools();
-            // updateStatusSheet();
 
             //Get requisite list for each course
             $.getJSON($SCRIPT_ROOT + '/getRequisites', {
