@@ -123,7 +123,6 @@ function httpPost(object) {
 function onClickAdvisee(user_id) {
     $('#student_id').val(user_id)
     document.forms[1].submit();
-    // window.location.href = `/studentProfile`;
 }
 
 function onClickLogout() {
@@ -140,8 +139,6 @@ function onClickMessage() {
 
     location.href = "mailto:" + emailList
 
-    // $('#emailModal').modal('show')
-    // console.log('Email students')
 }
 
 // TEMPLATES //

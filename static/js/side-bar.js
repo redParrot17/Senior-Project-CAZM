@@ -48,7 +48,6 @@ function openNav() {
   document.getElementById("middle").style.marginRight = "50hw";
   document.getElementById("middle").classList.remove('col-8');
   document.getElementById("middle").classList.add('col-5');
-  //document.getElementById("nav").style.marginRight = "275px";
 }
 
 function closeNav() {
@@ -56,7 +55,6 @@ function closeNav() {
   document.getElementById("middle").style.marginRight= "0";
   document.getElementById("middle").classList.remove('col-5');
   document.getElementById("middle").classList.add('col-8');
-  //document.getElementById("nav").style.marginRight= "0";
 }
 
 function searchClasses() {
@@ -64,8 +62,7 @@ function searchClasses() {
       class_name: $('input[id="search-bar"]').val()
   }, function (data) {
       classes = data
-      // console.log(classes)
-      // console.log("--Search Done--");
+      
       let container = document.getElementById("course-container");
       container.innerHTML = "";
       for (let i in classes) {

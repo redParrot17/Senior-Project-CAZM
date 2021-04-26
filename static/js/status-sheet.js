@@ -163,7 +163,6 @@ function updateStatusSheet() {
 				let creds = selectedCluster.credits;
 				let courses = selectedCluster.courses;
 				let alts = selectedCluster.alternate_clusters;
-				// console.log(courses)
 
 
 

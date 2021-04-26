@@ -40,7 +40,6 @@
     margin: 10px;
     background-color: white;
     color: black;
-    /* min-height: 200px; */
     border: 1px solid black;
 }
 
@@ -91,5 +90,4 @@ legend {
     box-shadow: 0 8px 6px -6px #999;
 }
 
-/* light red #b0002a */
-/* dark red #960000 */
+

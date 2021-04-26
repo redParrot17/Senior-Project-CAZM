@@ -8,7 +8,6 @@ function approveBtn(ev){
     <span class="sr-only">Loading...</span>
   </div>
 </div>`
-  //console.log(newSchedule);
 
   let changed = (scheduleChangesAdded.length > 0 || scheduleChangesRemoved.length > 0);
 
@@ -50,36 +49,30 @@ function setApproveBtnText() {
 
   if (studentStatus == 1 && scheduleChanged == false){
     approveBtn.classList.add("itemInvisible");
-    //approveBtn.classList.add("itemInvisible");
+    approveBtn.classList.add("itemInvisible");
   }
   else if (studentStatus == 1 && scheduleChanged == true){
     approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
-    //approveBtn.classList.remove("itemInvisible");
   }
   else if (studentStatus == 2){
     approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
-    //approveBtn.classList.remove("itemInvisible");
   }
   else if (studentStatus == 3 && scheduleChanged == false){
     approveBtn.innerHTML = "Approve Schedule";
     approveBtn.classList.remove("itemInvisible");
-    //approveBtn.classList.remove("itemInvisible");
   }
   else if (studentStatus == 3 && scheduleChanged == true){
     approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
-    //approveBtn.classList.remove("itemInvisible");
   }
   else if (studentStatus == 4 && scheduleChanged == false){
     approveBtn.classList.add("itemInvisible");
-    //approveBtn.classList.add("itemInvisible");
   }
-  else{// (studentStatus == 4 && scheduleChanged = true){
+  else{
     approveBtn.innerHTML = "Save and Submit for Advisor's Approval";
     approveBtn.classList.remove("itemInvisible");
-    //approveBtn.classList.remove("itemInvisible");
   }
 }
 setApproveBtnText();

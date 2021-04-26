@@ -7,7 +7,6 @@
     align-items: center;
     justify-content: left;
     user-select: none; cursor: pointer;
-    /*padding-left: 10px;*/
 }
 
 .drag_item_fill{
@@ -23,7 +22,6 @@
     display: flex;
     align-items: center;
     justify-content: left;
-    /*padding-left: 10px;*/
 }
 
 .itemInvisible{
