@@ -215,7 +215,7 @@ def advisor_landing_page():
             # Fetches the student's schedule status and defaults to awaiting creation
             schedule = db.get_student_schedule(student.student_id)
 
-            if not schedule.courses:
+            if schedule is None or not schedule.courses:
 
                 # load and save template schedule
                 student_majors = db.get_student_majors(student.student_id)
